@@ -282,9 +282,9 @@ export default {
               });
 
               if (res.data.role === "ROLE_NORMAL") {
-                this.$router.push("/home");
+                this.$router.push("/scene");
               } else {
-                this.$router.push("/home");
+                this.$router.push("/scene");
               }
             } else {
               this.$message.error(res.msg);
