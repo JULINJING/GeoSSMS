@@ -5,7 +5,7 @@
             <h2 id="teamName" class="schoolTitle opacity0" style="color: white;font-weight: 800;margin-top: 20px;">
                 武汉大学遥感信息工程学院</h2>
             <h2 id="teamName" class="title opacity0" style="color: white;font-weight: 800;margin-top: 20px;">珞珈壹佰叁</h2>
-            <div class="logo-list opacity0"><img src="./imgs/logo.png"></div>
+            <div class="logo-list opacity0"><img src="./imgs/logo.png" height="150"></div>
         </div>
         <div id="PC">
             <Layout />
@@ -282,7 +282,7 @@ export default {
             var x = {
                 size: 150,
                 weight: 8,
-                color: ["#177cb0", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#8d4bbb", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f47983", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f47983", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8"],
+                color: ["#177cb0", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#8d4bbb", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f47983", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f47983", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f47983", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8", "#f8f8f8"],
                 duration: 0.35,
                 delay: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4],
                 fade: 0.5,
@@ -2596,6 +2596,17 @@ export default {
 #PC {
     display: none;
 }
+/* LOGO */
+.logo-list {
+    margin-top: 20px;
+    /* position: absolute;
+        bottom: 20px;
+        left: 45%;*/
+}
+
+.logo-list img {
+    height: 150px;
+}
 /* Loader */
 .page-overlay {
     position: relative;
@@ -2663,6 +2674,9 @@ export default {
     -webkit-opacity: 0;
     -moz-opacity: 0;
     opacity: 0;
+}
+#teamName {
+    font-size: 3em;
 }
 
 /* Bar */
