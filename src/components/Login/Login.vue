@@ -386,6 +386,7 @@ export default {
         a {
           padding: 10px;
           color: #969696;
+          text-decoration: none !important;
           &.active {
             font-weight: 800;
             color: rgba(73, 129, 242, 0.9);
