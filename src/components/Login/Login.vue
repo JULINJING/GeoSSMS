@@ -281,9 +281,11 @@ export default {
                 duration: '8000'//持续的时间
               });
 
-              if (res.data.role === "ROLE_NORMAL") {
+              if (res.data.role === "ROLE_CONDUCT") {
                 this.$router.push("/scene");
-              } else {
+              } else if(res.data.role === "ROLE_ADMIN"){
+                this.$router.push("/scene");
+              }else{
                 this.$router.push("/scene");
               }
             } else {
