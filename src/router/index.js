@@ -34,6 +34,11 @@ const routes = [
         path: '/404',
         name: '404',
         component: () => import('@/components/404/404.vue')
+    },
+    {
+        path: '/manage',
+        name: 'manage',
+        component: () => import('@/components/Manage/Manage.vue'),
     }
 ]
 var router = new VueRouter({
