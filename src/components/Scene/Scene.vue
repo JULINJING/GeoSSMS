@@ -161,13 +161,13 @@ export default {
                 }
             },
             layers: [{
-                id: "风电场办公楼",
+                id: "建筑中心区",
                 type: "3dtiles",
-                url: "//data.mars3d.cn/3dtiles/bim-daxue/tileset.json",
-                position: { lng: 87.881843, lat: 43.584772, alt: 1139.8 },
+                url: "../../../mars3dModels/XinbuGongyuan/tileset.json",
+                position: { lng: 101.504224, lat: 37.912327, alt: 3137.6 },
                 maximumScreenSpaceError: 16,
-                tooltip: "新疆达坂城风电场办公楼",
-                scale: 8,
+                tooltip: "建筑中心区",
+                scale: 100,
                 show: true
             }]
         }
@@ -366,8 +366,8 @@ export default {
             // this.addOtherFactoryLayer()
             // this.addChinaMap()
             setTimeout(function () {
-                $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
-                $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
+                // $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
+                // $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
                 $(".bottomBar").removeClass("opacity0").removeClass("fadeOutDown").addClass("animated fadeInUp")
             }, 2000)
 
@@ -1540,7 +1540,7 @@ export default {
             }
 
             // this.map.setCameraView({"lat":43.573973,"lng":87.903254,"alt":1262.6,"heading":134.6,"pitch":-3.4})
-            this.map.setCameraView({ "lat": 43.581253, "lng": 87.857363, "alt": 1484, "heading": 94, "pitch": -6.3 })
+            this.map.setCameraView({ "lat": 37.912327, "lng": 101.504224, "alt": 3137.6, "heading": 94, "pitch": -6.3 })
             // 开启键盘漫游
             this.map.keyboardRoam.enabled = true
             this.map.keyboardRoam.minHeight = 80
@@ -1553,10 +1553,10 @@ export default {
             })
             this.hideBottomPanel()
             // 添加场站
-            if (!this.isStationLoaded) {
-                this.addOtherFactoryLayer()
-                this.isStationLoaded = true
-            }
+            // if (!this.isStationLoaded) {
+            //     this.addOtherFactoryLayer()
+            //     this.isStationLoaded = true
+            // }
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2391,7 +2391,7 @@ export default {
 }
 /* LOGO */
 .logo-list {
-    margin-top: 20px;
+    margin-top: 50px;
     /* position: absolute;
         bottom: 20px;
         left: 45%;*/
