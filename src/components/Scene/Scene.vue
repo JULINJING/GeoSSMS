@@ -163,11 +163,11 @@ export default {
             layers: [{
                 id: "建筑中心区",
                 type: "3dtiles",
-                url: "../../../mars3dModels/XinbuGongyuan/tileset.json",
-                position: { lng: 101.504224, lat: 37.912327, alt: 3137.6 },
+                url: "../../../mars3dModels/3dt/tileset.json",
+                position: { lng: 101.302832, lat: 37.998907, alt: 2572.2 },
                 maximumScreenSpaceError: 16,
                 tooltip: "建筑中心区",
-                scale: 100,
+                scale: 0.04,
                 show: true
             }]
         }
@@ -1540,7 +1540,7 @@ export default {
             }
 
             // this.map.setCameraView({"lat":43.573973,"lng":87.903254,"alt":1262.6,"heading":134.6,"pitch":-3.4})
-            this.map.setCameraView({ "lat": 37.912327, "lng": 101.504224, "alt": 3137.6, "heading": 94, "pitch": -6.3 })
+            this.map.setCameraView({ "lat": 37.998907, "lng": 101.302832, "alt": 3072.2, "heading": 94, "pitch": -6.3 })
             // 开启键盘漫游
             this.map.keyboardRoam.enabled = true
             this.map.keyboardRoam.minHeight = 80
@@ -2393,8 +2393,8 @@ export default {
 .logo-list {
     margin-top: 50px;
     /* position: absolute;
-        bottom: 20px;
-        left: 45%;*/
+    bottom: 20px;
+    left: 45%;*/
 }
 
 .logo-list img {
