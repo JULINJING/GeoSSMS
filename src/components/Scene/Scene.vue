@@ -5,7 +5,7 @@
             <h2 id="teamName" class="schoolTitle opacity0" style="color: white;font-weight: 800;margin-top: 20px;">
                 武汉大学遥感信息工程学院</h2>
             <h2 id="teamName" class="title opacity0" style="color: white;font-weight: 800;margin-top: 20px;">珞珈壹佰叁</h2>
-            <div class="logo-list opacity0"><img src="./imgs/logo.png" height="150"></div>
+            <div class="logo-list opacity0"><img src="./imgs/logo.png" height="120"></div>
         </div>
         <div id="PC">
             <Layout />
@@ -2398,7 +2398,7 @@ export default {
 }
 
 .logo-list img {
-    height: 150px;
+    height: 120px;
 }
 /* Loader */
 .page-overlay {
