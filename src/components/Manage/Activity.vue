@@ -133,6 +133,7 @@ export default {
         }
       })
     },
+
     load() {
       this.request.get("/activity/page", {
         params: {
