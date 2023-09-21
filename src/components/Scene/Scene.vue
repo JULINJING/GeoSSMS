@@ -8,6 +8,18 @@
             <div class="logo-list opacity0"><img src="./imgs/logo.png" height="120"></div>
         </div>
         <div id="PC">
+            <div id="nav-bar" class="bottom-nav">
+                <div
+                    v-for="item in navItems"
+                    :key="item.id"
+                    class="nav-item"
+                    @click="clickItem(item.id)"
+                    @mouseover="hoverItem(item.id)"
+                    @mouseout="unhoverItem(item.id)"
+                >
+                    <img :src="item.icon" class="nav-icon" />
+                </div>
+            </div>
             <Layout />
             <mars-map :url="configUrl" @onload="onMapload" :options="mapOptions" />
             <div id="leftBar" class="sideBar left opacity0">
@@ -117,24 +129,8 @@ export default {
 
     components: {
         MarsMap,
-        Layout,
-        // BaseField
+        Layout
     },
-    // created() {
-    //     // 监听浏览器后退事件，清除定时器
-    //     window.addEventListener('popstate', () => {
-    //         console.log("this.intervalIdChartWeather: ", this.intervalIdChartWeather2, this.intervalIdChartWeather3);
-    //         // 清除计时器
-    //         if (this.intervalIdChartWeather2 !== null) {
-    //             clearInterval(this.intervalIdChartWeather2);
-    //             this.intervalIdChartWeather2 = null;
-    //         }
-    //         if (this.intervalIdChartWeather3 !== null) {
-    //             clearInterval(this.intervalIdChartWeather3);
-    //             this.intervalIdChartWeather3 = null;
-    //         }
-    //     });
-    // },
     beforeRouteLeave(to, from, next) {
         console.log("Leaving the current page");
         // 清除计时器
@@ -164,20 +160,30 @@ export default {
                 id: "建筑中心区",
                 type: "3dtiles",
                 url: "../../../mars3dModels/3dt/tileset.json",
-                position: { lng: 101.302832, lat: 37.998907, alt: 2572.2 },
+                position: { lng: 101.299403, lat: 37.997105, alt: 2775 },
                 maximumScreenSpaceError: 16,
-                tooltip: "建筑中心区",
-                scale: 0.04,
+                tooltip: "特殊场景",
+                rotation: {
+                    z: 70
+                },
+                scale: 0.02,
                 show: true
             }]
         }
-        var windLayer = new mars3d.layer.WindLayer()
+        // var windLayer = new mars3d.layer.WindLayer()
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
 
         return {
+            navItems: [
+                { id: 1, icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
+                { id: 2, icon: "../../../imgs/navLogo/执勤模拟-normal.svg", normalIcon: "../../../imgs/navLogo/执勤模拟-normal.svg", hoverIcon: "../../../imgs/navLogo/执勤模拟-hover.svg", activeIcon: "../../../imgs/navLogo/执勤模拟-click.svg" },
+                { id: 3, icon: "../../../imgs/navLogo/辅助分析-normal.svg", normalIcon: "../../../imgs/navLogo/辅助分析-normal.svg", hoverIcon: "../../../imgs/navLogo/辅助分析-hover.svg", activeIcon: "../../../imgs/navLogo/辅助分析-click.svg" },
+                { id: 4, icon: "../../../imgs/navLogo/方案预演-normal.svg", normalIcon: "../../../imgs/navLogo/方案预演-normal.svg", hoverIcon: "../../../imgs/navLogo/方案预演-hover.svg", activeIcon: "../../../imgs/navLogo/方案预演-click.svg" },
+            ],
+
             configUrl: basePathUrl + 'config/config.json',
             mapOptions: mapOptions,
-            windLayer,
+            windLayer: null,
             chinaLayer,
             controller: null,
             isMapLoaded: false,
@@ -212,7 +218,7 @@ export default {
             isRightOpen: true,
             isBottomOpen: true,
 
-            // 风点场名
+            // 风电场名
             fieldData: [
                 { name: "东部：浙江括苍山风电场", type: "高山风场" },
                 { name: "南部：广东汕头南澳岛风电场", type: "海滨风场" },
@@ -277,20 +283,44 @@ export default {
             turbineIdError: [],
             //建筑信息
             buildInfo:[{"name":"特殊建筑1","status":"正常","pop":"2","floor":"2","prop":"管理人员住宅","lnglat":[101.300082,37.996392,3026.8 ]},
-{"name":"特殊建筑2","status":"正常","pop":"7","floor":"2","prop":"管理人员住宅","lnglat":[101.305189,38.001172,3028.9 ]},
-{"name":"特殊建筑3","status":"正常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.299977,37.99887,3026.4 ]},
-{"name":"特殊建筑4","status":"正常","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.30005,38.001123,3026.5 ]},
-{"name":"特殊建筑5","status":"正常","pop":"6","floor":"2","prop":"特殊人群住宅","lnglat":[101.301676,38.00106,3027.3 ]},
-{"name":"特殊建筑6","status":"异常","pop":"3","floor":"2","prop":"特殊人群住宅","lnglat":[101.30334,38.0012,3028.1 ]},
-{"name":"特殊建筑7","status":"异常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.305203,37.998831,3028.9 ]},
-{"name":"特殊建筑8","status":"异常","pop":"7","floor":"2","prop":"特殊人群住宅","lnglat":[101.301694,37.996151,3027.5  ]},
-{"name":"特殊建筑9","status":"警戒","pop":"4","floor":"2","prop":"特殊人群住宅","lnglat":[101.305122,37.996538,3029.5 ]},
-{"name":"特殊建筑10","status":"警戒","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.303505,37.996589,3028.7 ]},
-{"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.303138,37.998688,2989.9 ]},
-]
+                {"name":"特殊建筑2","status":"正常","pop":"7","floor":"2","prop":"管理人员住宅","lnglat":[101.305189,38.001172,3028.9 ]},
+                {"name":"特殊建筑3","status":"正常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.299977,37.99887,3026.4 ]},
+                {"name":"特殊建筑4","status":"正常","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.30005,38.001123,3026.5 ]},
+                {"name":"特殊建筑5","status":"正常","pop":"6","floor":"2","prop":"特殊人群住宅","lnglat":[101.301676,38.00106,3027.3 ]},
+                {"name":"特殊建筑6","status":"异常","pop":"3","floor":"2","prop":"特殊人群住宅","lnglat":[101.30334,38.0012,3028.1 ]},
+                {"name":"特殊建筑7","status":"异常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.305203,37.998831,3028.9 ]},
+                {"name":"特殊建筑8","status":"异常","pop":"7","floor":"2","prop":"特殊人群住宅","lnglat":[101.301694,37.996151,3027.5  ]},
+                {"name":"特殊建筑9","status":"警戒","pop":"4","floor":"2","prop":"特殊人群住宅","lnglat":[101.305122,37.996538,3029.5 ]},
+                {"name":"特殊建筑10","status":"警戒","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.303505,37.996589,3028.7 ]},
+                {"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.303138,37.998688,2989.9 ]},
+            ]
         }
     },
     methods: {
+        // 底部导航切换
+        clickItem(id) {
+            const item = this.navItems.find((i) => i.id === id);
+            if (item) {
+                item.icon = item.activeIcon
+            }
+        },
+        hoverItem(id) {
+            const item = this.navItems.find((i) => i.id === id);
+            if (item) {
+                if (item.icon !== item.activeIcon) {
+                    item.icon = item.hoverIcon
+                }
+            }
+        },
+        unhoverItem(id) {
+            const item = this.navItems.find((i) => i.id === id);
+            if (item) {
+                if (item.icon !== item.activeIcon) {
+                    item.icon = item.normalIcon
+                }
+            }
+        },
+        // 初始过渡动画
         initAnimate() {
             var x = {
                 size: 150,
@@ -333,7 +363,7 @@ export default {
             // 开场
             this.map.openFlyAnimation()
             this.map.fixedLight = true // 固定光照，避免gltf模型随时间存在亮度不一致。
-            this.map.setCameraView({ lat: 20.648765, lng: 129.340334, alt: 19999976, heading: 355, pitch: -90 })
+            this.map.setCameraView({ lat: 31.817475, lng: 109.687166, alt: 19999976, heading: 355, pitch: -90 })
             // this.map.scene.globe.terrainExaggeration = 2 // 修改地形夸张程度
             // 宇宙天空盒
             this.map.scene.skyBox = new Cesium.SkyBox({
@@ -377,7 +407,7 @@ export default {
 
             this.addWindLayer()
             // this.addOtherFactoryLayer()
-            // this.addChinaMap()
+            this.addChinaMap()
             setTimeout(function () {
                 // $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
                 // $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
@@ -400,20 +430,6 @@ export default {
             });
 
             this.isMapLoaded = true;
-            this.checkRouteQueryParams();
-        },
-        checkRouteQueryParams() {
-            // 检查路由参数，如果是从返回场站按钮进入的，并且地图加载完成，则执行 addTurbineLayer 方法
-            if (this.$route.params.isReturnButtonClicked && this.isMapLoaded) {
-                if(this.$route.params.type === "turbine" && this.$route.params.fieldId !== 0){
-                    console.log("fieldId: ", this.$route.params.fieldId);
-                    const id = this.$route.params.fieldId;
-                    this.flyStates[id] = true;
-                    this.addTurbineLayer(id);
-                } else if(this.$route.params.type === "watch"){
-                    this.turnToBuilding();
-                }
-            }
         },
         addOtherFactoryLayer() {
             // 添加道路
@@ -1500,7 +1516,7 @@ export default {
         chargeWindField() {
             if (!this.windLayer) {
                 this.addWindLayer()
-                this.map.setCameraView({ lat: 20.648765, lng: 129.340334, alt: 19999976, heading: 355, pitch: -90 })
+                this.map.setCameraView({ lat: 31.817475, lng: 109.687166, alt: 19999976, heading: 355, pitch: -90 })
             }
             else {
                 this.map.removeLayer(this.windLayer, true)
@@ -1552,9 +1568,14 @@ export default {
                 this.map.removeLayer(this.windLayer, true)
                 this.windLayer = null
             }
+            // 移除中国地图
+            if (this.chinaLayer) {
+                this.map.removeLayer(this.chinaLayer, true)
+                this.chinaLayer = null
+            }
 
             // this.map.setCameraView({"lat":43.573973,"lng":87.903254,"alt":1262.6,"heading":134.6,"pitch":-3.4})
-            this.map.setCameraView({ "lat": 37.998907, "lng": 101.302832, "alt": 3072.2, "heading": 94, "pitch": -6.3 })
+            this.map.setCameraView({ "lat": 38.00081, "lng": 101.312725, "alt": 3261.5, "heading": 250.9, "pitch": -10.2 })
             // 开启键盘漫游
             this.map.keyboardRoam.enabled = true
             this.map.keyboardRoam.minHeight = 80
@@ -2477,6 +2498,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 底部导航栏
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 99999999999999999999;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+.nav-icon {
+    width: 50px;
+    height: 50px;
+}
+// 以下为除底部导航栏
 .mapcontainer {
     position: relative;
     height: 100%;
