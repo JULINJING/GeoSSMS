@@ -10,7 +10,7 @@ module.exports = defineConfig({
   assetsDir: 'static',
   outputDir: 'dist',
   transpileDependencies: true,
-  lintOnSave: false,
+  lintOnSave: false, // 关闭eslint
   productionSourceMap: false, // 不需要生产环境的 source map
   filenameHashing: true, // 文件名哈希
   runtimeCompiler: true,

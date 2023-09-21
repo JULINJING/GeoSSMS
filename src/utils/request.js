@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from "@/router";
-import {serverIp} from "../../public/config";
+import {serverIp} from "@/../public/config";
 
 const request = axios.create({
     baseURL: `http://${serverIp}:7071`,
@@ -50,7 +50,5 @@ request.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-
-
 export default request
 

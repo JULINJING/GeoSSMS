@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import App from './App'
+import App from './App.vue'
 import router from './router'
 import dataV from '@jiaminghi/data-view'
 // import { createPinia, PiniaVuePlugin } from 'pinia'
@@ -11,6 +11,14 @@ import store from './store'
 import voiceInputButton from 'voice-input-button2'
 
 import './assets/fonts/iconfont.css'
+import './assets/global.css'
+
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+
+Vue.use(mavonEditor)
+
+Vue.use(ElementUI, { size: "mini" });
 
 
 Vue.config.productionTip = false
