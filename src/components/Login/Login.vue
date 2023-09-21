@@ -407,7 +407,7 @@ export default {
 }
 @media only screen and (max-width: 1000px) {
   .login-container {
-    background-image: url("@/assets/images/login.gif");
+    background-image: url("@/assets/images/loginBg.gif");
     background-position: center;
     background-size: cover;
     width: 100vw;
