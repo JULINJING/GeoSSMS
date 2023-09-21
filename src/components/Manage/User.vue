@@ -21,7 +21,7 @@
       >
         <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
       </el-popconfirm>
-      <el-upload :action="'http://' + serverIp + ':9090/user/import'" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+      <el-upload :action="'http://' + serverIp + ':7071/user/import'" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
         <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
       </el-upload>
       <el-button type="primary" @click="exp" class="ml-5">导出 <i class="el-icon-top"></i></el-button>
@@ -33,9 +33,9 @@
       <el-table-column prop="username" label="用户名" width="140"></el-table-column>
       <el-table-column prop="role" label="角色">
         <template slot-scope="scope">
-          <el-tag type="primary" v-if="scope.row.role === 'ROLE_ADMIN'">管理员</el-tag>
-          <el-tag type="warning" v-if="scope.row.role === 'ROLE_CHARGE'">活动负责人</el-tag>
-          <el-tag type="success" v-if="scope.row.role === 'ROLE_NORMAL'">普通用户</el-tag>
+          <el-tag type="primary" v-if="scope.row.role === 'ROLE_ADMIN'">数据管理员</el-tag>
+          <el-tag type="warning" v-if="scope.row.role === 'ROLE_CONDUCT'">指挥员</el-tag>
+          <el-tag type="success" v-if="scope.row.role === 'ROLE_NORMAL'">普通值守者</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="nickname" label="昵称" width="120"></el-table-column>
@@ -237,7 +237,7 @@ export default {
       this.load()
     },
     exp() {
-      window.open(`http://${serverIp}:9090/user/export`)
+      window.open(`http://${serverIp}:7071/user/export`)
     },
     handleExcelImportSuccess() {
       this.$message.success("导入成功")
