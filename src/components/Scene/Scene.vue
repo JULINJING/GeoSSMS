@@ -110,7 +110,8 @@
         </div>
 
         <!-- 面板 -->
-        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" >
+        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" id="cameraInfoWindow"
+        :style="{ visibility: cameraWindowVisible ? 'visible' : 'hidden' }">
             <table class="mars-table">
                 <tbody>
 
@@ -130,9 +131,16 @@
                             :cell-style="tableFormatWarnColor"
                             :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
                             page-size:5>
-                            <el-table-column prop="name" label="监控名称" />
-                            <el-table-column prop="warn" label="状态" :formatter="tableFormatWarnStr" />
-                            <el-table-column label="操作" />
+                            <el-table-column width="100px" prop="name" label="监控名称" />
+                            <el-table-column width="70px" prop="warn" label="状态" :formatter="tableFormatWarnStr" />
+                            <el-table-column width="100px" label="显示操作">
+                            <template slot-scope="{row, $index}">
+              <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{row.show?"取消显示":"显示"}}</el-button>
+            </template></el-table-column>
+                            <el-table-column width="100px" label="报警操作">
+                            <template slot-scope="{row, $index}">
+              <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{row.warn?"取消报警":"报警"}}</el-button>
+            </template></el-table-column>
                         </el-table>
                         <el-pagination align='center' 
                             @size-change="handleSizeChange" 
@@ -323,18 +331,19 @@ export default {
                 {"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.299339,37.997085,2982.6 ]},
             ],
             //监控信息
-            cameraInfo:[{"name":"监控1","warn":false,"lnglat":[101.302113,37.996224,3000.3  ]},
-            {"name":"监控2","warn":true,"lnglat":[101.300802,37.999158,2998.5 ]},
-            {"name":"监控3","warn":true,"lnglat":[101.296672,37.997986,2998.6 ]},
-            {"name":"监控4","warn":false,"lnglat":[101.340082,41.996392,3026.8 ]},
-            {"name":"监控12","warn":true,"lnglat":[101.298009,37.995055,3000.4 ]},
-            {"name":"监控13","warn":true,"lnglat":[101.298009,37.995055,3000.4 ]},
+            cameraInfo:[{"name":"监控1","warn":false,"show":true,"lnglat":[101.302113,37.996224,3000.3  ]},
+            {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
+            {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
+            {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
+            {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
+            {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
             ,
         ],
         //表格分页
         currentPage: 1, // 当前页码
                     total: 20, // 总条数
                     pageSize: 5, // 每页的数据条数
+                    cameraWindowVisible:false,
         }
     },
     methods: {
@@ -1648,6 +1657,8 @@ export default {
             //     this.isStationLoaded = true
             // }
             this.addInfoUI()
+            this.addCameraUI()
+            this.cameraWindowVisible=true
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2537,25 +2548,20 @@ export default {
             if(UILayer){
                 this.map.removeLayer(UILayer,true)
             }
-                UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
-            function addCameraPopUI(graphicLayer, position,obj) {
+            UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+            function addCameraPopUI(graphicLayer, obj) {
                 // graphicLayer=new mars3d.layer.GraphicLayer()
                 var popcolorstr='#FFFFFF'
                 var linecolor="#5b8fee"
-                var ico_filename="house.svg"
-                    if(obj.status=="异常"){
+                var ico_filename="camera.svg"
+                    if(obj.warn){
                         popcolorstr='#FF0000'
                         linecolor=popcolorstr
-                        ico_filename="house_red.svg"
-                    }
-                    else if(obj.status=="警戒"){
-                        popcolorstr='#FFBB00'
-                        linecolor=popcolorstr
-                        ico_filename="house_orange.svg"
+                        ico_filename="camera_red.svg"
                     }
                     
                 const graphicImg = new mars3d.graphic.DivGraphic({
-                    position: position,
+                    position: obj.lnglat,
                     style: {
                         html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
                                     <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
@@ -2574,13 +2580,10 @@ export default {
                     },
                     popup: `<table style="width:280px;">
                 <tr><th scope="col" colspan="4"  style="text-align:center;font-size:15px;"></th></tr>
-                <tr><td >楼栋名称</td><td >${obj.name} </td></tr>
-                <tr><td >状态</td><td style="color:${popcolorstr};">${obj.status} </td></tr>
-                <tr><td >人数</td><td >${obj.pop}人</td></tr>
-                <tr><td >楼层</td><td >${obj.floor}层</td></tr>
-                <tr><td >性质</td><td >${obj.prop}层</td></tr>
+                <tr><td >监控名称</td><td >${obj.name} </td></tr>
                 <tr><td >时间：</td><td id="tdTime"></td></tr>
-              </table>`,
+              </table>
+              <video src='../../imgs/videos/买瓜.mp4' controls autoplay style="width: 300px;" ></video>`,
                     popupOptions: {
                         offsetY: -170, // 显示Popup的偏移值，是DivGraphic本身的像素高度值
                         template: `<div class="marsBlackPanel" style="min-width: 90px;min-height: 35px;position: absolute;left: 16px;bottom: 10px;
@@ -2608,11 +2611,10 @@ export default {
                     }
                 })
             }
-            const tmpLayer = new mars3d.layer.GraphicLayer({ id: "infoUIGraph" })
-            this.map.addLayer(tmpLayer)
-            // addPopUI(tmpLayer,[101.299396,37.996705,3020.8])
-            this.buildInfo.forEach(e => {
-                addPopUI(tmpLayer, e.lnglat, e)
+            this.map.addLayer(UILayer)
+            this.cameraInfo.forEach(e => {
+                if(e.show)
+                addCameraPopUI(UILayer,  e)
             });
 
         },
@@ -2639,7 +2641,15 @@ export default {
                 handleCurrentChange(val) {
                     console.log(`当前页: ${val}`);
                     this.currentPage = val;
-                }
+                },
+        tableShowChange(row, $index){
+            row.show=!row.show
+            this.addCameraUI()
+        },
+        tableWarnChange(row, $index){
+            row.warn=!row.warn
+            this.addCameraUI()
+        }
     },
     mounted() {
         this.initAnimate()
@@ -3004,10 +3014,14 @@ export default {
 }
 .el-pagination /deep/ button {
     background: #1439391c !important;
-    // color: #46d4ff;
+    color: #b3c3c8;
 }
 .el-pagination /deep/ li {
     background: #1439391c !important;
-    // color: #46d4ff;
+    color: #b3c3c8;
+}
+.el-button{
+    background: rgba(32, 160, 255, 0.2) !important;
+    color: #e1e1e1;
 }
 </style>
