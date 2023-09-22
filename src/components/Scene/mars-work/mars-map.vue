@@ -25,7 +25,7 @@ Vue.prototype.Cesium = mars3d.Cesium
 export default {
   name: 'mars3dViewer',
   components: {
-    
+
   },
   props: {
     // 地图唯一性标识
@@ -212,4 +212,5 @@ export default {
   left: 10px;
   right: auto;
   background-color: #3f4854;
-}</style>
+}
+</style>

@@ -10,8 +10,10 @@
         <div id="PC">
             <Layout />
             <mars-map :url="configUrl" @onload="onMapload" :options="mapOptions" />
+            <Analysis />
             <div id="leftBar" class="sideBar left opacity0">
-                <i id="leftClickSpan" class="iconfont opration-handler" aria-hidden="true" @click="hideLeftPanel">&#xe653;</i>
+                <i id="leftClickSpan" class="iconfont opration-handler" aria-hidden="true"
+                    @click="hideLeftPanel">&#xe653;</i>
                 <div class="bar-content bar-content-left" id="leftContent">
                     <div class="chartbox">
                         <h5>风向 风速</h5>
@@ -29,14 +31,16 @@
             </div>
 
             <div id="RightBar" class="sideBar right opacity0">
-                <i id="rightClickSpan" class="iconfont opration-handler" aria-hidden="true" @click="hideRightPanel">&#xe653;</i>
+                <i id="rightClickSpan" class="iconfont opration-handler" aria-hidden="true"
+                    @click="hideRightPanel">&#xe653;</i>
                 <div class="bar-content bar-content-right" id="rightContent">
                     <div class="chartbox">
                         <h5>四大风力发电场</h5>
                         <ul class="chartList">
                             <li :key="index" v-for="(item, index) in fieldData">
                                 <span>{{ item.name }}</span>
-                                <span :class="{'typeA': item.type === '荒原风场', 'typeB': item.type === '海滨风场', 'typeC': item.type === '高山风场'}">
+                                <span
+                                    :class="{ 'typeA': item.type === '荒原风场', 'typeB': item.type === '海滨风场', 'typeC': item.type === '高山风场' }">
                                     {{ item.type }}
                                 </span>
                             </li>
@@ -99,6 +103,7 @@
 </template>
 
 <script>
+import Analysis from "./mars-work/analysis.vue"
 import Layout from "./subcomponents/Header/index";
 import { mapMutations } from "vuex";
 import MarsMap from "./mars-work/mars-map.vue"
@@ -118,6 +123,8 @@ export default {
     components: {
         MarsMap,
         Layout,
+        Analysis
+
         // BaseField
     },
     // created() {
@@ -244,19 +251,19 @@ export default {
             myChartWeather1: null,
             myOptionWeather1: {},
             chartsDataWeather1: [
-                {"DATATIME":"2022/3/26 12:00","WINDDIRECTION":"135","TurbID":"18","WINDSPEED":"0.6","PRESSURE":"1013","HUMIDITY":"19","TEMPERATURE":"16.3","PREPOWER":"5423.664291","YD15":"3338","ROUND(A.POWER,0)":"3622","AWS":"3.7"},{"DATATIME":"2022/3/26 12:15","WINDDIRECTION":"167","TurbID":"18","WINDSPEED":"0.9","PRESSURE":"1013","HUMIDITY":"19","TEMPERATURE":"16.7","PREPOWER":"5393.043637","YD15":"3539","ROUND(A.POWER,0)":"4293","AWS":"3.7"},{"DATATIME":"2022/3/26 12:30","WINDDIRECTION":"184","TurbID":"18","WINDSPEED":"1.3","PRESSURE":"1013","HUMIDITY":"18","TEMPERATURE":"17","PREPOWER":"5386.377587","YD15":"10185","ROUND(A.POWER,0)":"8480","AWS":"5"},{"DATATIME":"2022/3/26 12:45","WINDDIRECTION":"193","TurbID":"18","WINDSPEED":"1.7","PRESSURE":"1012","HUMIDITY":"17","TEMPERATURE":"17.3","PREPOWER":"5504.582102","YD15":"16032","ROUND(A.POWER,0)":"14243","AWS":"5.7"},{"DATATIME":"2022/3/26 13:00","WINDDIRECTION":"201","TurbID":"18","WINDSPEED":"2.2","PRESSURE":"1012","HUMIDITY":"16","TEMPERATURE":"17.6","PREPOWER":"5422.402582","YD15":"23043","ROUND(A.POWER,0)":"24667","AWS":"7.2"},{"DATATIME":"2022/3/26 13:15","WINDDIRECTION":"206","TurbID":"18","WINDSPEED":"2.8","PRESSURE":"1012","HUMIDITY":"16","TEMPERATURE":"17.9","PREPOWER":"5384.134899","YD15":"27501","ROUND(A.POWER,0)":"26488","AWS":"7.6"},{"DATATIME":"2022/3/26 13:30","WINDDIRECTION":"210","TurbID":"18","WINDSPEED":"3.4","PRESSURE":"1011","HUMIDITY":"16","TEMPERATURE":"18.2","PREPOWER":"5429.203811","YD15":"32914","ROUND(A.POWER,0)":"29174","AWS":"7.8"},{"DATATIME":"2022/3/26 13:45","WINDDIRECTION":"213","TurbID":"18","WINDSPEED":"3.8","PRESSURE":"1011","HUMIDITY":"15","TEMPERATURE":"18.4","PREPOWER":"5483.465929","YD15":"26735","ROUND(A.POWER,0)":"24703","AWS":"7.1"},{"DATATIME":"2022/3/26 14:00","WINDDIRECTION":"216","TurbID":"18","WINDSPEED":"4.4","PRESSURE":"1010","HUMIDITY":"15","TEMPERATURE":"18.7","PREPOWER":"5854","YD15":"23881","ROUND(A.POWER,0)":"26448","AWS":"7.4"}
+                { "DATATIME": "2022/3/26 12:00", "WINDDIRECTION": "135", "TurbID": "18", "WINDSPEED": "0.6", "PRESSURE": "1013", "HUMIDITY": "19", "TEMPERATURE": "16.3", "PREPOWER": "5423.664291", "YD15": "3338", "ROUND(A.POWER,0)": "3622", "AWS": "3.7" }, { "DATATIME": "2022/3/26 12:15", "WINDDIRECTION": "167", "TurbID": "18", "WINDSPEED": "0.9", "PRESSURE": "1013", "HUMIDITY": "19", "TEMPERATURE": "16.7", "PREPOWER": "5393.043637", "YD15": "3539", "ROUND(A.POWER,0)": "4293", "AWS": "3.7" }, { "DATATIME": "2022/3/26 12:30", "WINDDIRECTION": "184", "TurbID": "18", "WINDSPEED": "1.3", "PRESSURE": "1013", "HUMIDITY": "18", "TEMPERATURE": "17", "PREPOWER": "5386.377587", "YD15": "10185", "ROUND(A.POWER,0)": "8480", "AWS": "5" }, { "DATATIME": "2022/3/26 12:45", "WINDDIRECTION": "193", "TurbID": "18", "WINDSPEED": "1.7", "PRESSURE": "1012", "HUMIDITY": "17", "TEMPERATURE": "17.3", "PREPOWER": "5504.582102", "YD15": "16032", "ROUND(A.POWER,0)": "14243", "AWS": "5.7" }, { "DATATIME": "2022/3/26 13:00", "WINDDIRECTION": "201", "TurbID": "18", "WINDSPEED": "2.2", "PRESSURE": "1012", "HUMIDITY": "16", "TEMPERATURE": "17.6", "PREPOWER": "5422.402582", "YD15": "23043", "ROUND(A.POWER,0)": "24667", "AWS": "7.2" }, { "DATATIME": "2022/3/26 13:15", "WINDDIRECTION": "206", "TurbID": "18", "WINDSPEED": "2.8", "PRESSURE": "1012", "HUMIDITY": "16", "TEMPERATURE": "17.9", "PREPOWER": "5384.134899", "YD15": "27501", "ROUND(A.POWER,0)": "26488", "AWS": "7.6" }, { "DATATIME": "2022/3/26 13:30", "WINDDIRECTION": "210", "TurbID": "18", "WINDSPEED": "3.4", "PRESSURE": "1011", "HUMIDITY": "16", "TEMPERATURE": "18.2", "PREPOWER": "5429.203811", "YD15": "32914", "ROUND(A.POWER,0)": "29174", "AWS": "7.8" }, { "DATATIME": "2022/3/26 13:45", "WINDDIRECTION": "213", "TurbID": "18", "WINDSPEED": "3.8", "PRESSURE": "1011", "HUMIDITY": "15", "TEMPERATURE": "18.4", "PREPOWER": "5483.465929", "YD15": "26735", "ROUND(A.POWER,0)": "24703", "AWS": "7.1" }, { "DATATIME": "2022/3/26 14:00", "WINDDIRECTION": "216", "TurbID": "18", "WINDSPEED": "4.4", "PRESSURE": "1010", "HUMIDITY": "15", "TEMPERATURE": "18.7", "PREPOWER": "5854", "YD15": "23881", "ROUND(A.POWER,0)": "26448", "AWS": "7.4" }
             ],
 
             myChartWeather2: null,
             myOptionWeather2: {},
             chartsDataWeather2: [
-                {"DATATIME":"2022/3/26 12:00","WINDDIRECTION":"135","TurbID":"18","WINDSPEED":"0.6","PRESSURE":"1013","HUMIDITY":"19","TEMPERATURE":"16.3","PREPOWER":"5423.664291","YD15":"3338","ROUND(A.POWER,0)":"3622","AWS":"3.7"},{"DATATIME":"2022/3/26 12:15","WINDDIRECTION":"167","TurbID":"18","WINDSPEED":"0.9","PRESSURE":"1013","HUMIDITY":"19","TEMPERATURE":"16.7","PREPOWER":"5393.043637","YD15":"3539","ROUND(A.POWER,0)":"4293","AWS":"3.7"},{"DATATIME":"2022/3/26 12:30","WINDDIRECTION":"184","TurbID":"18","WINDSPEED":"1.3","PRESSURE":"1013","HUMIDITY":"18","TEMPERATURE":"17","PREPOWER":"5386.377587","YD15":"10185","ROUND(A.POWER,0)":"8480","AWS":"5"},{"DATATIME":"2022/3/26 12:45","WINDDIRECTION":"193","TurbID":"18","WINDSPEED":"1.7","PRESSURE":"1012","HUMIDITY":"17","TEMPERATURE":"17.3","PREPOWER":"5504.582102","YD15":"16032","ROUND(A.POWER,0)":"14243","AWS":"5.7"},{"DATATIME":"2022/3/26 13:00","WINDDIRECTION":"201","TurbID":"18","WINDSPEED":"2.2","PRESSURE":"1012","HUMIDITY":"16","TEMPERATURE":"17.6","PREPOWER":"5422.402582","YD15":"23043","ROUND(A.POWER,0)":"24667","AWS":"7.2"},{"DATATIME":"2022/3/26 13:15","WINDDIRECTION":"206","TurbID":"18","WINDSPEED":"2.8","PRESSURE":"1012","HUMIDITY":"16","TEMPERATURE":"17.9","PREPOWER":"5384.134899","YD15":"27501","ROUND(A.POWER,0)":"26488","AWS":"7.6"},{"DATATIME":"2022/3/26 13:30","WINDDIRECTION":"210","TurbID":"18","WINDSPEED":"3.4","PRESSURE":"1011","HUMIDITY":"16","TEMPERATURE":"18.2","PREPOWER":"5429.203811","YD15":"32914","ROUND(A.POWER,0)":"29174","AWS":"7.8"},{"DATATIME":"2022/3/26 13:45","WINDDIRECTION":"213","TurbID":"18","WINDSPEED":"3.8","PRESSURE":"1011","HUMIDITY":"15","TEMPERATURE":"18.4","PREPOWER":"5483.465929","YD15":"26735","ROUND(A.POWER,0)":"24703","AWS":"7.1"},{"DATATIME":"2022/3/26 14:00","WINDDIRECTION":"216","TurbID":"18","WINDSPEED":"4.4","PRESSURE":"1010","HUMIDITY":"15","TEMPERATURE":"18.7","PREPOWER":"5854","YD15":"23881","ROUND(A.POWER,0)":"26448","AWS":"7.4"}
+                { "DATATIME": "2022/3/26 12:00", "WINDDIRECTION": "135", "TurbID": "18", "WINDSPEED": "0.6", "PRESSURE": "1013", "HUMIDITY": "19", "TEMPERATURE": "16.3", "PREPOWER": "5423.664291", "YD15": "3338", "ROUND(A.POWER,0)": "3622", "AWS": "3.7" }, { "DATATIME": "2022/3/26 12:15", "WINDDIRECTION": "167", "TurbID": "18", "WINDSPEED": "0.9", "PRESSURE": "1013", "HUMIDITY": "19", "TEMPERATURE": "16.7", "PREPOWER": "5393.043637", "YD15": "3539", "ROUND(A.POWER,0)": "4293", "AWS": "3.7" }, { "DATATIME": "2022/3/26 12:30", "WINDDIRECTION": "184", "TurbID": "18", "WINDSPEED": "1.3", "PRESSURE": "1013", "HUMIDITY": "18", "TEMPERATURE": "17", "PREPOWER": "5386.377587", "YD15": "10185", "ROUND(A.POWER,0)": "8480", "AWS": "5" }, { "DATATIME": "2022/3/26 12:45", "WINDDIRECTION": "193", "TurbID": "18", "WINDSPEED": "1.7", "PRESSURE": "1012", "HUMIDITY": "17", "TEMPERATURE": "17.3", "PREPOWER": "5504.582102", "YD15": "16032", "ROUND(A.POWER,0)": "14243", "AWS": "5.7" }, { "DATATIME": "2022/3/26 13:00", "WINDDIRECTION": "201", "TurbID": "18", "WINDSPEED": "2.2", "PRESSURE": "1012", "HUMIDITY": "16", "TEMPERATURE": "17.6", "PREPOWER": "5422.402582", "YD15": "23043", "ROUND(A.POWER,0)": "24667", "AWS": "7.2" }, { "DATATIME": "2022/3/26 13:15", "WINDDIRECTION": "206", "TurbID": "18", "WINDSPEED": "2.8", "PRESSURE": "1012", "HUMIDITY": "16", "TEMPERATURE": "17.9", "PREPOWER": "5384.134899", "YD15": "27501", "ROUND(A.POWER,0)": "26488", "AWS": "7.6" }, { "DATATIME": "2022/3/26 13:30", "WINDDIRECTION": "210", "TurbID": "18", "WINDSPEED": "3.4", "PRESSURE": "1011", "HUMIDITY": "16", "TEMPERATURE": "18.2", "PREPOWER": "5429.203811", "YD15": "32914", "ROUND(A.POWER,0)": "29174", "AWS": "7.8" }, { "DATATIME": "2022/3/26 13:45", "WINDDIRECTION": "213", "TurbID": "18", "WINDSPEED": "3.8", "PRESSURE": "1011", "HUMIDITY": "15", "TEMPERATURE": "18.4", "PREPOWER": "5483.465929", "YD15": "26735", "ROUND(A.POWER,0)": "24703", "AWS": "7.1" }, { "DATATIME": "2022/3/26 14:00", "WINDDIRECTION": "216", "TurbID": "18", "WINDSPEED": "4.4", "PRESSURE": "1010", "HUMIDITY": "15", "TEMPERATURE": "18.7", "PREPOWER": "5854", "YD15": "23881", "ROUND(A.POWER,0)": "26448", "AWS": "7.4" }
             ],
 
             myChartWeather3: null,
             myOptionWeather3: {},
             chartsDataWeather3: [
-                {"DATATIME":"2022/3/26 12:00","WINDDIRECTION":"135","TurbID":"18","WINDSPEED":"0.6","PRESSURE":"1013","HUMIDITY":"19","TEMPERATURE":"16.3","PREPOWER":"5423.664291","YD15":"3338","ROUND(A.POWER,0)":"3622","AWS":"3.7"},{"DATATIME":"2022/3/26 12:15","WINDDIRECTION":"167","TurbID":"18","WINDSPEED":"0.9","PRESSURE":"1013","HUMIDITY":"19","TEMPERATURE":"16.7","PREPOWER":"5393.043637","YD15":"3539","ROUND(A.POWER,0)":"4293","AWS":"3.7"},{"DATATIME":"2022/3/26 12:30","WINDDIRECTION":"184","TurbID":"18","WINDSPEED":"1.3","PRESSURE":"1013","HUMIDITY":"18","TEMPERATURE":"17","PREPOWER":"5386.377587","YD15":"10185","ROUND(A.POWER,0)":"8480","AWS":"5"},{"DATATIME":"2022/3/26 12:45","WINDDIRECTION":"193","TurbID":"18","WINDSPEED":"1.7","PRESSURE":"1012","HUMIDITY":"17","TEMPERATURE":"17.3","PREPOWER":"5504.582102","YD15":"16032","ROUND(A.POWER,0)":"14243","AWS":"5.7"},{"DATATIME":"2022/3/26 13:00","WINDDIRECTION":"201","TurbID":"18","WINDSPEED":"2.2","PRESSURE":"1012","HUMIDITY":"16","TEMPERATURE":"17.6","PREPOWER":"5422.402582","YD15":"23043","ROUND(A.POWER,0)":"24667","AWS":"7.2"},{"DATATIME":"2022/3/26 13:15","WINDDIRECTION":"206","TurbID":"18","WINDSPEED":"2.8","PRESSURE":"1012","HUMIDITY":"16","TEMPERATURE":"17.9","PREPOWER":"5384.134899","YD15":"27501","ROUND(A.POWER,0)":"26488","AWS":"7.6"},{"DATATIME":"2022/3/26 13:30","WINDDIRECTION":"210","TurbID":"18","WINDSPEED":"3.4","PRESSURE":"1011","HUMIDITY":"16","TEMPERATURE":"18.2","PREPOWER":"5429.203811","YD15":"32914","ROUND(A.POWER,0)":"29174","AWS":"7.8"},{"DATATIME":"2022/3/26 13:45","WINDDIRECTION":"213","TurbID":"18","WINDSPEED":"3.8","PRESSURE":"1011","HUMIDITY":"15","TEMPERATURE":"18.4","PREPOWER":"5483.465929","YD15":"26735","ROUND(A.POWER,0)":"24703","AWS":"7.1"},{"DATATIME":"2022/3/26 14:00","WINDDIRECTION":"216","TurbID":"18","WINDSPEED":"4.4","PRESSURE":"1010","HUMIDITY":"15","TEMPERATURE":"18.7","PREPOWER":"5854","YD15":"23881","ROUND(A.POWER,0)":"26448","AWS":"7.4"}
+                { "DATATIME": "2022/3/26 12:00", "WINDDIRECTION": "135", "TurbID": "18", "WINDSPEED": "0.6", "PRESSURE": "1013", "HUMIDITY": "19", "TEMPERATURE": "16.3", "PREPOWER": "5423.664291", "YD15": "3338", "ROUND(A.POWER,0)": "3622", "AWS": "3.7" }, { "DATATIME": "2022/3/26 12:15", "WINDDIRECTION": "167", "TurbID": "18", "WINDSPEED": "0.9", "PRESSURE": "1013", "HUMIDITY": "19", "TEMPERATURE": "16.7", "PREPOWER": "5393.043637", "YD15": "3539", "ROUND(A.POWER,0)": "4293", "AWS": "3.7" }, { "DATATIME": "2022/3/26 12:30", "WINDDIRECTION": "184", "TurbID": "18", "WINDSPEED": "1.3", "PRESSURE": "1013", "HUMIDITY": "18", "TEMPERATURE": "17", "PREPOWER": "5386.377587", "YD15": "10185", "ROUND(A.POWER,0)": "8480", "AWS": "5" }, { "DATATIME": "2022/3/26 12:45", "WINDDIRECTION": "193", "TurbID": "18", "WINDSPEED": "1.7", "PRESSURE": "1012", "HUMIDITY": "17", "TEMPERATURE": "17.3", "PREPOWER": "5504.582102", "YD15": "16032", "ROUND(A.POWER,0)": "14243", "AWS": "5.7" }, { "DATATIME": "2022/3/26 13:00", "WINDDIRECTION": "201", "TurbID": "18", "WINDSPEED": "2.2", "PRESSURE": "1012", "HUMIDITY": "16", "TEMPERATURE": "17.6", "PREPOWER": "5422.402582", "YD15": "23043", "ROUND(A.POWER,0)": "24667", "AWS": "7.2" }, { "DATATIME": "2022/3/26 13:15", "WINDDIRECTION": "206", "TurbID": "18", "WINDSPEED": "2.8", "PRESSURE": "1012", "HUMIDITY": "16", "TEMPERATURE": "17.9", "PREPOWER": "5384.134899", "YD15": "27501", "ROUND(A.POWER,0)": "26488", "AWS": "7.6" }, { "DATATIME": "2022/3/26 13:30", "WINDDIRECTION": "210", "TurbID": "18", "WINDSPEED": "3.4", "PRESSURE": "1011", "HUMIDITY": "16", "TEMPERATURE": "18.2", "PREPOWER": "5429.203811", "YD15": "32914", "ROUND(A.POWER,0)": "29174", "AWS": "7.8" }, { "DATATIME": "2022/3/26 13:45", "WINDDIRECTION": "213", "TurbID": "18", "WINDSPEED": "3.8", "PRESSURE": "1011", "HUMIDITY": "15", "TEMPERATURE": "18.4", "PREPOWER": "5483.465929", "YD15": "26735", "ROUND(A.POWER,0)": "24703", "AWS": "7.1" }, { "DATATIME": "2022/3/26 14:00", "WINDDIRECTION": "216", "TurbID": "18", "WINDSPEED": "4.4", "PRESSURE": "1010", "HUMIDITY": "15", "TEMPERATURE": "18.7", "PREPOWER": "5854", "YD15": "23881", "ROUND(A.POWER,0)": "26448", "AWS": "7.4" }
             ],
 
             // 记录风机状态数
@@ -345,7 +352,7 @@ export default {
                 }
             })
             let defaultSkybox = this.map.scene.skyBox
-            this.map.on(mars3d.EventType.postRender, ()=> {
+            this.map.on(mars3d.EventType.postRender, () => {
                 const position = this.map.camera.position
                 const height = Cesium.Cartographic.fromCartesian(position).height
                 if (height < 230000) {
@@ -392,12 +399,12 @@ export default {
         checkRouteQueryParams() {
             // 检查路由参数，如果是从返回场站按钮进入的，并且地图加载完成，则执行 addTurbineLayer 方法
             if (this.$route.params.isReturnButtonClicked && this.isMapLoaded) {
-                if(this.$route.params.type === "turbine" && this.$route.params.fieldId !== 0){
+                if (this.$route.params.type === "turbine" && this.$route.params.fieldId !== 0) {
                     console.log("fieldId: ", this.$route.params.fieldId);
                     const id = this.$route.params.fieldId;
                     this.flyStates[id] = true;
                     this.addTurbineLayer(id);
-                } else if(this.$route.params.type === "watch"){
+                } else if (this.$route.params.type === "watch") {
                     this.turnToBuilding();
                 }
             }
@@ -612,7 +619,7 @@ export default {
             })
 
             // 办公楼点击事件
-            this.map.getLayerById("风电场办公楼").on(mars3d.EventType.click, ()=> {
+            this.map.getLayerById("风电场办公楼").on(mars3d.EventType.click, () => {
                 this.map.setCameraView({ "lat": 43.585478, "lng": 87.875422, "alt": 1223.4, "heading": 127, "pitch": 0.8 })
                 $("#explanatoryPicture").css({
                     "display": "block",
@@ -759,7 +766,7 @@ export default {
             })
             this.map.addLayer(this.windLayer)
             this.loadNetCDF("/weather/wind.nc").then((data) => {
-                if(this.windLayer !== null){
+                if (this.windLayer !== null) {
                     this.windLayer.setData(data)
                 }
             })
@@ -875,27 +882,27 @@ export default {
                         { "lat": 28.843931, "lng": 120.882302, "alt": 2803.8, "heading": 131.2, "pitch": -20.8, duration: 3 }
                     ]
                     if (this.flyStates[1])
-                        this.map.setCameraView({"lat":28.843931,"lng":120.882302,"alt":2803.8,"heading":131.2,"pitch":-20.8})
+                        this.map.setCameraView({ "lat": 28.843931, "lng": 120.882302, "alt": 2803.8, "heading": 131.2, "pitch": -20.8 })
                     else
                         // 视角切换（分步执行）
                         this.map.setCameraViewList(viewPoints)
                     this.flyStates[1] = true
                     factoryTitle = '浙江括苍山风电场'
-                    factoryPosition = { lng: 120.913288, lat: 28.819988, alt: 823.2}
+                    factoryPosition = { lng: 120.913288, lat: 28.819988, alt: 823.2 }
                     break;
                 case 2:
-                    for (var k = 1; k <= 20; k++){
+                    for (var k = 1; k <= 20; k++) {
                         if (k <= 5) {
-                            positions.push({ lng: 117.200756, lat: 23.38885 + k * 0.01, alt: 6.6})
+                            positions.push({ lng: 117.200756, lat: 23.38885 + k * 0.01, alt: 6.6 })
                         }
-                        else if(k <= 10){
-                            positions.push({ lng: 117.210756, lat: 23.38885 + ( k - 5 ) * 0.01, alt: 6.6})
+                        else if (k <= 10) {
+                            positions.push({ lng: 117.210756, lat: 23.38885 + (k - 5) * 0.01, alt: 6.6 })
                         }
-                        else if(k <= 15){
-                            positions.push({ lng: 117.220756, lat: 23.38885 + ( k - 10 ) * 0.01, alt: 6.6})
+                        else if (k <= 15) {
+                            positions.push({ lng: 117.220756, lat: 23.38885 + (k - 10) * 0.01, alt: 6.6 })
                         }
                         else {
-                            positions.push({ lng: 117.230756, lat: 23.38885 + ( k - 15 ) * 0.01, alt: 6.6})
+                            positions.push({ lng: 117.230756, lat: 23.38885 + (k - 15) * 0.01, alt: 6.6 })
                         }
                     }
                     viewPoints = [
@@ -912,21 +919,21 @@ export default {
                         this.map.setCameraViewList(viewPoints)
                     this.flyStates[2] = true
                     factoryTitle = '广东汕头南澳岛风电场'
-                    factoryPosition = { lng: 117.250791, lat: 23.419054, alt: 7}
+                    factoryPosition = { lng: 117.250791, lat: 23.419054, alt: 7 }
                     break;
                 case 3:
-                    for (var j = 1; j <= 20; j++){
+                    for (var j = 1; j <= 20; j++) {
                         if (j <= 5) {
-                            positions.push({ lng: 87.964237, lat: 43.544667 + j * 0.01, alt: 1138.6})
+                            positions.push({ lng: 87.964237, lat: 43.544667 + j * 0.01, alt: 1138.6 })
                         }
-                        else if(j <= 10){
-                            positions.push({ lng: 87.974237, lat: 43.544667 + ( j - 5 ) * 0.01, alt: 1138.6})
+                        else if (j <= 10) {
+                            positions.push({ lng: 87.974237, lat: 43.544667 + (j - 5) * 0.01, alt: 1138.6 })
                         }
-                        else if(j <= 15){
-                            positions.push({ lng: 87.984237, lat: 43.544667 + ( j - 10 ) * 0.01, alt: 1138.6})
+                        else if (j <= 15) {
+                            positions.push({ lng: 87.984237, lat: 43.544667 + (j - 10) * 0.01, alt: 1138.6 })
                         }
                         else {
-                            positions.push({ lng: 87.994237, lat: 43.544667 + ( j - 15 ) * 0.01, alt: 1138.6})
+                            positions.push({ lng: 87.994237, lat: 43.544667 + (j - 15) * 0.01, alt: 1138.6 })
                         }
                     }
                     viewPoints = [
@@ -943,38 +950,38 @@ export default {
                         this.map.setCameraViewList(viewPoints)
                     this.flyStates[3] = true
                     factoryTitle = '新疆达坂城风电场'
-                    factoryPosition = { lng: 88.007588, lat: 43.574361, alt: 1713.9}
+                    factoryPosition = { lng: 88.007588, lat: 43.574361, alt: 1713.9 }
                     break;
                 default:
-                    for (var i = 1; i <= 20; i++){
+                    for (var i = 1; i <= 20; i++) {
                         if (i <= 5) {
-                            positions.push({ lng: 112.937053, lat: 41.270271 + i * 0.01, alt: 3319.4})
+                            positions.push({ lng: 112.937053, lat: 41.270271 + i * 0.01, alt: 3319.4 })
                         }
-                        else if(i <= 10){
-                            positions.push({ lng: 112.947053, lat: 41.270271 + ( i - 5 ) * 0.01, alt: 3319.4})
+                        else if (i <= 10) {
+                            positions.push({ lng: 112.947053, lat: 41.270271 + (i - 5) * 0.01, alt: 3319.4 })
                         }
-                        else if(i <= 15){
-                            positions.push({ lng: 112.957053, lat: 41.270271 + ( i - 10 ) * 0.01, alt: 3319.4})
+                        else if (i <= 15) {
+                            positions.push({ lng: 112.957053, lat: 41.270271 + (i - 10) * 0.01, alt: 3319.4 })
                         }
                         else {
-                            positions.push({ lng: 112.967053, lat: 41.270271 + ( i - 15 ) * 0.01, alt: 3319.4})
+                            positions.push({ lng: 112.967053, lat: 41.270271 + (i - 15) * 0.01, alt: 3319.4 })
                         }
                     }
                     viewPoints = [
                         { "lat": 41.300225, "lng": 112.874408, "alt": 5020.9, "heading": 88.7, "pitch": -29.5, duration: 5 },
-                        { "lat": 41.241012, "lng": 112.95336, "alt": 5001.4, "heading": 357.5, "pitch": -29.5, duration: 3 } ,
+                        { "lat": 41.241012, "lng": 112.95336, "alt": 5001.4, "heading": 357.5, "pitch": -29.5, duration: 3 },
                         { "lat": 41.293692, "lng": 113.022992, "alt": 5010.9, "heading": 275.6, "pitch": -31.1, duration: 3 },
                         { "lat": 41.358879, "lng": 112.957203, "alt": 5022.1, "heading": 184.3, "pitch": -32.4, duration: 3 },
                         { "lat": 41.300225, "lng": 112.874408, "alt": 5020.9, "heading": 88.7, "pitch": -29.5, duration: 3 }
                     ]
                     if (this.flyStates[4])
-                        this.map.setCameraView({"lat": 41.300225, "lng": 112.874408, "alt": 5020.9, "heading": 88.7, "pitch": -29.5})
+                        this.map.setCameraView({ "lat": 41.300225, "lng": 112.874408, "alt": 5020.9, "heading": 88.7, "pitch": -29.5 })
                     else
                         // 视角切换（分步执行）
                         this.map.setCameraViewList(viewPoints)
                     this.flyStates[4] = true
                     factoryTitle = '内蒙古辉腾锡勒风电场'
-                    factoryPosition = { lng: 112.991873, lat: 41.300298, alt: 1713.9}
+                    factoryPosition = { lng: 112.991873, lat: 41.300298, alt: 1713.9 }
             }
 
             //创建风电场数据图层
@@ -1221,33 +1228,33 @@ export default {
                     },
                     xAxis: {
                         type: "category",
-                        data: ["东部","南部","西部","北部"]
+                        data: ["东部", "南部", "西部", "北部"]
                     },
                     yAxis: {
                         type: "value"
                     },
                     series: [
-                    {
-                        // 柱子的相关设置
-                        itemStyle: {
-                            color: "rgb(0, 174, 255)"
-                        },
-                        barWidth: "20px",
-                        type: "bar",
-                        emphasis: {
-                            focus: "series"
-                        },
-                        data: [this.eSum,this.sSum,this.wSum,this.nSum]
-                    }
+                        {
+                            // 柱子的相关设置
+                            itemStyle: {
+                                color: "rgb(0, 174, 255)"
+                            },
+                            barWidth: "20px",
+                            type: "bar",
+                            emphasis: {
+                                focus: "series"
+                            },
+                            data: [this.eSum, this.sSum, this.wSum, this.nSum]
+                        }
                     ]
                 }
             }, 5000)
 
             // 风机提示
-            turbineLayer.bindTooltip("单击:显示风机大致情况<br />右击:查看风机详细情况",{direction:"right"})
+            turbineLayer.bindTooltip("单击:显示风机大致情况<br />右击:查看风机详细情况", { direction: "right" })
 
             // 在turbineLayer图层绑定Popup弹窗
-            turbineLayer.bindPopup((event)=> {
+            turbineLayer.bindPopup((event) => {
                 // console.log(event.graphic)
                 const attr = {}
                 // attr["时间"] = "2022/1/2  0:00:00"
@@ -1262,7 +1269,7 @@ export default {
 
             // 右击查看对应风机具体情况
             turbineLayer.eachGraphic((graphic) => {
-                graphic.on(mars3d.EventType.rightClick, ()=> {
+                graphic.on(mars3d.EventType.rightClick, () => {
                     // 设置 异常监控 风机编号
                     this.setCurrentTurbineId(graphic.id);
 
@@ -1285,7 +1292,7 @@ export default {
             })
 
             // 关闭弹窗时第二次计时器
-            turbineLayer.on(mars3d.EventType.popupClose, ()=> {
+            turbineLayer.on(mars3d.EventType.popupClose, () => {
                 this.intervalId = setInterval(() => {
                     // 统计量置零
                     this.gzNum = 0
@@ -1430,24 +1437,24 @@ export default {
                         },
                         xAxis: {
                             type: "category",
-                            data: ["东部","南部","西部","北部"]
+                            data: ["东部", "南部", "西部", "北部"]
                         },
                         yAxis: {
                             type: "value"
                         },
                         series: [
-                        {
-                            // 柱子的相关设置
-                            itemStyle: {
-                                color: "rgb(0, 174, 255)"
-                            },
-                            barWidth: "20px",
-                            type: "bar",
-                            emphasis: {
-                                focus: "series"
-                            },
-                            data: [this.eSum,this.sSum,this.wSum,this.nSum]
-                        }
+                            {
+                                // 柱子的相关设置
+                                itemStyle: {
+                                    color: "rgb(0, 174, 255)"
+                                },
+                                barWidth: "20px",
+                                type: "bar",
+                                emphasis: {
+                                    focus: "series"
+                                },
+                                data: [this.eSum, this.sSum, this.wSum, this.nSum]
+                            }
                         ]
                     }
                 }, 5000)
@@ -1695,18 +1702,18 @@ export default {
                     type: "value"
                 },
                 series: [
-                {
-                    // 柱子的相关设置
-                    itemStyle: {
-                        color: "rgb(0, 174, 255)"
-                    },
-                    barWidth: "20px",
-                    type: "bar",
-                    emphasis: {
-                        focus: "series"
-                    },
-                    data: arrValue
-                }
+                    {
+                        // 柱子的相关设置
+                        itemStyle: {
+                            color: "rgb(0, 174, 255)"
+                        },
+                        barWidth: "20px",
+                        type: "bar",
+                        emphasis: {
+                            focus: "series"
+                        },
+                        data: arrValue
+                    }
                 ]
             }
             this.myChartPower.setOption(this.myOptionPower)
@@ -1808,7 +1815,7 @@ export default {
                         },
                         axisLine: {
                             lineStyle: {
-                            color: '#666'
+                                color: '#666'
                             }
                         },
                         splitLine: {
@@ -2075,29 +2082,29 @@ export default {
             this.myChartWeather2.setOption(this.myOptionWeather2)
             let index = 0; // 创建一个索引变量
             let len = arrWeather2.length; // 获取数据的长度
-            this.intervalIdChartWeather2 = setInterval(()=> {
+            this.intervalIdChartWeather2 = setInterval(() => {
                 this.myChartWeather2.setOption({
                     series: [
-                    {
-                        data: [
-                            {
-                                value: Number(arrWeather2[index]["TEMPERATURE"])
-                            }
-                        ]
-                    },
-                    {
-                        data: [
-                            {
-                                value: Number(arrWeather2[index]["TEMPERATURE"])
-                            }
-                        ]
-                    }
+                        {
+                            data: [
+                                {
+                                    value: Number(arrWeather2[index]["TEMPERATURE"])
+                                }
+                            ]
+                        },
+                        {
+                            data: [
+                                {
+                                    value: Number(arrWeather2[index]["TEMPERATURE"])
+                                }
+                            ]
+                        }
                     ]
                 });
                 index++; // 更新索引
 
                 // 如果索引超过数组长度，重置为0
-                if(index == len) {
+                if (index == len) {
                     index = 0;
                 }
             }, 2000);
@@ -2117,30 +2124,30 @@ export default {
                 return res;
             })();
             // 时间
-            let firstElements = firstHalf.map(function(item) {
+            let firstElements = firstHalf.map(function (item) {
                 return item.DATATIME; // 返回每个数组的第一个元素
             });
             // 气压
-            let secondElements = firstHalf.map(function(item) {
+            let secondElements = firstHalf.map(function (item) {
                 return Number(item.PRESSURE); // 返回每个数组的第二个元素
             });
             // 湿度
-            let thirdElements = firstHalf.map(function(item) {
+            let thirdElements = firstHalf.map(function (item) {
                 return Number(item.HUMIDITY); // 返回每个数组的第三个元素
             });
             // 取后1/2数据
             // 剩余部分
             let remainingPart = arrWeather3.slice(halfLength);
             // 时间
-            let firstRemainingElements = remainingPart.map(function(item) {
+            let firstRemainingElements = remainingPart.map(function (item) {
                 return item.DATATIME; // 返回每个数组的第一个元素
             });
             // 气压
-            let secondRemainingElements = remainingPart.map(function(item) {
+            let secondRemainingElements = remainingPart.map(function (item) {
                 return Number(item.PRESSURE); // 返回每个数组的第二个元素
             });
             // 湿度
-            let thirdRemainingElements = remainingPart.map(function(item) {
+            let thirdRemainingElements = remainingPart.map(function (item) {
                 return Number(item.HUMIDITY); // 返回每个数组的第三个元素
             });
             this.myOptionWeather3 = {
@@ -2161,7 +2168,7 @@ export default {
                 },
                 legend: {
                     textStyle: {
-                        color:"#fff"
+                        color: "#fff"
                     }
                 },
                 dataZoom: {
@@ -2259,7 +2266,7 @@ export default {
                 }
             }, 2000);
 
-            window.addEventListener("resize", ()=> {
+            window.addEventListener("resize", () => {
                 this.myChartState.resize()
                 this.myChartPower.resize()
                 this.myChartWeather1.resize()
@@ -2280,7 +2287,7 @@ export default {
                     "box-shadow": "none",
                     "background-color": "rgba(1, 48, 102, 0.8)"
                 })
-                $(".bar-content-left").css("display","none")
+                $(".bar-content-left").css("display", "none")
             }
             else {
                 $(".sideBar.left").addClass("fadeInLeft")
@@ -2291,8 +2298,8 @@ export default {
                     "background-color": "transparent"
                 })
                 setTimeout(function () {
-                    $(".bar-content-left").css("display","flex")
-                },1000)
+                    $(".bar-content-left").css("display", "flex")
+                }, 1000)
             }
         },
         hideRightPanel() {
@@ -2306,7 +2313,7 @@ export default {
                     "box-shadow": "none",
                     "background-color": "rgba(1, 48, 102, 0.8)"
                 })
-                $(".bar-content-right").css("display","none")
+                $(".bar-content-right").css("display", "none")
             }
             else {
                 $(".sideBar.right").addClass("fadeInRight")
@@ -2317,8 +2324,8 @@ export default {
                     "background-color": "transparent"
                 })
                 setTimeout(function () {
-                    $(".bar-content-right").css("display","flex")
-                },1000)
+                    $(".bar-content-right").css("display", "flex")
+                }, 1000)
             }
         },
         hideBottomPanel() {
@@ -2335,7 +2342,7 @@ export default {
                     "left": "1%",
                     "right": "1%"
                 })
-                $(".bar-content-bottom").css("display","none")
+                $(".bar-content-bottom").css("display", "none")
             }
             else {
                 $(".bottomBar").addClass("fadeInUp")
@@ -2349,12 +2356,12 @@ export default {
                     "background-color": "transparent"
                 })
                 setTimeout(function () {
-                    $(".bar-content-bottom").css("display","flex")
-                },1000)
+                    $(".bar-content-bottom").css("display", "flex")
+                }, 1000)
             }
         },
         closeImgPanel() {
-            $("#explanatoryPicture").css("display","none")
+            $("#explanatoryPicture").css("display", "none")
         }
     },
     mounted() {
@@ -2386,9 +2393,11 @@ export default {
     overflow: hidden;
     user-select: none;
 }
+
 #PC {
     display: none;
 }
+
 /* LOGO */
 .logo-list {
     margin-top: 50px;
@@ -2400,6 +2409,7 @@ export default {
 .logo-list img {
     height: 120px;
 }
+
 /* Loader */
 .page-overlay {
     position: relative;
@@ -2461,6 +2471,7 @@ export default {
     color: transparent;
     pointer-events: none;
 }
+
 // 常规样式
 .opacity0 {
     filter: alpha(opacity=0);
@@ -2468,6 +2479,7 @@ export default {
     -moz-opacity: 0;
     opacity: 0;
 }
+
 #teamName {
     font-size: 3em;
 }
@@ -2515,24 +2527,30 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    li{
+
+    li {
         border-bottom: white 0.5px dashed;
         padding-bottom: 5px;
     }
+
     li:hover {
         padding: 10px;
-        background-color: rgba(32, 176 ,203, 0.4);
+        background-color: rgba(32, 176, 203, 0.4);
     }
-    .typeA{
+
+    .typeA {
         color: #CD6F43;
     }
-    .typeB{
+
+    .typeB {
         color: #328D98;
     }
-    .typeC{
+
+    .typeC {
         color: #E0B041;
     }
 }
+
 .chartbox {
     display: flex;
     flex-direction: column;
@@ -2545,11 +2563,13 @@ export default {
         linear-gradient(to left, #3897cf, #3897cf) right bottom no-repeat, linear-gradient(to left, #3897cf, #3897cf) right bottom no-repeat;
     background-size: 1px 20px, 20px 1px, 1px 20px, 20px 1px;
     background-color: rgba(0, 0, 0, 0.1);
+
     h5 {
         color: #ffffff;
         letter-spacing: 3px;
     }
 }
+
 #state,
 #powerSum,
 #weather1,
@@ -2638,21 +2658,25 @@ export default {
     justify-content: space-around;
     align-items: center;
 }
+
 #row2 {
     width: 100%;
     margin-bottom: 2.5vh;
+
     .bbottomButton {
         width: 90%;
     }
 }
+
 .bar-content-bottom .el-button {
     width: 95%;
-    background-color: rgba(0,183,254,0.5);
+    background-color: rgba(0, 183, 254, 0.5);
     border: none;
     font-size: 0.6rem;
     font-weight: 800;
     color: white;
 }
+
 .bar-content-bottom .el-button:hover,
 .bar-content-bottom .el-button:active {
     background-color: #20B0CB;
@@ -2663,14 +2687,16 @@ export default {
 #explanatoryPicture {
     display: none;
 }
+
 // 关闭按键按钮
 .closeButton {
     position: absolute;
-    top:0%;
-    right:20%;
+    top: 0%;
+    right: 20%;
     font-size: 12px;
     color: white;
 }
+
 .closeButton:hover {
     cursor: pointer;
 }
