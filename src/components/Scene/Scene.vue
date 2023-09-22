@@ -18,7 +18,7 @@
                     @mouseout="unhoverItem(item.id)"
                 >
                     <img :src="activeId === item.id ? item.activeIcon : item.icon" class="nav-icon" />
-                    <h3 style="text-align: center;color: #f1f1f1;">{{ item.title }}</h3>
+                    <h3 style="text-align: center;color: #f1f1f1;font-size: 1.2rem;font-weight: bold;">{{ item.title }}</h3>
                 </div>
             </div>
             <Layout />
@@ -109,45 +109,44 @@
             </div>
         </div>
 
-                    <!-- 面板 -->
-                    <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" >
-                  <table class="mars-table">
-                    <tbody>
+        <!-- 面板 -->
+        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" >
+            <table class="mars-table">
+                <tbody>
 
-                      <tr>
-                        <td>下拉框：</td>
-                        <td>
-                          <select id="txtCrs" class="selectpicker form-control">
-                            <option value="" selected="selected">默认</option>
-                            <option value="EPSG:3857">火星</option>
-                            <option value="EPSG:4326">地球</option>
-                            <option value="EPSG:4490">太阳</option>
-                          </select>
-                        </td>
-                      </tr>
-                      <div class="table-wrapper">
-                      <el-table
-            	:cell-style="tableFormatWarnColor"
-                :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-                page-size:5>
-                <el-table-column prop="name" label="监控名称" />
-                <el-table-column prop="warn" label="状态" :formatter="tableFormatWarnStr" />
-                <el-table-column label="操作" />
-                </el-table>
-<el-pagination align='center' 
-   @size-change="handleSizeChange" 
-   @current-change="handleCurrentChange"
-   :current-page="currentPage" 
-   :page-sizes="[1,5,10,20]" 
-   :page-size="pageSize" 
-   layout="total, sizes, prev, pager, next, jumper" 
-   :total="cameraInfo.length">
-</el-pagination>
-                </div>
+                    <tr>
+                    <td>下拉框：</td>
+                    <td>
+                        <select id="txtCrs" class="selectpicker form-control">
+                        <option value="" selected="selected">默认</option>
+                        <option value="EPSG:3857">火星</option>
+                        <option value="EPSG:4326">地球</option>
+                        <option value="EPSG:4490">太阳</option>
+                        </select>
+                    </td>
+                    </tr>
+                    <div class="table-wrapper">
+                        <el-table
+                            :cell-style="tableFormatWarnColor"
+                            :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                            page-size:5>
+                            <el-table-column prop="name" label="监控名称" />
+                            <el-table-column prop="warn" label="状态" :formatter="tableFormatWarnStr" />
+                            <el-table-column label="操作" />
+                        </el-table>
+                        <el-pagination align='center' 
+                            @size-change="handleSizeChange" 
+                            @current-change="handleCurrentChange"
+                            :current-page="currentPage" 
+                            :page-sizes="[1,5,10,20]" 
+                            :page-size="pageSize" 
+                            layout="total, sizes, prev, pager, next, jumper" 
+                            :total="cameraInfo.length">
+                        </el-pagination>
+                    </div>
                 </tbody>
-                </table>
-                </div>
-
+            </table>
+        </div>
     </div>
 </template>
 
