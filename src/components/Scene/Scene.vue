@@ -17,7 +17,8 @@
                     @mouseover="hoverItem(item.id)"
                     @mouseout="unhoverItem(item.id)"
                 >
-                    <img :src="item.icon" class="nav-icon" />
+                    <img :src="activeId === item.id ? item.activeIcon : item.icon" class="nav-icon" />
+                    <h3 style="text-align: center;color: #f1f1f1;">{{ item.title }}</h3>
                 </div>
             </div>
             <Layout />
@@ -131,19 +132,6 @@ export default {
         MarsMap,
         Layout
     },
-    beforeRouteLeave(to, from, next) {
-        console.log("Leaving the current page");
-        // 清除计时器
-        if (this.intervalIdChartWeather2 !== null) {
-            clearInterval(this.intervalIdChartWeather2);
-            this.intervalIdChartWeather2 = null;
-        }
-        if (this.intervalIdChartWeather3 !== null) {
-            clearInterval(this.intervalIdChartWeather3);
-            this.intervalIdChartWeather3 = null;
-        }
-        next();
-    },
     data() {
         const basePathUrl = window.basePathUrl || ' '
         const mapOptions = {
@@ -174,11 +162,12 @@ export default {
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
 
         return {
+            activeId: null,  // 用于跟踪当前激活的导航项的ID
             navItems: [
-                { id: 1, icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
-                { id: 2, icon: "../../../imgs/navLogo/执勤模拟-normal.svg", normalIcon: "../../../imgs/navLogo/执勤模拟-normal.svg", hoverIcon: "../../../imgs/navLogo/执勤模拟-hover.svg", activeIcon: "../../../imgs/navLogo/执勤模拟-click.svg" },
-                { id: 3, icon: "../../../imgs/navLogo/辅助分析-normal.svg", normalIcon: "../../../imgs/navLogo/辅助分析-normal.svg", hoverIcon: "../../../imgs/navLogo/辅助分析-hover.svg", activeIcon: "../../../imgs/navLogo/辅助分析-click.svg" },
-                { id: 4, icon: "../../../imgs/navLogo/方案预演-normal.svg", normalIcon: "../../../imgs/navLogo/方案预演-normal.svg", hoverIcon: "../../../imgs/navLogo/方案预演-hover.svg", activeIcon: "../../../imgs/navLogo/方案预演-click.svg" },
+                { id: 1, title:"智能物联", icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
+                { id: 2, title:"执勤模拟", icon: "../../../imgs/navLogo/执勤模拟-normal.svg", normalIcon: "../../../imgs/navLogo/执勤模拟-normal.svg", hoverIcon: "../../../imgs/navLogo/执勤模拟-hover.svg", activeIcon: "../../../imgs/navLogo/执勤模拟-click.svg" },
+                { id: 3, title:"辅助分析", icon: "../../../imgs/navLogo/辅助分析-normal.svg", normalIcon: "../../../imgs/navLogo/辅助分析-normal.svg", hoverIcon: "../../../imgs/navLogo/辅助分析-hover.svg", activeIcon: "../../../imgs/navLogo/辅助分析-click.svg" },
+                { id: 4, title:"方案预演", icon: "../../../imgs/navLogo/方案预演-normal.svg", normalIcon: "../../../imgs/navLogo/方案预演-normal.svg", hoverIcon: "../../../imgs/navLogo/方案预演-hover.svg", activeIcon: "../../../imgs/navLogo/方案预演-click.svg" },
             ],
 
             configUrl: basePathUrl + 'config/config.json',
@@ -299,9 +288,23 @@ export default {
     methods: {
         // 底部导航切换
         clickItem(id) {
-            const item = this.navItems.find((i) => i.id === id);
-            if (item) {
-                item.icon = item.activeIcon
+            this.activeId = id;  // 设置当前激活的导航项ID
+            this.navItems.forEach(item => {
+                // 保证仅一个固定高亮
+                item.icon = this.activeId === item.id ? item.activeIcon : item.normalIcon;
+            });
+            switch (id) {
+                case 1:
+                    this.turnToBuilding()
+                    break;
+                case 2:
+                    console.log(id)
+                    break;
+                case 3:
+                    console.log(id)
+                    break;
+                default:
+                    console.log(id)
             }
         },
         hoverItem(id) {
@@ -411,7 +414,7 @@ export default {
             setTimeout(function () {
                 // $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
                 // $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
-                $(".bottomBar").removeClass("opacity0").removeClass("fadeOutDown").addClass("animated fadeInUp")
+                // $(".bottomBar").removeClass("opacity0").removeClass("fadeOutDown").addClass("animated fadeInUp")
             }, 2000)
 
             // 右侧
@@ -1577,16 +1580,16 @@ export default {
             // this.map.setCameraView({"lat":43.573973,"lng":87.903254,"alt":1262.6,"heading":134.6,"pitch":-3.4})
             this.map.setCameraView({ "lat": 38.00081, "lng": 101.312725, "alt": 3261.5, "heading": 250.9, "pitch": -10.2 })
             // 开启键盘漫游
-            this.map.keyboardRoam.enabled = true
-            this.map.keyboardRoam.minHeight = 80
-            this.map.keyboardRoam.setOptions({
-                moveStep: 0.5, // 平移步长 (米)。
-                dirStep: 5, // 相机原地旋转步长，值越大步长越小。
-                rotateStep: 2.0, // 相机围绕目标点旋转速率，0.3-2.0
-                minPitch: 0.1, // 最小仰角  0-1
-                maxPitch: 0.95 // 最大仰角  0-1
-            })
-            this.hideBottomPanel()
+            // this.map.keyboardRoam.enabled = true
+            // this.map.keyboardRoam.minHeight = 80
+            // this.map.keyboardRoam.setOptions({
+            //     moveStep: 0.5, // 平移步长 (米)。
+            //     dirStep: 5, // 相机原地旋转步长，值越大步长越小。
+            //     rotateStep: 2.0, // 相机围绕目标点旋转速率，0.3-2.0
+            //     minPitch: 0.1, // 最小仰角  0-1
+            //     maxPitch: 0.95 // 最大仰角  0-1
+            // })
+            // this.hideBottomPanel()
             // 添加场站
             // if (!this.isStationLoaded) {
             //     this.addOtherFactoryLayer()
@@ -2501,11 +2504,12 @@ export default {
 // 底部导航栏
 .bottom-nav {
     position: fixed;
-    bottom: 0;
+    bottom: 25px;
     width: 100%;
     display: flex;
     justify-content: space-around;
     z-index: 99999999999999999999;
+    padding: 0 300px;
 }
 
 .nav-item {
@@ -2513,8 +2517,8 @@ export default {
 }
 
 .nav-icon {
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
 }
 // 以下为除底部导航栏
 .mapcontainer {
