@@ -107,6 +107,46 @@
                 <span class="closeButton" @click="closeImgPanel">关闭</span>
             </div>
         </div>
+
+                    <!-- 面板 -->
+                    <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" >
+                  <table class="mars-table">
+                    <tbody>
+
+                      <tr>
+                        <td>下拉框：</td>
+                        <td>
+                          <select id="txtCrs" class="selectpicker form-control">
+                            <option value="" selected="selected">默认</option>
+                            <option value="EPSG:3857">火星</option>
+                            <option value="EPSG:4326">地球</option>
+                            <option value="EPSG:4490">太阳</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <div class="table-wrapper">
+                      <el-table
+            	:cell-style="tableFormatWarnColor"
+                :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                page-size:5>
+                <el-table-column prop="name" label="监控名称" />
+                <el-table-column prop="warn" label="状态" :formatter="tableFormatWarnStr" />
+                <el-table-column label="操作" />
+                </el-table>
+<el-pagination align='center' 
+   @size-change="handleSizeChange" 
+   @current-change="handleCurrentChange"
+   :current-page="currentPage" 
+   :page-sizes="[1,5,10,20]" 
+   :page-size="pageSize" 
+   layout="total, sizes, prev, pager, next, jumper" 
+   :total="cameraInfo.length">
+</el-pagination>
+                </div>
+                </tbody>
+                </table>
+                </div>
+
     </div>
 </template>
 
@@ -282,18 +322,34 @@ export default {
             // 故障风机id数组
             turbineIdError: [],
             //建筑信息
-            buildInfo:[{"name":"特殊建筑1","status":"正常","pop":"2","floor":"2","prop":"管理人员住宅","lnglat":[101.300082,37.996392,3026.8 ]},
-                {"name":"特殊建筑2","status":"正常","pop":"7","floor":"2","prop":"管理人员住宅","lnglat":[101.305189,38.001172,3028.9 ]},
-                {"name":"特殊建筑3","status":"正常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.299977,37.99887,3026.4 ]},
-                {"name":"特殊建筑4","status":"正常","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.30005,38.001123,3026.5 ]},
-                {"name":"特殊建筑5","status":"正常","pop":"6","floor":"2","prop":"特殊人群住宅","lnglat":[101.301676,38.00106,3027.3 ]},
-                {"name":"特殊建筑6","status":"异常","pop":"3","floor":"2","prop":"特殊人群住宅","lnglat":[101.30334,38.0012,3028.1 ]},
-                {"name":"特殊建筑7","status":"异常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.305203,37.998831,3028.9 ]},
-                {"name":"特殊建筑8","status":"异常","pop":"7","floor":"2","prop":"特殊人群住宅","lnglat":[101.301694,37.996151,3027.5  ]},
-                {"name":"特殊建筑9","status":"警戒","pop":"4","floor":"2","prop":"特殊人群住宅","lnglat":[101.305122,37.996538,3029.5 ]},
-                {"name":"特殊建筑10","status":"警戒","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.303505,37.996589,3028.7 ]},
-                {"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.303138,37.998688,2989.9 ]},
-            ]
+            buildInfo:[{"name":"特殊建筑1","status":"正常","pop":"2","floor":"2","prop":"管理人员住宅","lnglat":[101.298535,37.995748,2996.7 ]},
+                {"name":"特殊建筑2","status":"正常","pop":"7","floor":"2","prop":"管理人员住宅","lnglat":[101.298206,37.996404,3003 ]},
+                {"name":"特殊建筑3","status":"正常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.297843,37.997071,3002.6 ]},
+                {"name":"特殊建筑4","status":"正常","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.297549,37.99771,3002.2 ]},
+                {"name":"特殊建筑5","status":"正常","pop":"6","floor":"2","prop":"特殊人群住宅","lnglat":[101.299855,37.996242,3003.4 ]},
+                {"name":"特殊建筑6","status":"异常","pop":"3","floor":"2","prop":"特殊人群住宅","lnglat":[101.299003,37.998147,3002.2 ]},
+                {"name":"特殊建筑7","status":"异常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.301196,37.996613,3003.4 ]},
+                {"name":"特殊建筑8","status":"异常","pop":"7","floor":"2","prop":"特殊人群住宅","lnglat":[101.300948,37.997332,3003 ]},
+                {"name":"特殊建筑9","status":"警戒","pop":"4","floor":"2","prop":"特殊人群住宅","lnglat":[101.300623,37.997913,3002.6 ]},
+                {"name":"特殊建筑10","status":"警戒","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.300358,37.998515,3002.2 ]},
+                {"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.299339,37.997085,2982.6 ]},
+            ],
+            //监控信息
+            cameraInfo:[{"name":"监控1","warn":false,"lnglat":[101.300082,37.996392,3026.8 ]},
+            {"name":"监控2","warn":true,"lnglat":[101.300082,39.996392,3026.8 ]},
+            {"name":"监控3","warn":true,"lnglat":[101.300082,41.996392,3026.8 ]},
+            {"name":"监控4","warn":false,"lnglat":[101.340082,41.996392,3026.8 ]},
+            {"name":"监控12","warn":true,"lnglat":[101.300082,39.996392,3026.8 ]},
+            {"name":"监控13","warn":true,"lnglat":[101.300082,41.996392,3026.8 ]},
+            {"name":"监控14","warn":false,"lnglat":[101.340082,41.996392,3026.8 ]},
+            {"name":"监控222","warn":true,"lnglat":[101.300082,39.996392,3026.8 ]},
+            {"name":"监控23","warn":true,"lnglat":[101.300082,41.996392,3026.8 ]},
+            {"name":"监控24","warn":true,"lnglat":[101.340082,41.996392,3026.8 ]},
+        ],
+        //表格分页
+        currentPage: 1, // 当前页码
+                    total: 20, // 总条数
+                    pageSize: 5, // 每页的数据条数
         }
     },
     methods: {
@@ -2401,16 +2457,16 @@ export default {
                 // graphicLayer=new mars3d.layer.GraphicLayer()
                 var popcolorstr='#FFFFFF'
                 var linecolor="#5b8fee"
-                var ico_filename="camera.svg"
+                var ico_filename="house.svg"
                     if(obj.status=="异常"){
                         popcolorstr='#FF0000'
                         linecolor=popcolorstr
-                        ico_filename="camera_red.svg"
+                        ico_filename="house_red.svg"
                     }
                     else if(obj.status=="警戒"){
                         popcolorstr='#FFBB00'
                         linecolor=popcolorstr
-                        ico_filename="camera_orange.svg"
+                        ico_filename="house_orange.svg"
                     }
                     
                 const graphicImg = new mars3d.graphic.DivGraphic({
@@ -2456,25 +2512,49 @@ export default {
                     }
                 })
                  graphicLayer.addGraphic(graphicImg)
-                 // 刷新局部DOM,不影响popup面板的其他控件操作
-              graphicImg.on(mars3d.EventType.postRender, function (event) {
-    const container = event.container // popup对应的DOM
-    const tdTime = container.querySelector("#tdTime")
-    if (tdTime) {
-      const date = mars3d.Util.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss S")
+                // 刷新局部DOM,不影响popup面板的其他控件操作
+                graphicImg.on(mars3d.EventType.postRender, function (event) {
+                    const container = event.container // popup对应的DOM
+                    const tdTime = container.querySelector("#tdTime")
+                    if (tdTime) {
+                        const date = mars3d.Util.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss S")
 
-      tdTime.innerHTML = date
-    }
-  })
+                        tdTime.innerHTML = date
+                    }
+                })
             }
-                const tmpLayer=new mars3d.layer.GraphicLayer({id:"infoUIGraph"})
-                this.map.addLayer(tmpLayer)
+            const tmpLayer = new mars3d.layer.GraphicLayer({ id: "infoUIGraph" })
+            this.map.addLayer(tmpLayer)
             // addPopUI(tmpLayer,[101.299396,37.996705,3020.8])
             this.buildInfo.forEach(e => {
-                addPopUI(tmpLayer,e.lnglat,e)
+                addPopUI(tmpLayer, e.lnglat, e)
             });
-              
-        }
+
+        },
+        tableFormatWarnStr(row, column) {
+            if (row.warn === false) {
+                return '正常'
+            } else {
+                return '异常'
+            }
+        },
+        tableFormatWarnColor({ row, column, rowIndex, columnIndex }) {
+            // 状态列字体颜色
+            if (row.warn && columnIndex == 1) {
+                return 'color: #FF0000'
+            }
+        },
+        //每页条数改变时触发 选择一页显示多少行
+                handleSizeChange(val) {
+                    console.log(`每页 ${val} 条`);
+                    this.currentPage = 1;
+                    this.pageSize = val;
+                },
+                //当前页改变时触发 跳转其他页
+                handleCurrentChange(val) {
+                    console.log(`当前页: ${val}`);
+                    this.currentPage = val;
+                }
     },
     mounted() {
         this.initAnimate()
@@ -2498,6 +2578,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import "http://mars3d.cn/css/style.css";
+@import "http://mars3d.cn/lib/bootstrap/css/bootstrap.css";
+
 // 底部导航栏
 .bottom-nav {
     position: fixed;
@@ -2811,5 +2894,34 @@ export default {
 }
 .closeButton:hover {
     cursor: pointer;
+}
+
+//透明化整体
+.table-wrapper /deep/  .el-table,
+.el-table__expanded-cell {
+  background-color: transparent !important;
+}
+//透明化行、单元格,删除表头下横线
+.table-wrapper /deep/ tr, .table-wrapper /deep/ th, .table-wrapper /deep/ td {
+  background: #1439391c !important;
+  color:#fff;
+  border-bottom: 0px; //删除表头下横线
+}
+//hover时样式
+.table-wrapper /deep/  .el-table tbody tr:hover>td {
+  background-color: #367f7f78 !important
+}
+// 表格内容(有用)
+.table-wrapper /deep/ .el-table__row {
+  background: #1439391c !important;
+  color: #46d4ff;
+}
+.el-pagination /deep/ button {
+    background: #1439391c !important;
+    // color: #46d4ff;
+}
+.el-pagination /deep/ li {
+    background: #1439391c !important;
+    // color: #46d4ff;
 }
 </style>
