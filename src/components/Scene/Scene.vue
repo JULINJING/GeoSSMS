@@ -8,6 +8,13 @@
             <div class="logo-list opacity0"><img src="./imgs/logo.png" height="120"></div>
         </div>
         <div id="PC">
+            <div id="nav-bar" class="bottom-nav">
+                <div v-for="item in navItems" :key="item.id" class="nav-item" @click="clickItem(item.id)"
+                    @mouseover="hoverItem(item.id)" @mouseout="unhoverItem(item.id)">
+                    <img :src="activeId === item.id ? item.activeIcon : item.icon" class="nav-icon" />
+                    <h3 style="text-align: center;color: #f1f1f1;font-size: 1.2rem;font-weight: bold;">{{ item.title }}</h3>
+                </div>
+            </div>
             <Layout />
             <mars-map :url="configUrl" @onload="onMapload" :options="mapOptions" />
             <Analysis />
@@ -99,6 +106,38 @@
                 <span class="closeButton" @click="closeImgPanel">关闭</span>
             </div>
         </div>
+
+        <!-- 面板 -->
+        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px">
+            <table class="mars-table">
+                <tbody>
+
+                    <tr>
+                        <td>下拉框：</td>
+                        <td>
+                            <select id="txtCrs" class="selectpicker form-control">
+                                <option value="" selected="selected">默认</option>
+                                <option value="EPSG:3857">火星</option>
+                                <option value="EPSG:4326">地球</option>
+                                <option value="EPSG:4490">太阳</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <div class="table-wrapper">
+                        <el-table :cell-style="tableFormatWarnColor"
+                            :data="cameraInfo.slice((currentPage - 1) * pageSize, currentPage * pageSize)" page-size:5>
+                            <el-table-column prop="name" label="监控名称" />
+                            <el-table-column prop="warn" label="状态" :formatter="tableFormatWarnStr" />
+                            <el-table-column label="操作" />
+                        </el-table>
+                        <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                            :current-page="currentPage" :page-sizes="[1, 5, 10, 20]" :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper" :total="cameraInfo.length">
+                        </el-pagination>
+                    </div>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -171,20 +210,31 @@ export default {
                 id: "建筑中心区",
                 type: "3dtiles",
                 url: "../../../mars3dModels/3dt/tileset.json",
-                position: { lng: 101.302832, lat: 37.998907, alt: 2572.2 },
+                position: { lng: 101.299403, lat: 37.997105, alt: 2775 },
                 maximumScreenSpaceError: 16,
-                tooltip: "建筑中心区",
-                scale: 0.04,
+                tooltip: "特殊场景",
+                rotation: {
+                    z: 70
+                },
+                scale: 0.02,
                 show: true
             }]
         }
-        var windLayer = new mars3d.layer.WindLayer()
+        // var windLayer = new mars3d.layer.WindLayer()
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
 
         return {
+            activeId: null,  // 用于跟踪当前激活的导航项的ID
+            navItems: [
+                { id: 1, title: "智能物联", icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
+                { id: 2, title: "执勤模拟", icon: "../../../imgs/navLogo/执勤模拟-normal.svg", normalIcon: "../../../imgs/navLogo/执勤模拟-normal.svg", hoverIcon: "../../../imgs/navLogo/执勤模拟-hover.svg", activeIcon: "../../../imgs/navLogo/执勤模拟-click.svg" },
+                { id: 3, title: "辅助分析", icon: "../../../imgs/navLogo/辅助分析-normal.svg", normalIcon: "../../../imgs/navLogo/辅助分析-normal.svg", hoverIcon: "../../../imgs/navLogo/辅助分析-hover.svg", activeIcon: "../../../imgs/navLogo/辅助分析-click.svg" },
+                { id: 4, title: "方案预演", icon: "../../../imgs/navLogo/方案预演-normal.svg", normalIcon: "../../../imgs/navLogo/方案预演-normal.svg", hoverIcon: "../../../imgs/navLogo/方案预演-hover.svg", activeIcon: "../../../imgs/navLogo/方案预演-click.svg" },
+            ],
+
             configUrl: basePathUrl + 'config/config.json',
             mapOptions: mapOptions,
-            windLayer,
+            windLayer: null,
             chinaLayer,
             controller: null,
             isMapLoaded: false,
@@ -219,7 +269,7 @@ export default {
             isRightOpen: true,
             isBottomOpen: true,
 
-            // 风点场名
+            // 风电场名
             fieldData: [
                 { name: "东部：浙江括苍山风电场", type: "高山风场" },
                 { name: "南部：广东汕头南澳岛风电场", type: "海滨风场" },
@@ -281,10 +331,74 @@ export default {
             nSum: 0,
 
             // 故障风机id数组
-            turbineIdError: []
+            turbineIdError: [],
+            //建筑信息
+            buildInfo: [{ "name": "特殊建筑1", "status": "正常", "pop": "2", "floor": "2", "prop": "管理人员住宅", "lnglat": [101.298535, 37.995748, 2996.7] },
+            { "name": "特殊建筑2", "status": "正常", "pop": "7", "floor": "2", "prop": "管理人员住宅", "lnglat": [101.298206, 37.996404, 3003] },
+            { "name": "特殊建筑3", "status": "正常", "pop": "1", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.297843, 37.997071, 3002.6] },
+            { "name": "特殊建筑4", "status": "正常", "pop": "2", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.297549, 37.99771, 3002.2] },
+            { "name": "特殊建筑5", "status": "正常", "pop": "6", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.299855, 37.996242, 3003.4] },
+            { "name": "特殊建筑6", "status": "异常", "pop": "3", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.299003, 37.998147, 3002.2] },
+            { "name": "特殊建筑7", "status": "异常", "pop": "1", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.301196, 37.996613, 3003.4] },
+            { "name": "特殊建筑8", "status": "异常", "pop": "7", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.300948, 37.997332, 3003] },
+            { "name": "特殊建筑9", "status": "警戒", "pop": "4", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.300623, 37.997913, 3002.6] },
+            { "name": "特殊建筑10", "status": "警戒", "pop": "2", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.300358, 37.998515, 3002.2] },
+            { "name": "中央公园", "status": "正常", "pop": "0", "floor": "0", "prop": "无住宅", "lnglat": [101.299339, 37.997085, 2982.6] },
+            ],
+            //监控信息
+            cameraInfo: [{ "name": "监控1", "warn": false, "lnglat": [101.302113, 37.996224, 3000.3] },
+            { "name": "监控2", "warn": true, "lnglat": [101.300802, 37.999158, 2998.5] },
+            { "name": "监控3", "warn": true, "lnglat": [101.296672, 37.997986, 2998.6] },
+            { "name": "监控4", "warn": false, "lnglat": [101.340082, 41.996392, 3026.8] },
+            { "name": "监控12", "warn": true, "lnglat": [101.298009, 37.995055, 3000.4] },
+            { "name": "监控13", "warn": true, "lnglat": [101.298009, 37.995055, 3000.4] },
+                ,
+            ],
+            //表格分页
+            currentPage: 1, // 当前页码
+            total: 20, // 总条数
+            pageSize: 5, // 每页的数据条数
         }
     },
     methods: {
+        // 底部导航切换
+        clickItem(id) {
+            this.activeId = id;  // 设置当前激活的导航项ID
+            this.navItems.forEach(item => {
+                // 保证仅一个固定高亮
+                item.icon = this.activeId === item.id ? item.activeIcon : item.normalIcon;
+            });
+            switch (id) {
+                case 1:
+                    this.turnToBuilding()
+                    break;
+                case 2:
+                    console.log(id)
+                    break;
+                case 3:
+                    console.log(id)
+                    break;
+                default:
+                    console.log(id)
+            }
+        },
+        hoverItem(id) {
+            const item = this.navItems.find((i) => i.id === id);
+            if (item) {
+                if (item.icon !== item.activeIcon) {
+                    item.icon = item.hoverIcon
+                }
+            }
+        },
+        unhoverItem(id) {
+            const item = this.navItems.find((i) => i.id === id);
+            if (item) {
+                if (item.icon !== item.activeIcon) {
+                    item.icon = item.normalIcon
+                }
+            }
+        },
+        // 初始过渡动画
         initAnimate() {
             var x = {
                 size: 150,
@@ -327,7 +441,7 @@ export default {
             // 开场
             this.map.openFlyAnimation()
             this.map.fixedLight = true // 固定光照，避免gltf模型随时间存在亮度不一致。
-            this.map.setCameraView({ lat: 20.648765, lng: 129.340334, alt: 19999976, heading: 355, pitch: -90 })
+            this.map.setCameraView({ lat: 31.817475, lng: 109.687166, alt: 19999976, heading: 355, pitch: -90 })
             // this.map.scene.globe.terrainExaggeration = 2 // 修改地形夸张程度
             // 宇宙天空盒
             this.map.scene.skyBox = new Cesium.SkyBox({
@@ -371,11 +485,11 @@ export default {
 
             this.addWindLayer()
             // this.addOtherFactoryLayer()
-            // this.addChinaMap()
+            this.addChinaMap()
             setTimeout(function () {
                 // $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
                 // $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
-                $(".bottomBar").removeClass("opacity0").removeClass("fadeOutDown").addClass("animated fadeInUp")
+                // $(".bottomBar").removeClass("opacity0").removeClass("fadeOutDown").addClass("animated fadeInUp")
             }, 2000)
 
             // 右侧
@@ -394,20 +508,6 @@ export default {
             });
 
             this.isMapLoaded = true;
-            this.checkRouteQueryParams();
-        },
-        checkRouteQueryParams() {
-            // 检查路由参数，如果是从返回场站按钮进入的，并且地图加载完成，则执行 addTurbineLayer 方法
-            if (this.$route.params.isReturnButtonClicked && this.isMapLoaded) {
-                if (this.$route.params.type === "turbine" && this.$route.params.fieldId !== 0) {
-                    console.log("fieldId: ", this.$route.params.fieldId);
-                    const id = this.$route.params.fieldId;
-                    this.flyStates[id] = true;
-                    this.addTurbineLayer(id);
-                } else if (this.$route.params.type === "watch") {
-                    this.turnToBuilding();
-                }
-            }
         },
         addOtherFactoryLayer() {
             // 添加道路
@@ -670,6 +770,7 @@ export default {
                 })
                 graphicLayer.addGraphic(graphicImg)
             }
+
             // 添加具体监控数据
             addCamera(otherFactoryLayer, [87.884014, 43.585733, 1271.6])
             addCamera(otherFactoryLayer, [87.875852, 43.577082, 1153.9])
@@ -1493,7 +1594,7 @@ export default {
         chargeWindField() {
             if (!this.windLayer) {
                 this.addWindLayer()
-                this.map.setCameraView({ lat: 20.648765, lng: 129.340334, alt: 19999976, heading: 355, pitch: -90 })
+                this.map.setCameraView({ lat: 31.817475, lng: 109.687166, alt: 19999976, heading: 355, pitch: -90 })
             }
             else {
                 this.map.removeLayer(this.windLayer, true)
@@ -1530,7 +1631,7 @@ export default {
         },
         // 返回首页
         backToHome() {
-            this.$router.push('/home')
+            this.$router.push('/login')
             // 清除计时器
             if (this.intervalId !== null) {
                 // 如果已经有一个正在运行的定时器，停止它
@@ -1545,25 +1646,31 @@ export default {
                 this.map.removeLayer(this.windLayer, true)
                 this.windLayer = null
             }
+            // 移除中国地图
+            if (this.chinaLayer) {
+                this.map.removeLayer(this.chinaLayer, true)
+                this.chinaLayer = null
+            }
 
             // this.map.setCameraView({"lat":43.573973,"lng":87.903254,"alt":1262.6,"heading":134.6,"pitch":-3.4})
-            this.map.setCameraView({ "lat": 37.998907, "lng": 101.302832, "alt": 3072.2, "heading": 94, "pitch": -6.3 })
+            this.map.setCameraView({ "lat": 38.00081, "lng": 101.312725, "alt": 3261.5, "heading": 250.9, "pitch": -10.2 })
             // 开启键盘漫游
-            this.map.keyboardRoam.enabled = true
-            this.map.keyboardRoam.minHeight = 80
-            this.map.keyboardRoam.setOptions({
-                moveStep: 0.5, // 平移步长 (米)。
-                dirStep: 5, // 相机原地旋转步长，值越大步长越小。
-                rotateStep: 2.0, // 相机围绕目标点旋转速率，0.3-2.0
-                minPitch: 0.1, // 最小仰角  0-1
-                maxPitch: 0.95 // 最大仰角  0-1
-            })
-            this.hideBottomPanel()
+            // this.map.keyboardRoam.enabled = true
+            // this.map.keyboardRoam.minHeight = 80
+            // this.map.keyboardRoam.setOptions({
+            //     moveStep: 0.5, // 平移步长 (米)。
+            //     dirStep: 5, // 相机原地旋转步长，值越大步长越小。
+            //     rotateStep: 2.0, // 相机围绕目标点旋转速率，0.3-2.0
+            //     minPitch: 0.1, // 最小仰角  0-1
+            //     maxPitch: 0.95 // 最大仰角  0-1
+            // })
+            // this.hideBottomPanel()
             // 添加场站
             // if (!this.isStationLoaded) {
             //     this.addOtherFactoryLayer()
             //     this.isStationLoaded = true
             // }
+            this.addInfoUI()
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2362,6 +2469,199 @@ export default {
         },
         closeImgPanel() {
             $("#explanatoryPicture").css("display", "none")
+        },
+        // 添加监控UI面板
+        addInfoUI() {
+            if (this.map.getLayerById("infoUIGraph"))
+                this.map.removeLayer(this.map.getLayerById("infoUIGraph"), true)
+            // 添加监控面板
+
+            function addPopUI(graphicLayer, position, obj) {
+                // graphicLayer=new mars3d.layer.GraphicLayer()
+                var popcolorstr = '#FFFFFF'
+                var linecolor = "#5b8fee"
+                var ico_filename = "house.svg"
+                if (obj.status == "异常") {
+                    popcolorstr = '#FF0000'
+                    linecolor = popcolorstr
+                    ico_filename = "house_red.svg"
+                }
+                else if (obj.status == "警戒") {
+                    popcolorstr = '#FFBB00'
+                    linecolor = popcolorstr
+                    ico_filename = "house_orange.svg"
+                }
+
+                const graphicImg = new mars3d.graphic.DivGraphic({
+                    position: position,
+                    id: obj.name + "popui",
+                    style: {
+                        html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
+                                    <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
+                                        <image href="../../imgs/${ico_filename}" width="30" height="30">
+                                            <animate attributeName="y" values="20;0;20" keyTimes="0;0.5;1" dur="2s" repeatCount="indefinite" />
+                                        </image>
+                                    </svg>
+                                </div>
+                                <div class="mars3d-camera-line" style="height: 80px;width: 5px;margin-top: 20px;
+                                border-left: 3px dashed ${linecolor};margin-left: calc(50% - 1px);"></div>
+                                <div class="mars3d-camera-point" style="border-radius: 50%;width: 8px;height: 8px;
+                                margin-left: calc(50% - 3px);background-color: ${linecolor};"></div>
+                            `,
+                        offsetX: -16,
+                        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 100000)
+                    },
+                    popup: `<table style="width:280px;">
+                <tr><th scope="col" colspan="4"  style="text-align:center;font-size:15px;"></th></tr>
+                <tr><td >楼栋名称</td><td >${obj.name} </td></tr>
+                <tr><td >状态</td><td style="color:${popcolorstr};">${obj.status} </td></tr>
+                <tr><td >人数</td><td >${obj.pop}人</td></tr>
+                <tr><td >楼层</td><td >${obj.floor}层</td></tr>
+                <tr><td >性质</td><td >${obj.prop}层</td></tr>
+                <tr><td >时间：</td><td id="tdTime"></td></tr>
+              </table>`,
+                    popupOptions: {
+                        offsetY: -170, // 显示Popup的偏移值，是DivGraphic本身的像素高度值
+                        template: `<div class="marsBlackPanel" style="min-width: 90px;min-height: 35px;position: absolute;left: 16px;bottom: 10px;
+                                        cursor: default;border-radius: 4px;opacity: 0.96;border: 1px solid #14171c;box-shadow: 0px 2px 21px 0px rgba(33, 34, 39, 0.55);
+                                        border-radius: 4px;box-sizing: border-box;background: linear-gradient(0deg, #1e202a 0%, #0d1013 100%);">
+                                        <div class="marsBlackPanel-text" style="width: 100%;height: 100%;min-height: 33px;text-align: center;padding: 5px 5px 0 5px;
+                                            margin: 0;font-size: 14px;font-weight: 400;color: #ffffff;border: 1px solid #ffffff4f;-webkit-box-sizing: border-box;
+                                            box-sizing: border-box;white-space: nowrap;">
+                                            {content}
+                                        </div>
+                                    </div>`,
+                        horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                        verticalOrigin: Cesium.VerticalOrigin.CENTER
+                    }
+                })
+                graphicLayer.addGraphic(graphicImg)
+                // 刷新局部DOM,不影响popup面板的其他控件操作
+                graphicImg.on(mars3d.EventType.postRender, function (event) {
+                    const container = event.container // popup对应的DOM
+                    const tdTime = container.querySelector("#tdTime")
+                    if (tdTime) {
+                        const date = mars3d.Util.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss S")
+
+                        tdTime.innerHTML = date
+                    }
+                })
+            }
+            const tmpLayer = new mars3d.layer.GraphicLayer({ id: "infoUIGraph" })
+            this.map.addLayer(tmpLayer)
+            // addPopUI(tmpLayer,[101.299396,37.996705,3020.8])
+            this.buildInfo.forEach(e => {
+                addPopUI(tmpLayer, e.lnglat, e)
+            });
+
+        },
+        addCameraUI() {
+            var UILayer = this.map.getLayerById("CameraUIGraph")
+            if (UILayer) {
+                this.map.removeLayer(UILayer, true)
+            }
+            UILayer = new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+            function addCameraPopUI(graphicLayer, position, obj) {
+                // graphicLayer=new mars3d.layer.GraphicLayer()
+                var popcolorstr = '#FFFFFF'
+                var linecolor = "#5b8fee"
+                var ico_filename = "house.svg"
+                if (obj.status == "异常") {
+                    popcolorstr = '#FF0000'
+                    linecolor = popcolorstr
+                    ico_filename = "house_red.svg"
+                }
+                else if (obj.status == "警戒") {
+                    popcolorstr = '#FFBB00'
+                    linecolor = popcolorstr
+                    ico_filename = "house_orange.svg"
+                }
+
+                const graphicImg = new mars3d.graphic.DivGraphic({
+                    position: position,
+                    style: {
+                        html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
+                                    <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
+                                        <image href="../../imgs/${ico_filename}" width="30" height="30">
+                                            <animate attributeName="y" values="20;0;20" keyTimes="0;0.5;1" dur="2s" repeatCount="indefinite" />
+                                        </image>
+                                    </svg>
+                                </div>
+                                <div class="mars3d-camera-line" style="height: 80px;width: 5px;margin-top: 20px;
+                                border-left: 3px dashed ${linecolor};margin-left: calc(50% - 1px);"></div>
+                                <div class="mars3d-camera-point" style="border-radius: 50%;width: 8px;height: 8px;
+                                margin-left: calc(50% - 3px);background-color: ${linecolor};"></div>
+                            `,
+                        offsetX: -16,
+                        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 100000)
+                    },
+                    popup: `<table style="width:280px;">
+                <tr><th scope="col" colspan="4"  style="text-align:center;font-size:15px;"></th></tr>
+                <tr><td >楼栋名称</td><td >${obj.name} </td></tr>
+                <tr><td >状态</td><td style="color:${popcolorstr};">${obj.status} </td></tr>
+                <tr><td >人数</td><td >${obj.pop}人</td></tr>
+                <tr><td >楼层</td><td >${obj.floor}层</td></tr>
+                <tr><td >性质</td><td >${obj.prop}层</td></tr>
+                <tr><td >时间：</td><td id="tdTime"></td></tr>
+              </table>`,
+                    popupOptions: {
+                        offsetY: -170, // 显示Popup的偏移值，是DivGraphic本身的像素高度值
+                        template: `<div class="marsBlackPanel" style="min-width: 90px;min-height: 35px;position: absolute;left: 16px;bottom: 10px;
+                                        cursor: default;border-radius: 4px;opacity: 0.96;border: 1px solid #14171c;box-shadow: 0px 2px 21px 0px rgba(33, 34, 39, 0.55);
+                                        border-radius: 4px;box-sizing: border-box;background: linear-gradient(0deg, #1e202a 0%, #0d1013 100%);">
+                                        <div class="marsBlackPanel-text" style="width: 100%;height: 100%;min-height: 33px;text-align: center;padding: 5px 5px 0 5px;
+                                            margin: 0;font-size: 14px;font-weight: 400;color: #ffffff;border: 1px solid #ffffff4f;-webkit-box-sizing: border-box;
+                                            box-sizing: border-box;white-space: nowrap;">
+                                            {content}
+                                        </div>
+                                    </div>`,
+                        horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                        verticalOrigin: Cesium.VerticalOrigin.CENTER
+                    }
+                })
+                graphicLayer.addGraphic(graphicImg)
+                // 刷新局部DOM,不影响popup面板的其他控件操作
+                graphicImg.on(mars3d.EventType.postRender, function (event) {
+                    const container = event.container // popup对应的DOM
+                    const tdTime = container.querySelector("#tdTime")
+                    if (tdTime) {
+                        const date = mars3d.Util.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss S")
+
+                        tdTime.innerHTML = date
+                    }
+                })
+            }
+            const tmpLayer = new mars3d.layer.GraphicLayer({ id: "infoUIGraph" })
+            this.map.addLayer(tmpLayer)
+            // addPopUI(tmpLayer,[101.299396,37.996705,3020.8])
+            this.buildInfo.forEach(e => {
+                addPopUI(tmpLayer, e.lnglat, e)
+            });
+
+        },
+        tableFormatWarnStr(row, column) {
+            if (row.warn === false) {
+                return '正常'
+            } else {
+                return '异常'
+            }
+        },
+        tableFormatWarnColor({ row, column, rowIndex, columnIndex }) {
+            // 状态列字体颜色
+            if (row.warn && columnIndex == 1) {
+                return 'color: #FF0000'
+            }
+        },
+        //每页条数改变时触发 选择一页显示多少行
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+            this.currentPage = 1;
+            this.pageSize = val;
+        },
+        //当前页改变时触发 跳转其他页
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+            this.currentPage = val;
         }
     },
     mounted() {
@@ -2386,6 +2686,30 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import "http://mars3d.cn/css/style.css";
+@import "http://mars3d.cn/lib/bootstrap/css/bootstrap.css";
+
+// 底部导航栏
+.bottom-nav {
+    position: fixed;
+    bottom: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 99999999999999999999;
+    padding: 0 300px;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+.nav-icon {
+    width: 75px;
+    height: 75px;
+}
+
+// 以下为除底部导航栏
 .mapcontainer {
     position: relative;
     height: 100%;
@@ -2699,5 +3023,41 @@ export default {
 
 .closeButton:hover {
     cursor: pointer;
+}
+
+//透明化整体
+.table-wrapper /deep/ .el-table,
+.el-table__expanded-cell {
+    background-color: transparent !important;
+}
+
+//透明化行、单元格,删除表头下横线
+.table-wrapper /deep/ tr,
+.table-wrapper /deep/ th,
+.table-wrapper /deep/ td {
+    background: #1439391c !important;
+    color: #fff;
+    border-bottom: 0px; //删除表头下横线
+}
+
+//hover时样式
+.table-wrapper /deep/ .el-table tbody tr:hover>td {
+    background-color: #367f7f78 !important
+}
+
+// 表格内容(有用)
+.table-wrapper /deep/ .el-table__row {
+    background: #1439391c !important;
+    color: #46d4ff;
+}
+
+.el-pagination /deep/ button {
+    background: #1439391c !important;
+    // color: #46d4ff;
+}
+
+.el-pagination /deep/ li {
+    background: #1439391c !important;
+    // color: #46d4ff;
 }
 </style>
