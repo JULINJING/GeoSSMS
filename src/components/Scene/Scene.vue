@@ -116,28 +116,38 @@
                 <tbody>
 
                     <tr>
-                    <td>下拉框：</td>
-                    <td>
-                        <select id="txtCrs" class="selectpicker form-control">
+                        
+                        <td>下拉框：</td>                        
+  <td><el-select v-model="monitorSelecctValue" placeholder="请选择数据源" @change="changeMonitorSelect" transfer="true"    :popper-append-to-body="false" >
+    <el-option
+      v-for="item in monitorData"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select></td>
+                    <!-- <td>下拉框：</td> -->
+                    <!-- <td> -->
+                        <!-- <select id="txtCrs" class="selectpicker form-control">
                         <option value="" selected="selected">默认</option>
                         <option value="EPSG:3857">火星</option>
                         <option value="EPSG:4326">地球</option>
                         <option value="EPSG:4490">太阳</option>
-                        </select>
-                    </td>
+                        </select> -->
+                    <!-- </td> -->
                     </tr>
                     <div class="table-wrapper">
                         <el-table
                             :cell-style="tableFormatWarnColor"
-                            :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                            :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
                             page-size:5>
                             <el-table-column width="100px" prop="name" label="监控名称" />
                             <el-table-column width="70px" prop="warn" label="状态" :formatter="tableFormatWarnStr" />
-                            <el-table-column width="100px" label="显示操作">
+                            <el-table-column width="100px" label="显示操作"  :style="{ visibility: cameraVisible ? 'visible' : 'hidden' }">
                             <template slot-scope="{row, $index}">
               <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{row.show?"取消显示":"显示"}}</el-button>
             </template></el-table-column>
-                            <el-table-column width="100px" label="报警操作">
+                            <el-table-column width="100px" label="报警操作" >
                             <template slot-scope="{row, $index}">
               <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{row.warn?"取消报警":"报警"}}</el-button>
             </template></el-table-column>
@@ -149,7 +159,7 @@
                             :page-sizes="[1,5,10,20]" 
                             :page-size="pageSize" 
                             layout="total, sizes, prev, pager, next, jumper" 
-                            :total="cameraInfo.length">
+                            :total="tableData.length">
                         </el-pagination>
                     </div>
                 </tbody>
@@ -337,13 +347,44 @@ export default {
             {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
             {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
             {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
-            ,
         ],
+            //无人机信息
+            UAVInfo:[{"name":"无人机1","warn":false,"show":true,"lnglat":[101.300783,37.999387,3000 ]},
+            {"name":"无人机2","warn":true,"show":true,"lnglat":[101.296727,37.998116,3010 ]},
+            {"name":"无人机3","warn":true,"show":true,"lnglat":[101.297172,37.994219,3020 ]},
+            {"name":"无人机4","warn":false,"show":true,"lnglat":[101.301989,37.996072,3030 ]},
+            {"name":"无人机5","warn":true,"show":true,"lnglat":[101.301649,37.997679,3040 ]},
+            {"name":"无人机6","warn":true,"show":true,"lnglat":[101.29696,37.996347,3050 ]},
+            {"name":"无人机7","warn":true,"show":true,"lnglat":[101.297977,37.998488,3060]},
+            {"name":"无人机8","warn":false,"show":true,"lnglat":[101.299695,37.998981,3070 ]},
+            {"name":"无人机9","warn":true,"show":true,"lnglat":[101.299164,37.995121,3080  ]},
+            {"name":"无人机10","warn":true,"show":true,"lnglat":[101.300868,37.995662,3090 ]},
+            ],
+            //无人机信息
+            LightInfo:[{"name":"光栅1","warn":false},
+            {"name":"光栅2","warn":true},
+            {"name":"光栅3","warn":true},
+            {"name":"光栅4","warn":false},
+            {"name":"光栅5","warn":true},],
         //表格分页
         currentPage: 1, // 当前页码
-                    total: 20, // 总条数
-                    pageSize: 5, // 每页的数据条数
-                    cameraWindowVisible:false,
+        total: 6, // 总条数
+        pageSize: 5, // 每页的数据条数
+        cameraWindowVisible:false,
+        monitorData:
+            [{
+          value: 1,
+          label: '视频监控'
+        }, {
+          value: 2,
+          label: '无人机'
+        }, {
+          value: 3,
+          label: '光栅'
+        }],
+        monitorSelecctValue:1,
+        cameraVisible:true,
+        tableData:[],
         }
     },
     methods: {
@@ -519,9 +560,11 @@ export default {
                 id: 1,
                 position: [101.300096, 38.000135, 2995.6],
                 style: {
+                    // url: '//data.mars3d.cn/gltf/mars/dajiang/dajiang.gltf',
                     url: '//data.mars3d.cn/gltf/imap/897ec2fdcdcd4ac181ecc5ed1c48018c/gltf/gltf2.gltf',
                     heading: -35,
                     scale: 5,
+                    // scale: 100,
                     minimumPixelSize: 1,
                 },
             })
@@ -2575,11 +2618,7 @@ export default {
 
         },
         addCameraUI(){
-            var UILayer=this.map.getLayerById("CameraUIGraph")
-            if(UILayer){
-                this.map.removeLayer(UILayer,true)
-            }
-            UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+
             function addCameraPopUI(graphicLayer, obj) {
                 // graphicLayer=new mars3d.layer.GraphicLayer()
                 var popcolorstr='#FFFFFF'
@@ -2593,6 +2632,7 @@ export default {
                     
                 const graphicImg = new mars3d.graphic.DivGraphic({
                     position: obj.lnglat,
+                    id: obj.name+"graphic",
                     style: {
                         html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
                                     <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
@@ -2642,12 +2682,64 @@ export default {
                     }
                 })
             }
-            this.map.addLayer(UILayer)
-            this.cameraInfo.forEach(e => {
-                if(e.show)
-                addCameraPopUI(UILayer,  e)
-            });
+            function addUAV(gralayer,obj) {
+                var uavGraphic = new mars3d.graphic.ModelPrimitive({
+                id: obj.name+"graphic",
+                position: obj.lnglat,
+                style: {
+                    // url: '//data.mars3d.cn/gltf/mars/dajiang/dajiang.gltf',
+                    url: '../../../mars3dModels/dajiang.gltf',
+                    heading: 30,
+                    scale: 100,
+                    minimumPixelSize: 1,
+                    },
+                })
+                gralayer.addGraphic(uavGraphic)
+                console.log(uavGraphic)
+            }
 
+            var UILayer=this.map.getLayerById("CameraUIGraph")
+            if(!UILayer){
+                // this.map.removeLayer(UILayer,true)
+                UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+                this.map.addLayer(UILayer)
+            }
+            // if(!this.cameraVisible)return
+            // UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+            // this.map.addLayer(UILayer)
+
+            if (this.monitorSelecctValue==1) {
+                this.cameraInfo.forEach(e => {
+                    var tmp=UILayer.getGraphicById(e.name+"graphic")
+                    if(tmp)tmp.remove(true)
+                if(e.show)addCameraPopUI(UILayer, e)
+            })
+            }  else if(this.monitorSelecctValue==2){
+                this.UAVInfo.forEach(e => {
+                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                if(!graph_obj){
+                    addUAV(UILayer,  e)
+                    graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                }
+                graph_obj.show= e.show
+            })
+            }
+        },
+        hideUAVGraph(){var UILayer=this.map.getLayerById("CameraUIGraph")
+            this.UAVInfo.forEach(e => {
+                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                if(graph_obj){
+                    graph_obj.show= false
+                }
+            })  
+        },
+        hideCameraGraph(){var UILayer=this.map.getLayerById("CameraUIGraph")
+            this.cameraInfo.forEach(e => {
+                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                if(graph_obj){
+                    graph_obj.show= false
+                }
+            })  
         },
         tableFormatWarnStr(row, column) {
             if (row.warn === false) {
@@ -2680,10 +2772,36 @@ export default {
         tableWarnChange(row, $index){
             row.warn=!row.warn
             this.addCameraUI()
+        },
+        changeMonitorSelect(val){
+            switch (val) {
+                case 1:
+                    this.tableData=this.cameraInfo
+                    this.cameraVisible=true
+                    this.addCameraUI()
+                    this.hideUAVGraph()
+                    break;
+                case 2:
+                    this.tableData=this.UAVInfo
+                    this.cameraVisible=true
+                    this.addCameraUI()
+                    this.hideCameraGraph()
+                    break;
+                case 3:
+                    this.tableData=this.LightInfo
+                    this.cameraVisible=false
+                    this.hideCameraGraph()
+                    this.hideUAVGraph()
+                    break;
+                default:
+                    break;
+            }
         }
+
     },
     mounted() {
         this.initAnimate()
+        this.tableData=this.cameraInfo
     },
     watch: {
         myOptionState: {
@@ -2696,7 +2814,7 @@ export default {
             handler: function () {
                 this.myChartPower.setOption(this.myOptionPower)
             }
-        }
+        },
     }
 
 }
