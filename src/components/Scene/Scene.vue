@@ -385,6 +385,7 @@ export default {
         monitorSelecctValue:1,
         cameraVisible:true,
         tableData:[],
+        isAddLidar:false,
         }
     },
     methods: {
@@ -398,9 +399,14 @@ export default {
             switch (id) {
                 case 1:
                     this.turnToBuilding()
+                    if(!this.isAddLidar)this.addLidarGraphic()
+                    this.isAddLidar=true
+                    // console.log(this.map.getLayerById("lidarLayer"))
+                    this.map.getLayerById("lidarLayer").show=true;
                     break;
                 case 2:
                     this.turnToBuilding()
+                    this.map.getLayerById("lidarLayer").show=false;
                     break;
                 case 3:
                     console.log(id)
@@ -2796,12 +2802,50 @@ export default {
                 default:
                     break;
             }
-        }
+        },
+addLidarGraphic() {
+   var graphicLayer= new mars3d.layer.GraphicLayer({id:"lidarLayer"})
+  const ellipsoid = new mars3d.graphic.EllipsoidEntity({
+    position: [101.299381,37.997154,2987.5 ],
+    style: {
+      radii: 500,
+      minimumClockDegree: -180.0,
+      maximumClockDegree: 180.0,
+      minimumConeDegree: 0.0,
+      maximumConeDegree: 90.0,
+      fill: false,
+      outline: true,
+      outlineColor: "rgba(0, 204, 0, 0.4)", // 绿色
+      stackPartitions: 100, // 竖向
+      slicePartitions: 100 // 横向
+    },
+    // 添加扫描面
+    scanPlane: {
+      step: 10.0, // 步长
+      min: -180.0, // 最小值
+      max: 180.0, // 最大值
+      style: {
+        innerRadii: 200,
+        outline: true,
+        color: "rgba(255, 204, 0)",
+        outlineColor: "rgba(255, 204, 0, 0.1)",
+        // minimumClockDegree: 90.0,
+        // maximumClockDegree: 100.0,
+        // minimumConeDegree: 0.0,
+        // maximumConeDegree: 90.0
+      }
+    }
+  })
+  this.map.addLayer(graphicLayer)
+
+  graphicLayer.addGraphic(ellipsoid)
+}
 
     },
     mounted() {
         this.initAnimate()
         this.tableData=this.cameraInfo
+        
     },
     watch: {
         myOptionState: {
