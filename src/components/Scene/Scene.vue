@@ -353,7 +353,7 @@ export default {
                     this.turnToBuilding()
                     break;
                 case 2:
-                    console.log(id)
+                    this.turnToBuilding()
                     break;
                 case 3:
                     console.log(id)
@@ -464,6 +464,7 @@ export default {
             this.controller = new CesiumRoleController(mars3d.Cesium, this.map.viewer)
 
             this.addWindLayer()
+            this.addOtherLayer()
             // this.addOtherFactoryLayer()
             this.addChinaMap()
             setTimeout(function () {
@@ -488,6 +489,37 @@ export default {
             });
 
             this.isMapLoaded = true;
+        },
+        // 新版添加其他图层
+        addOtherLayer() {
+            // 添加道路
+            var otherLayer = new mars3d.layer.GraphicLayer()
+            this.map.addLayer(otherLayer)
+            const roadGraphic = new mars3d.graphic.Road({
+                positions: [
+                    [101.287402, 37.993511, 3044.6],
+                    [101.305531, 38.003163, 2972.7]
+                ],
+                style: {
+                    image: "../../../imgs/road.jpg",
+                    width: 50,
+                    height: 1
+                }
+            })
+            otherLayer.addGraphic(roadGraphic)
+
+            // 添加车辆
+            var carGraphic = new mars3d.graphic.ModelPrimitive({
+                id: 1,
+                position: [101.300096, 38.000135, 2995.6],
+                style: {
+                    url: '//data.mars3d.cn/gltf/imap/897ec2fdcdcd4ac181ecc5ed1c48018c/gltf/gltf2.gltf',
+                    heading: -35,
+                    scale: 5,
+                    minimumPixelSize: 1,
+                },
+            })
+            otherLayer.addGraphic(carGraphic)
         },
         addOtherFactoryLayer() {
             // 添加道路
@@ -810,7 +842,6 @@ export default {
                         materialType: mars3d.MaterialType.LineFlow,
                         materialOptions: {
                             color: "#00ffff",
-                            image: "imgs/fence-line.png",
                             speed: 10,
                             repeat_x: 10
                         },
