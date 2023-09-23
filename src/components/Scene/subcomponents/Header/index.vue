@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="header-title">{{ appName }}</div>
+        <div class="header-title" style="text-align: center">{{ appName }}</div>
     </div>
 </template>
 <script lang="js">
