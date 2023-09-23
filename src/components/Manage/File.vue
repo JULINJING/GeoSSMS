@@ -80,7 +80,6 @@
 
 <script>
 import {serverIp} from "@/../public/config";
-
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "File",
