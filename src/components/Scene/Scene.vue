@@ -110,7 +110,8 @@
         </div>
 
         <!-- 面板 -->
-        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" >
+        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" id="cameraInfoWindow"
+        :style="{ visibility: cameraWindowVisible ? 'visible' : 'hidden' }">
             <table class="mars-table">
                 <tbody>
 
@@ -130,9 +131,16 @@
                             :cell-style="tableFormatWarnColor"
                             :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
                             page-size:5>
-                            <el-table-column prop="name" label="监控名称" />
-                            <el-table-column prop="warn" label="状态" :formatter="tableFormatWarnStr" />
-                            <el-table-column label="操作" />
+                            <el-table-column width="100px" prop="name" label="监控名称" />
+                            <el-table-column width="70px" prop="warn" label="状态" :formatter="tableFormatWarnStr" />
+                            <el-table-column width="100px" label="显示操作">
+                            <template slot-scope="{row, $index}">
+              <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{row.show?"取消显示":"显示"}}</el-button>
+            </template></el-table-column>
+                            <el-table-column width="100px" label="报警操作">
+                            <template slot-scope="{row, $index}">
+              <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{row.warn?"取消报警":"报警"}}</el-button>
+            </template></el-table-column>
                         </el-table>
                         <el-pagination align='center' 
                             @size-change="handleSizeChange" 
@@ -323,21 +331,19 @@ export default {
                 {"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.299339,37.997085,2982.6 ]},
             ],
             //监控信息
-            cameraInfo:[{"name":"监控1","warn":false,"lnglat":[101.300082,37.996392,3026.8 ]},
-            {"name":"监控2","warn":true,"lnglat":[101.300082,39.996392,3026.8 ]},
-            {"name":"监控3","warn":true,"lnglat":[101.300082,41.996392,3026.8 ]},
-            {"name":"监控4","warn":false,"lnglat":[101.340082,41.996392,3026.8 ]},
-            {"name":"监控12","warn":true,"lnglat":[101.300082,39.996392,3026.8 ]},
-            {"name":"监控13","warn":true,"lnglat":[101.300082,41.996392,3026.8 ]},
-            {"name":"监控14","warn":false,"lnglat":[101.340082,41.996392,3026.8 ]},
-            {"name":"监控222","warn":true,"lnglat":[101.300082,39.996392,3026.8 ]},
-            {"name":"监控23","warn":true,"lnglat":[101.300082,41.996392,3026.8 ]},
-            {"name":"监控24","warn":true,"lnglat":[101.340082,41.996392,3026.8 ]},
+            cameraInfo:[{"name":"监控1","warn":false,"show":true,"lnglat":[101.302113,37.996224,3000.3  ]},
+            {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
+            {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
+            {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
+            {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
+            {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
+            ,
         ],
         //表格分页
         currentPage: 1, // 当前页码
                     total: 20, // 总条数
                     pageSize: 5, // 每页的数据条数
+                    cameraWindowVisible:false,
         }
     },
     methods: {
@@ -1682,6 +1688,8 @@ export default {
             //     this.isStationLoaded = true
             // }
             this.addInfoUI()
+            this.addCameraUI()
+            this.cameraWindowVisible=true
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2483,7 +2491,8 @@ export default {
         },
         // 添加监控UI面板
         addInfoUI(){
-            if(this.map.getLayerById("infoUIGraph"))return
+            if(this.map.getLayerById("infoUIGraph"))
+            this.map.removeLayer(this.map.getLayerById("infoUIGraph"),true)
             // 添加监控面板
             
             function addPopUI(graphicLayer, position,obj) {
@@ -2504,6 +2513,7 @@ export default {
                     
                 const graphicImg = new mars3d.graphic.DivGraphic({
                     position: position,
+                    id: obj.name+"popui",
                     style: {
                         html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
                                     <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
@@ -2564,6 +2574,81 @@ export default {
             });
 
         },
+        addCameraUI(){
+            var UILayer=this.map.getLayerById("CameraUIGraph")
+            if(UILayer){
+                this.map.removeLayer(UILayer,true)
+            }
+            UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+            function addCameraPopUI(graphicLayer, obj) {
+                // graphicLayer=new mars3d.layer.GraphicLayer()
+                var popcolorstr='#FFFFFF'
+                var linecolor="#5b8fee"
+                var ico_filename="camera.svg"
+                    if(obj.warn){
+                        popcolorstr='#FF0000'
+                        linecolor=popcolorstr
+                        ico_filename="camera_red.svg"
+                    }
+                    
+                const graphicImg = new mars3d.graphic.DivGraphic({
+                    position: obj.lnglat,
+                    style: {
+                        html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
+                                    <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
+                                        <image href="../../imgs/${ico_filename}" width="30" height="30">
+                                            <animate attributeName="y" values="20;0;20" keyTimes="0;0.5;1" dur="2s" repeatCount="indefinite" />
+                                        </image>
+                                    </svg>
+                                </div>
+                                <div class="mars3d-camera-line" style="height: 80px;width: 5px;margin-top: 20px;
+                                border-left: 3px dashed ${linecolor};margin-left: calc(50% - 1px);"></div>
+                                <div class="mars3d-camera-point" style="border-radius: 50%;width: 8px;height: 8px;
+                                margin-left: calc(50% - 3px);background-color: ${linecolor};"></div>
+                            `,
+                        offsetX: -16,
+                        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 100000)
+                    },
+                    popup: `<table style="width:280px;">
+                <tr><th scope="col" colspan="4"  style="text-align:center;font-size:15px;"></th></tr>
+                <tr><td >监控名称</td><td >${obj.name} </td></tr>
+                <tr><td >时间：</td><td id="tdTime"></td></tr>
+              </table>
+              <video src='../../imgs/videos/买瓜.mp4' controls autoplay style="width: 300px;" ></video>`,
+                    popupOptions: {
+                        offsetY: -170, // 显示Popup的偏移值，是DivGraphic本身的像素高度值
+                        template: `<div class="marsBlackPanel" style="min-width: 90px;min-height: 35px;position: absolute;left: 16px;bottom: 10px;
+                                        cursor: default;border-radius: 4px;opacity: 0.96;border: 1px solid #14171c;box-shadow: 0px 2px 21px 0px rgba(33, 34, 39, 0.55);
+                                        border-radius: 4px;box-sizing: border-box;background: linear-gradient(0deg, #1e202a 0%, #0d1013 100%);">
+                                        <div class="marsBlackPanel-text" style="width: 100%;height: 100%;min-height: 33px;text-align: center;padding: 5px 5px 0 5px;
+                                            margin: 0;font-size: 14px;font-weight: 400;color: #ffffff;border: 1px solid #ffffff4f;-webkit-box-sizing: border-box;
+                                            box-sizing: border-box;white-space: nowrap;">
+                                            {content}
+                                        </div>
+                                    </div>`,
+                        horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                        verticalOrigin: Cesium.VerticalOrigin.CENTER
+                    }
+                })
+                 graphicLayer.addGraphic(graphicImg)
+                // 刷新局部DOM,不影响popup面板的其他控件操作
+                graphicImg.on(mars3d.EventType.postRender, function (event) {
+                    const container = event.container // popup对应的DOM
+                    const tdTime = container.querySelector("#tdTime")
+                    if (tdTime) {
+                        const date = mars3d.Util.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss S")
+
+                        tdTime.innerHTML = date
+                    }
+                })
+            }
+            this.map.addLayer(UILayer)
+            this.cameraInfo.forEach(e => {
+                if(e.show)
+                addCameraPopUI(UILayer,  e)
+            });
+
+        },
         tableFormatWarnStr(row, column) {
             if (row.warn === false) {
                 return '正常'
@@ -2587,7 +2672,15 @@ export default {
                 handleCurrentChange(val) {
                     console.log(`当前页: ${val}`);
                     this.currentPage = val;
-                }
+                },
+        tableShowChange(row, $index){
+            row.show=!row.show
+            this.addCameraUI()
+        },
+        tableWarnChange(row, $index){
+            row.warn=!row.warn
+            this.addCameraUI()
+        }
     },
     mounted() {
         this.initAnimate()
@@ -2952,10 +3045,14 @@ export default {
 }
 .el-pagination /deep/ button {
     background: #1439391c !important;
-    // color: #46d4ff;
+    color: #b3c3c8;
 }
 .el-pagination /deep/ li {
     background: #1439391c !important;
-    // color: #46d4ff;
+    color: #b3c3c8;
+}
+.el-button{
+    background: rgba(32, 160, 255, 0.2) !important;
+    color: #e1e1e1;
 }
 </style>
