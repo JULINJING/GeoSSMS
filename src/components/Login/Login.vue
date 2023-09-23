@@ -172,6 +172,7 @@
 import $ from "jquery";
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: "login",
   components: {},
   data() {
@@ -284,7 +285,7 @@ export default {
               if (res.data.role === "ROLE_CONDUCT") {
                 this.$router.push("/scene");
               } else if(res.data.role === "ROLE_ADMIN"){
-                this.$router.push("/scene");
+                this.$router.push("/manage");
               }else{
                 this.$router.push("/scene");
               }
