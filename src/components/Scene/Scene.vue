@@ -213,6 +213,30 @@ export default {
                 },
                 scale: 0.02,
                 show: true
+            },{
+                id: "哨塔",
+                type: "3dtiles",
+                url: "../../../mars3dModels/tower/tileset.json",
+                position: { lng: 101.300796, lat: 37.999251, alt: 2967.7 },
+                maximumScreenSpaceError: 16,
+                tooltip: "哨塔",
+                rotation: {
+                    z: 70
+                },
+                scale: 6, 
+                show: true
+            },{
+                id: "哨塔",
+                type: "3dtiles",
+                url: "../../../mars3dModels/tower/tileset.json",
+                position: { lng: 101.300796, lat: 37.999251, alt: 2993.8 },
+                maximumScreenSpaceError: 16,
+                tooltip: "哨塔",
+                rotation: {
+                    z: 70
+                },
+                scale: 6, 
+                show: true
             }]
         }
         // var windLayer = new mars3d.layer.WindLayer()
