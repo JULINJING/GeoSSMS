@@ -117,15 +117,15 @@
 
                     <tr>
                         
-                        <td>下拉框：</td>                        
-  <td><el-select v-model="monitorSelecctValue" placeholder="请选择数据源" @change="changeMonitorSelect" transfer="true"    :popper-append-to-body="false" >
+                        选择监控数据：                        
+  <el-select v-model="monitorSelecctValue" placeholder="请选择数据源" @change="changeMonitorSelect" transfer="true"    :popper-append-to-body="false" >
     <el-option
       v-for="item in monitorData"
       :key="item.value"
       :label="item.label"
       :value="item.value">
     </el-option>
-  </el-select></td>
+  </el-select>
                     <!-- <td>下拉框：</td> -->
                     <!-- <td> -->
                         <!-- <select id="txtCrs" class="selectpicker form-control">
@@ -156,7 +156,7 @@
                             @size-change="handleSizeChange" 
                             @current-change="handleCurrentChange"
                             :current-page="currentPage" 
-                            :page-sizes="[1,5,10,20]" 
+                            :page-sizes="[2,5,10]" 
                             :page-size="pageSize" 
                             layout="total, sizes, prev, pager, next, jumper" 
                             :total="tableData.length">
@@ -213,31 +213,12 @@ export default {
                 },
                 scale: 0.02,
                 show: true
-            },{
-                id: "哨塔",
-                type: "3dtiles",
-                url: "../../../mars3dModels/tower/tileset.json",
-                position: { lng: 101.300796, lat: 37.999251, alt: 2967.7 },
-                maximumScreenSpaceError: 16,
-                tooltip: "哨塔",
-                rotation: {
-                    z: 70
-                },
-                scale: 6, 
-                show: true
-            },{
-                id: "哨塔",
-                type: "3dtiles",
-                url: "../../../mars3dModels/tower/tileset.json",
-                position: { lng: 101.300796, lat: 37.999251, alt: 2993.8 },
-                maximumScreenSpaceError: 16,
-                tooltip: "哨塔",
-                rotation: {
-                    z: 70
-                },
-                scale: 6, 
-                show: true
-            }]
+            },
+            {id: "哨塔1",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.300796, lat: 37.999251, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔11",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.300796, lat: 37.999251, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            {id: "哨塔2",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.302279, lat: 37.996059, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔22",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.302279, lat: 37.996059, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            {id: "哨塔3",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.297937, lat: 37.994942, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔33",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.297937, lat: 37.994942, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            {id: "哨塔4",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.296474, lat: 37.998026, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔44",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.296474, lat: 37.998026, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            ] 
         }
         // var windLayer = new mars3d.layer.WindLayer()
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
@@ -373,7 +354,7 @@ export default {
             {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
         ],
             //无人机信息
-            UAVInfo:[{"name":"无人机1","warn":false,"show":true,"lnglat":[101.300783,37.999387,3000 ]},
+            UAVInfo:[{"name":"无人机1","warn":false,"show":true,"lnglat":[101.300783,37.999387,3040 ]},
             {"name":"无人机2","warn":true,"show":true,"lnglat":[101.296727,37.998116,3010 ]},
             {"name":"无人机3","warn":true,"show":true,"lnglat":[101.297172,37.994219,3020 ]},
             {"name":"无人机4","warn":false,"show":true,"lnglat":[101.301989,37.996072,3030 ]},
@@ -410,6 +391,9 @@ export default {
         cameraVisible:true,
         tableData:[],
         isAddLidar:false,
+        timeoutId:null,
+        intervalShowId:null,
+        intervalHideId2:null,
         }
     },
     methods: {
@@ -422,17 +406,35 @@ export default {
             });
             switch (id) {
                 case 1:
+                    this.cameraWindowVisible=true;
                     this.turnToBuilding()
+                    this.addInfoUI()
+                    this.addCameraUI()
                     if(!this.isAddLidar)this.addLidarGraphic()
                     this.isAddLidar=true
-                    // console.log(this.map.getLayerById("lidarLayer"))
                     this.map.getLayerById("lidarLayer").show=true;
+                    if(!this.timeoutId)
+                    {this.intervalShowId= setInterval(this.addRedLight, 3000);
+                    this.timeoutId= setTimeout(() => {this.intervalHideId=setInterval(this.HideRedLight, 3000);}, 1000);}
                     break;
                 case 2:
+                    this.cameraWindowVisible=false;
+                    this.addInfoUI()
                     this.turnToBuilding()
+                    this.hideCameraGraph();
                     this.map.getLayerById("lidarLayer").show=false;
+                    if(this.timeoutId){
+                    clearTimeout(this.timeoutId)
+                    clearInterval(this.intervalShowId)
+                    clearInterval(this.intervalHideId)
+                    this.timeoutId=null
+                }
+                    this.HideRedLight()
                     break;
                 case 3:
+                this.cameraWindowVisible=false;
+                this.hideCameraGraph();
+
                     console.log(id)
                     break;
                 default:
@@ -1760,9 +1762,7 @@ export default {
             //     this.addOtherFactoryLayer()
             //     this.isStationLoaded = true
             // }
-            this.addInfoUI()
-            this.addCameraUI()
-            this.cameraWindowVisible=true
+            // this.cameraWindowVisible=true
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2609,7 +2609,7 @@ export default {
                 <tr><td >状态</td><td style="color:${popcolorstr};">${obj.status} </td></tr>
                 <tr><td >人数</td><td >${obj.pop}人</td></tr>
                 <tr><td >楼层</td><td >${obj.floor}层</td></tr>
-                <tr><td >性质</td><td >${obj.prop}层</td></tr>
+                <tr><td >性质</td><td >${obj.prop}</td></tr>
                 <tr><td >时间：</td><td id="tdTime"></td></tr>
               </table>`,
                     popupOptions: {
@@ -2863,6 +2863,31 @@ addLidarGraphic() {
   this.map.addLayer(graphicLayer)
 
   graphicLayer.addGraphic(ellipsoid)
+},
+addRedLight(){
+    var LightLayer=this.map.getLayerById("redLightLayer")
+    if(!LightLayer)
+    {LightLayer=new mars3d.layer.GraphicLayer({id:"redLightLayer"})
+    this.map.addLayer(LightLayer)
+    const lightCone = new mars3d.graphic.LightCone({
+    position: [101.300096, 38.000135, 2995.6],
+    style: {
+      color: "rgba(255,0,0,0.9)",
+      radius: 8, // 底部半径
+      height: 50 // 椎体高度
+    },
+    show: true
+  })
+LightLayer.addGraphic(lightCone)
+}
+LightLayer.show=true;
+    console.log("执行光亮显示")
+},
+HideRedLight(){
+    var LightLayer=this.map.getLayerById("redLightLayer")
+    if(!LightLayer)return
+    LightLayer.show=false
+    console.log("执行光亮隐藏")
 }
 
     },
