@@ -116,28 +116,38 @@
                 <tbody>
 
                     <tr>
-                    <td>下拉框：</td>
-                    <td>
-                        <select id="txtCrs" class="selectpicker form-control">
+                        
+                        选择监控数据：                        
+  <el-select v-model="monitorSelecctValue" placeholder="请选择数据源" @change="changeMonitorSelect" transfer="true"    :popper-append-to-body="false" >
+    <el-option
+      v-for="item in monitorData"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+                    <!-- <td>下拉框：</td> -->
+                    <!-- <td> -->
+                        <!-- <select id="txtCrs" class="selectpicker form-control">
                         <option value="" selected="selected">默认</option>
                         <option value="EPSG:3857">火星</option>
                         <option value="EPSG:4326">地球</option>
                         <option value="EPSG:4490">太阳</option>
-                        </select>
-                    </td>
+                        </select> -->
+                    <!-- </td> -->
                     </tr>
                     <div class="table-wrapper">
                         <el-table
                             :cell-style="tableFormatWarnColor"
-                            :data="cameraInfo.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                            :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
                             page-size:5>
                             <el-table-column width="100px" prop="name" label="监控名称" />
                             <el-table-column width="70px" prop="warn" label="状态" :formatter="tableFormatWarnStr" />
-                            <el-table-column width="100px" label="显示操作">
+                            <el-table-column width="100px" label="显示操作"  :style="{ visibility: cameraVisible ? 'visible' : 'hidden' }">
                             <template slot-scope="{row, $index}">
               <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{row.show?"取消显示":"显示"}}</el-button>
             </template></el-table-column>
-                            <el-table-column width="100px" label="报警操作">
+                            <el-table-column width="100px" label="报警操作" >
                             <template slot-scope="{row, $index}">
               <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{row.warn?"取消报警":"报警"}}</el-button>
             </template></el-table-column>
@@ -146,10 +156,10 @@
                             @size-change="handleSizeChange" 
                             @current-change="handleCurrentChange"
                             :current-page="currentPage" 
-                            :page-sizes="[1,5,10,20]" 
+                            :page-sizes="[2,5,10]" 
                             :page-size="pageSize" 
                             layout="total, sizes, prev, pager, next, jumper" 
-                            :total="cameraInfo.length">
+                            :total="tableData.length">
                         </el-pagination>
                     </div>
                 </tbody>
@@ -206,7 +216,12 @@ export default {
                 },
                 scale: 0.02,
                 show: true
-            }]
+            },
+            {id: "哨塔1",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.300796, lat: 37.999251, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔11",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.300796, lat: 37.999251, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            {id: "哨塔2",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.302279, lat: 37.996059, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔22",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.302279, lat: 37.996059, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            {id: "哨塔3",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.297937, lat: 37.994942, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔33",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.297937, lat: 37.994942, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            {id: "哨塔4",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.296474, lat: 37.998026, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔44",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.296474, lat: 37.998026, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
+            ] 
         }
         // var windLayer = new mars3d.layer.WindLayer()
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
@@ -335,18 +350,53 @@ export default {
             ],
             //监控信息
             cameraInfo:[{"name":"监控1","warn":false,"show":true,"lnglat":[101.302113,37.996224,3000.3  ]},
-                {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
-                {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
-                {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
-                {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
-                {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
+            {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
+            {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
+            {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
+            {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
+            {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
+        ],
+            //无人机信息
+            UAVInfo:[{"name":"无人机1","warn":false,"show":true,"lnglat":[101.300783,37.999387,3040 ]},
+            {"name":"无人机2","warn":true,"show":true,"lnglat":[101.296727,37.998116,3010 ]},
+            {"name":"无人机3","warn":true,"show":true,"lnglat":[101.297172,37.994219,3020 ]},
+            {"name":"无人机4","warn":false,"show":true,"lnglat":[101.301989,37.996072,3030 ]},
+            {"name":"无人机5","warn":true,"show":true,"lnglat":[101.301649,37.997679,3040 ]},
+            {"name":"无人机6","warn":true,"show":true,"lnglat":[101.29696,37.996347,3050 ]},
+            {"name":"无人机7","warn":true,"show":true,"lnglat":[101.297977,37.998488,3060]},
+            {"name":"无人机8","warn":false,"show":true,"lnglat":[101.299695,37.998981,3070 ]},
+            {"name":"无人机9","warn":true,"show":true,"lnglat":[101.299164,37.995121,3080  ]},
+            {"name":"无人机10","warn":true,"show":true,"lnglat":[101.300868,37.995662,3090 ]},
             ],
-            //表格分页
-            currentPage: 1, // 当前页码
-            total: 20, // 总条数
-            pageSize: 5, // 每页的数据条数
-            cameraWindowVisible: false,
-            simulationInfoWindowVisible: false
+            //无人机信息
+            LightInfo:[{"name":"光栅1","warn":false},
+            {"name":"光栅2","warn":true},
+            {"name":"光栅3","warn":true},
+            {"name":"光栅4","warn":false},
+            {"name":"光栅5","warn":true},],
+        //表格分页
+        currentPage: 1, // 当前页码
+        total: 6, // 总条数
+        pageSize: 5, // 每页的数据条数
+        cameraWindowVisible:false,
+        monitorData:
+            [{
+          value: 1,
+          label: '视频监控'
+        }, {
+          value: 2,
+          label: '无人机'
+        }, {
+          value: 3,
+          label: '光栅'
+        }],
+        monitorSelecctValue:1,
+        cameraVisible:true,
+        tableData:[],
+        isAddLidar:false,
+        timeoutId:null,
+        intervalShowId:null,
+        intervalHideId2:null,
         }
     },
     methods: {
@@ -359,16 +409,35 @@ export default {
             });
             switch (id) {
                 case 1:
+                    this.cameraWindowVisible=true;
                     this.turnToBuilding()
-                    this.cameraWindowVisible = true
-                    this.simulationInfoWindowVisible = false
+                    this.addInfoUI()
+                    this.addCameraUI()
+                    if(!this.isAddLidar)this.addLidarGraphic()
+                    this.isAddLidar=true
+                    this.map.getLayerById("lidarLayer").show=true;
+                    if(!this.timeoutId)
+                    {this.intervalShowId= setInterval(this.addRedLight, 3000);
+                    this.timeoutId= setTimeout(() => {this.intervalHideId=setInterval(this.HideRedLight, 3000);}, 1000);}
                     break;
                 case 2:
+                    this.cameraWindowVisible=false;
+                    this.addInfoUI()
                     this.turnToBuilding()
-                    this.cameraWindowVisible = false
-                    this.simulationInfoWindowVisible = true  
+                    this.hideCameraGraph();
+                    this.map.getLayerById("lidarLayer").show=false;
+                    if(this.timeoutId){
+                    clearTimeout(this.timeoutId)
+                    clearInterval(this.intervalShowId)
+                    clearInterval(this.intervalHideId)
+                    this.timeoutId=null
+                }
+                    this.HideRedLight()
                     break;
                 case 3:
+                this.cameraWindowVisible=false;
+                this.hideCameraGraph();
+
                     console.log(id)
                     break;
                 default:
@@ -526,9 +595,11 @@ export default {
                 id: 1,
                 position: [101.300096, 38.000135, 2995.6],
                 style: {
+                    // url: '//data.mars3d.cn/gltf/mars/dajiang/dajiang.gltf',
                     url: '//data.mars3d.cn/gltf/imap/897ec2fdcdcd4ac181ecc5ed1c48018c/gltf/gltf2.gltf',
                     heading: -35,
                     scale: 5,
+                    // scale: 100,
                     minimumPixelSize: 1,
                 },
             })
@@ -1721,6 +1792,7 @@ export default {
             // }
             this.addInfoUI()
             this.addCameraUI()
+            this.cameraWindowVisible=true
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2567,7 +2639,7 @@ export default {
                 <tr><td >状态</td><td style="color:${popcolorstr};">${obj.status} </td></tr>
                 <tr><td >人数</td><td >${obj.pop}人</td></tr>
                 <tr><td >楼层</td><td >${obj.floor}层</td></tr>
-                <tr><td >性质</td><td >${obj.prop}层</td></tr>
+                <tr><td >性质</td><td >${obj.prop}</td></tr>
                 <tr><td >时间：</td><td id="tdTime"></td></tr>
               </table>`,
                     popupOptions: {
@@ -2606,11 +2678,7 @@ export default {
 
         },
         addCameraUI(){
-            var UILayer=this.map.getLayerById("CameraUIGraph")
-            if(UILayer){
-                this.map.removeLayer(UILayer,true)
-            }
-            UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+
             function addCameraPopUI(graphicLayer, obj) {
                 // graphicLayer=new mars3d.layer.GraphicLayer()
                 var popcolorstr='#FFFFFF'
@@ -2624,6 +2692,7 @@ export default {
                     
                 const graphicImg = new mars3d.graphic.DivGraphic({
                     position: obj.lnglat,
+                    id: obj.name+"graphic",
                     style: {
                         html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
                                     <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
@@ -2673,12 +2742,64 @@ export default {
                     }
                 })
             }
-            this.map.addLayer(UILayer)
-            this.cameraInfo.forEach(e => {
-                if(e.show)
-                addCameraPopUI(UILayer,  e)
-            });
+            function addUAV(gralayer,obj) {
+                var uavGraphic = new mars3d.graphic.ModelPrimitive({
+                id: obj.name+"graphic",
+                position: obj.lnglat,
+                style: {
+                    // url: '//data.mars3d.cn/gltf/mars/dajiang/dajiang.gltf',
+                    url: '../../../mars3dModels/dajiang.gltf',
+                    heading: 30,
+                    scale: 100,
+                    minimumPixelSize: 1,
+                    },
+                })
+                gralayer.addGraphic(uavGraphic)
+                console.log(uavGraphic)
+            }
 
+            var UILayer=this.map.getLayerById("CameraUIGraph")
+            if(!UILayer){
+                // this.map.removeLayer(UILayer,true)
+                UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+                this.map.addLayer(UILayer)
+            }
+            // if(!this.cameraVisible)return
+            // UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+            // this.map.addLayer(UILayer)
+
+            if (this.monitorSelecctValue==1) {
+                this.cameraInfo.forEach(e => {
+                    var tmp=UILayer.getGraphicById(e.name+"graphic")
+                    if(tmp)tmp.remove(true)
+                if(e.show)addCameraPopUI(UILayer, e)
+            })
+            }  else if(this.monitorSelecctValue==2){
+                this.UAVInfo.forEach(e => {
+                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                if(!graph_obj){
+                    addUAV(UILayer,  e)
+                    graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                }
+                graph_obj.show= e.show
+            })
+            }
+        },
+        hideUAVGraph(){var UILayer=this.map.getLayerById("CameraUIGraph")
+            this.UAVInfo.forEach(e => {
+                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                if(graph_obj){
+                    graph_obj.show= false
+                }
+            })  
+        },
+        hideCameraGraph(){var UILayer=this.map.getLayerById("CameraUIGraph")
+            this.cameraInfo.forEach(e => {
+                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
+                if(graph_obj){
+                    graph_obj.show= false
+                }
+            })  
         },
         tableFormatWarnStr(row, column) {
             if (row.warn === false) {
@@ -2711,10 +2832,99 @@ export default {
         tableWarnChange(row, $index){
             row.warn=!row.warn
             this.addCameraUI()
-        }
+        },
+        changeMonitorSelect(val){
+            switch (val) {
+                case 1:
+                    this.tableData=this.cameraInfo
+                    this.cameraVisible=true
+                    this.addCameraUI()
+                    this.hideUAVGraph()
+                    break;
+                case 2:
+                    this.tableData=this.UAVInfo
+                    this.cameraVisible=true
+                    this.addCameraUI()
+                    this.hideCameraGraph()
+                    break;
+                case 3:
+                    this.tableData=this.LightInfo
+                    this.cameraVisible=false
+                    this.hideCameraGraph()
+                    this.hideUAVGraph()
+                    break;
+                default:
+                    break;
+            }
+        },
+addLidarGraphic() {
+   var graphicLayer= new mars3d.layer.GraphicLayer({id:"lidarLayer"})
+  const ellipsoid = new mars3d.graphic.EllipsoidEntity({
+    position: [101.299381,37.997154,2987.5 ],
+    style: {
+      radii: 500,
+      minimumClockDegree: -180.0,
+      maximumClockDegree: 180.0,
+      minimumConeDegree: 0.0,
+      maximumConeDegree: 90.0,
+      fill: false,
+      outline: true,
+      outlineColor: "rgba(0, 204, 0, 0.4)", // 绿色
+      stackPartitions: 100, // 竖向
+      slicePartitions: 100 // 横向
+    },
+    // 添加扫描面
+    scanPlane: {
+      step: 10.0, // 步长
+      min: -180.0, // 最小值
+      max: 180.0, // 最大值
+      style: {
+        innerRadii: 200,
+        outline: true,
+        color: "rgba(255, 204, 0)",
+        outlineColor: "rgba(255, 204, 0, 0.1)",
+        // minimumClockDegree: 90.0,
+        // maximumClockDegree: 100.0,
+        // minimumConeDegree: 0.0,
+        // maximumConeDegree: 90.0
+      }
+    }
+  })
+  this.map.addLayer(graphicLayer)
+
+  graphicLayer.addGraphic(ellipsoid)
+},
+addRedLight(){
+    var LightLayer=this.map.getLayerById("redLightLayer")
+    if(!LightLayer)
+    {LightLayer=new mars3d.layer.GraphicLayer({id:"redLightLayer"})
+    this.map.addLayer(LightLayer)
+    const lightCone = new mars3d.graphic.LightCone({
+    position: [101.300096, 38.000135, 2995.6],
+    style: {
+      color: "rgba(255,0,0,0.9)",
+      radius: 8, // 底部半径
+      height: 50 // 椎体高度
+    },
+    show: true
+  })
+LightLayer.addGraphic(lightCone)
+}
+LightLayer.show=true;
+    console.log("执行光亮显示")
+},
+HideRedLight(){
+    var LightLayer=this.map.getLayerById("redLightLayer")
+    if(!LightLayer)return
+    LightLayer.show=false
+    console.log("执行光亮隐藏")
+}
+
     },
     mounted() {
         this.initAnimate()
+        this.tableData=this.cameraInfo
+        
     },
     watch: {
         myOptionState: {
@@ -2727,7 +2937,7 @@ export default {
             handler: function () {
                 this.myChartPower.setOption(this.myOptionPower)
             }
-        }
+        },
     }
 
 }

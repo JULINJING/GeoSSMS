@@ -4,7 +4,7 @@
       <el-form label-width="80px" size="small">
         <el-upload
             class="avatar-uploader"
-            :action="'http://' + serverIp +':9090/file/upload'"
+            :action="'http://' + serverIp +':7071/file/upload'"
             accept="image/jpeg,image/gif,image/png"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
