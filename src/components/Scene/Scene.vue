@@ -27,16 +27,35 @@
                 <i id="leftClickSpan" class="iconfont opration-handler" aria-hidden="true" @click="hideLeftPanel">&#xe653;</i>
                 <div class="bar-content bar-content-left" id="leftContent">
                     <div class="chartbox">
-                        <h5>风向 风速</h5>
-                        <div id="weather1"></div>
+                        <h5>建筑状态</h5>
+
+                        <div id="weather1" style="overflow: scroll;" class="table-wrapper">
+                            <el-table :data="buildInfo">
+                            <el-table-column width="85px" prop="name" label="名称" />
+                            <el-table-column width="45px" prop="status" label="状态" />
+                            <el-table-column width="45px" prop="pop" label="人数" />
+                            <el-table-column width="95px" prop="prop" label="性质" />
+                           
+                        </el-table>
+
+                        </div>
                     </div>
                     <div class="chartbox">
-                        <h5>气温</h5>
-                        <div id="weather2"></div>
+                        <h5>异常信息</h5>
+                        <div id="weather2" style="overflow: scroll;" class="table-wrapper">
+                            <el-table :data="warnInfo">
+                            <el-table-column width="70px" prop="name" label="名称" />
+                            <el-table-column width="65px" prop="type" label="类型" />
+                            <el-table-column width="95px" prop="event" label="异常事件" />
+                           
+                        </el-table></div>
+
                     </div>
                     <div class="chartbox">
-                        <h5>气压 湿度</h5>
-                        <div id="weather3"></div>
+                        <h5>地图</h5>
+                        <div id="weather3">
+                            <img src="/imgs/rsimg.png" alt="临近中队" style="width:250px">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,22 +64,23 @@
                 <i id="rightClickSpan" class="iconfont opration-handler" aria-hidden="true" @click="hideRightPanel">&#xe653;</i>
                 <div class="bar-content bar-content-right" id="rightContent">
                     <div class="chartbox">
-                        <h5>四大风力发电场</h5>
+                        <h5>五大多源数据</h5>
                         <ul class="chartList">
                             <li :key="index" v-for="(item, index) in fieldData">
                                 <span>{{ item.name }}</span>
-                                <span :class="{'typeA': item.type === '荒原风场', 'typeB': item.type === '海滨风场', 'typeC': item.type === '高山风场'}">
+                                <span :class="item.typecolor">
+                                    <!-- {'typeA': item.type === '荒原风场', 'typeB': item.type === '海滨风场', 'typeC': item.type === '高山风场'} -->
                                     {{ item.type }}
                                 </span>
                             </li>
                         </ul>
                     </div>
                     <div class="chartbox">
-                        <h5>风机运行状态统计</h5>
+                        <h5>异常报警数据汇总</h5>
                         <div id="state"></div>
                     </div>
                     <div class="chartbox">
-                        <h5>各风电场预测功率总计</h5>
+                        <h5>各物联网监控设备总计</h5>
                         <div id="powerSum"></div>
                     </div>
                 </div>
@@ -275,28 +295,32 @@ export default {
 
             // 风电场名
             fieldData: [
-                { name: "东部：浙江括苍山风电场", type: "高山风场" },
-                { name: "南部：广东汕头南澳岛风电场", type: "海滨风场" },
-                { name: "西部：新疆达坂城风电场", type: "荒原风场" },
-                { name: "北部：内蒙古辉腾锡勒风电场", type: "荒原风场" }
+                // { name: "东部：浙江括苍山风电场", type: "高山风场" },
+                // { name: "南部：广东汕头南澳岛风电场", type: "海滨风场" },
+                // { name: "西部：新疆达坂城风电场", type: "荒原风场" },
+                // { name: "北部：内蒙古辉腾锡勒风电场", type: "荒原风场" }
+                { name: "房屋监控", type: "物联网监控",typecolor:'typeA' },
+                { name: "无人机", type: "巡航拍摄",typecolor:'typeB' },
+                { name: "高清摄像头", type: "视频设备",typecolor:'typeC' },
+                { name: "激光光栅", type: "物体探测",typecolor:'typeA' },
+                { name: "雷达扫描", type: "物体探测",typecolor:'typeB' }
             ],
 
             // 统计图表
             // 右侧
             chartsDataState: [
-                { name: "并网", value: 0 },
-                { name: "待机", value: 0 },
-                { name: "故障", value: 0 },
-                { name: "维护", value: 0 }
+                { name: "监控", value: 0 },
+                { name: "无人机", value: 0 },
+                { name: "光栅", value: 0 }
             ],
             myChartState: null,
             myOptionState: {},
 
             chartsDataPower: [
-                { name: "东部", value: 0 },
-                { name: "南部", value: 0 },
-                { name: "西部", value: 0 },
-                { name: "北部", value: 0 }
+                { name: "房屋", value: 0 },
+                { name: "摄像头", value: 0 },
+                { name: "无人机", value: 0 },
+                { name: "光栅", value: 0 }
             ],
             myChartPower: null,
             myOptionPower: {},
@@ -375,6 +399,7 @@ export default {
             {"name":"光栅3","warn":true},
             {"name":"光栅4","warn":false},
             {"name":"光栅5","warn":true},],
+            warnInfo:[{"name":"监控1","type":"监控","event":"行人"}],
             //表格分页
             currentPage: 1, // 当前页码
             total: 6, // 总条数
@@ -428,7 +453,8 @@ export default {
                     this.addInfoUI()
                     this.turnToBuilding()
                     this.hideCameraGraph();
-                    this.map.getLayerById("lidarLayer").show=false;
+                    const lidarLayer = this.map.getLayerById("lidarLayer");
+                    if (lidarLayer) {lidarLayer.show = false;}
                     if(this.timeoutId){
                     clearTimeout(this.timeoutId)
                     clearInterval(this.intervalShowId)
@@ -565,8 +591,8 @@ export default {
             let weather1 = document.getElementById("weather1")
             let weather2 = document.getElementById("weather2")
             let weather3 = document.getElementById("weather3")
-            // this.initCharts(this.chartsDataState, this.chartsDataPower, this.chartsDataWeather1,
-            //     this.chartsDataWeather2, this.chartsDataWeather3, state, powerSum, weather1, weather2, weather3)
+            this.initCharts(this.chartsDataState, this.chartsDataPower, this.chartsDataWeather1,
+                this.chartsDataWeather2, this.chartsDataWeather3, state, powerSum, weather1, weather2, weather3)
 
             //webgl渲染失败后，刷新页面
             this.map.on(mars3d.EventType.renderError, function () {
@@ -1870,10 +1896,9 @@ export default {
                             fontWeight: "bold"
                         },
                         color: [
-                            "#15d1f2",
-                            "#37A2DA",
-                            "red",
-                            "yellow"
+                        "#E6224F99",
+  "#2CB5E599",
+  "#E6D91599"
                         ],
                         center: ["45%", "55%"],
                         data: arrState, // 使用for循环添加
@@ -1904,7 +1929,7 @@ export default {
                     color: "#ccc"
                 },
                 title: {
-                    text: "单位:" + "kw",
+                    text: "单位:" + "个",
                     // 全局样式对此不生效，
                     textStyle: {
                         color: "#fff",
@@ -1914,7 +1939,7 @@ export default {
                 // 移入柱子时的阴影
                 tooltip: {
                     trigger: "axis",
-                    formatter: "{b}<br/>{c}" + "kw",
+                    formatter: "{b}<br/>{c}" + "",
                     axisPointer: {
                         type: "shadow"
                     }
@@ -1948,7 +1973,15 @@ export default {
                 ]
             }
             this.myChartPower.setOption(this.myOptionPower)
+            
+            this.myChartState.resize()
+                this.myChartPower.resize()
 
+            window.addEventListener("resize", ()=> {
+                this.myChartState.resize()
+                this.myChartPower.resize()
+            })
+            return
             // 风向 风速图
             const directionMap = {};
             // 风向对象
@@ -2834,6 +2867,7 @@ export default {
         tableWarnChange(row, $index){
             row.warn=!row.warn
             this.addCameraUI()
+            this.geneWarnInfo()
         },
         changeMonitorSelect(val){
             switch (val) {
@@ -2920,13 +2954,41 @@ HideRedLight(){
     if(!LightLayer)return
     LightLayer.show=false
     console.log("执行光亮隐藏")
-}
-
+},
+geneWarnInfo(){
+    var eventSet=["行人出现","无人机出现","车辆出现","发现犯人","野生动物","可疑物品"]
+    this.warnInfo=[]
+    this.chartsDataState[0].value=0;
+    this.chartsDataState[1].value=0;
+    this.chartsDataState[2].value=0;
+    this.cameraInfo.forEach(e => {
+        if(e.warn){
+            this.warnInfo.push({"name":e.name,"type":"摄像头","event":eventSet[Math.floor(Math.random()*eventSet.length)]})
+            this.chartsDataState[0].value++;
+        }
+    });
+    this.UAVInfo.forEach(e => {
+        if(e.warn){
+            this.warnInfo.push({"name":e.name,"type":"无人机","event":eventSet[Math.floor(Math.random()*eventSet.length)]})
+            this.chartsDataState[1].value++;
+        }
+    });
+    this.LightInfo.forEach(e => {
+        if(e.warn){
+            this.warnInfo.push({"name":e.name,"type":"光栅","event":eventSet[Math.floor(Math.random()*eventSet.length)]})
+            this.chartsDataState[2].value++;
+        }
+    });
+},
     },
     mounted() {
         this.initAnimate()
         this.tableData=this.cameraInfo
-        
+        this.geneWarnInfo()
+        this.chartsDataPower[0].value=this.buildInfo.length
+        this.chartsDataPower[1].value=this.cameraInfo.length
+        this.chartsDataPower[2].value=this.UAVInfo.length
+        this.chartsDataPower[3].value=this.LightInfo.length
     },
     watch: {
         myOptionState: {
@@ -3294,8 +3356,33 @@ HideRedLight(){
     background: #1439391c !important;
     color: #b3c3c8;
 }
-.el-button{
+.el-button {
     background: rgba(32, 160, 255, 0.2) !important;
     color: #e1e1e1;
+}
+::v-deep .el-input__inner {
+  background-color: transparent;
+}
+
+::v-deep .el-select-dropdown__item {
+  color: #fff;
+}
+
+::v-deep .el-scrollbar,
+::v-deep .el-select-dropdown {
+  background-color: transparent !important;
+  color: #fff !important;
+}
+
+::v-deep .el-scrollbar__wrap,
+::v-deep .el-select-dropdown__list {
+  background-color: #2054bd2a;
+  color: #fff !important;
+}
+
+::v-deep .el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
 }
 </style>
