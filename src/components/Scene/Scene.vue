@@ -227,6 +227,7 @@ export default {
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
 
         return {
+            simulationInfoWindowVisible: false,
             activeId: null,  // 用于跟踪当前激活的导航项的ID
             navItems: [
                 { id: 1, title:"智能物联", icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
@@ -374,29 +375,29 @@ export default {
             {"name":"光栅3","warn":true},
             {"name":"光栅4","warn":false},
             {"name":"光栅5","warn":true},],
-        //表格分页
-        currentPage: 1, // 当前页码
-        total: 6, // 总条数
-        pageSize: 5, // 每页的数据条数
-        cameraWindowVisible:false,
-        monitorData:
-            [{
-          value: 1,
-          label: '视频监控'
-        }, {
-          value: 2,
-          label: '无人机'
-        }, {
-          value: 3,
-          label: '光栅'
-        }],
-        monitorSelecctValue:1,
-        cameraVisible:true,
-        tableData:[],
-        isAddLidar:false,
-        timeoutId:null,
-        intervalShowId:null,
-        intervalHideId2:null,
+            //表格分页
+            currentPage: 1, // 当前页码
+            total: 6, // 总条数
+            pageSize: 5, // 每页的数据条数
+            cameraWindowVisible:false,
+            monitorData:
+                [{
+            value: 1,
+            label: '视频监控'
+            }, {
+            value: 2,
+            label: '无人机'
+            }, {
+            value: 3,
+            label: '光栅'
+            }],
+            monitorSelecctValue:1,
+            cameraVisible:true,
+            tableData:[],
+            isAddLidar:false,
+            timeoutId:null,
+            intervalShowId:null,
+            intervalHideId2:null,
         }
     },
     methods: {
@@ -409,7 +410,8 @@ export default {
             });
             switch (id) {
                 case 1:
-                    this.cameraWindowVisible=true;
+                    this.cameraWindowVisible = true;
+                    this.simulationInfoWindowVisible = false  
                     this.turnToBuilding()
                     this.addInfoUI()
                     this.addCameraUI()
@@ -421,7 +423,8 @@ export default {
                     this.timeoutId= setTimeout(() => {this.intervalHideId=setInterval(this.HideRedLight, 3000);}, 1000);}
                     break;
                 case 2:
-                    this.cameraWindowVisible=false;
+                    this.cameraWindowVisible = false;
+                    this.simulationInfoWindowVisible = true
                     this.addInfoUI()
                     this.turnToBuilding()
                     this.hideCameraGraph();
@@ -1792,7 +1795,6 @@ export default {
             // }
             this.addInfoUI()
             this.addCameraUI()
-            this.cameraWindowVisible=true
         },
         // 漫游风电场
         wanderTurbine() {
