@@ -108,7 +108,7 @@
         </div>
 
         <!-- 面板 -->
-        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px">
+        <!-- <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px">
             <table class="mars-table">
                 <tbody>
 
@@ -137,12 +137,12 @@
                     </div>
                 </tbody>
             </table>
-        </div>
+        </div> -->
     </div>
 </template>
 
 <script>
-import Analysis from "./mars-work/analysis.vue"
+import Analysis from "./subcomponents/Analysis/analysis.vue"
 import Layout from "./subcomponents/Header/index";
 import { mapMutations } from "vuex";
 import MarsMap from "./mars-work/mars-map.vue"
