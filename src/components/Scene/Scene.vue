@@ -155,6 +155,7 @@
                 </tbody>
             </table>
         </div>
+        <dutySimulation :style="{ visibility: simulationInfoWindowVisible ? 'visible' : 'hidden' }"></dutySimulation>
     </div>
 </template>
 
@@ -162,6 +163,7 @@
 import Layout from "./subcomponents/Header/index";
 import { mapMutations } from "vuex";
 import MarsMap from "./mars-work/mars-map.vue"
+import dutySimulation from "./mars-work/dutySimulation.vue"
 import * as mars3d from 'mars3d'
 import CesiumRoleController from "../../../public/lib/CesiumRoleController/CesiumRoleController.js"
 import $ from 'jquery'
@@ -177,7 +179,8 @@ export default {
 
     components: {
         MarsMap,
-        Layout
+        Layout,
+        dutySimulation
     },
     data() {
         const basePathUrl = window.basePathUrl || ' '
@@ -332,18 +335,18 @@ export default {
             ],
             //监控信息
             cameraInfo:[{"name":"监控1","warn":false,"show":true,"lnglat":[101.302113,37.996224,3000.3  ]},
-            {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
-            {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
-            {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
-            {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
-            {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
-            ,
-        ],
-        //表格分页
-        currentPage: 1, // 当前页码
-                    total: 20, // 总条数
-                    pageSize: 5, // 每页的数据条数
-                    cameraWindowVisible:false,
+                {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
+                {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
+                {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
+                {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
+                {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
+            ],
+            //表格分页
+            currentPage: 1, // 当前页码
+            total: 20, // 总条数
+            pageSize: 5, // 每页的数据条数
+            cameraWindowVisible: false,
+            simulationInfoWindowVisible: false
         }
     },
     methods: {
@@ -357,9 +360,13 @@ export default {
             switch (id) {
                 case 1:
                     this.turnToBuilding()
+                    this.cameraWindowVisible = true
+                    this.simulationInfoWindowVisible = false
                     break;
                 case 2:
                     this.turnToBuilding()
+                    this.cameraWindowVisible = false
+                    this.simulationInfoWindowVisible = true  
                     break;
                 case 3:
                     console.log(id)
@@ -526,6 +533,31 @@ export default {
                 },
             })
             otherLayer.addGraphic(carGraphic)
+
+            // 添加名称
+            var factoryTitle = 'GeoSSMS特殊场景'
+            var factoryPosition={lat:37.997767,lng:101.301809}
+            var titleGraphic = new mars3d.graphic.LabelEntity({
+                position: new mars3d.LngLatPoint(factoryPosition.lng, factoryPosition.lat, factoryPosition.lat),
+                style: {
+                    text: factoryTitle,
+                    font_size: 30,
+                    font_family: "楷体",
+                    color: "#0081c2",
+                    outline: true,
+                    outlineColor: "#ffffff",
+                    outlineWidth: 2,
+                    distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 1000000),
+                    clampToGround: true,
+
+                    // 高亮时的样式（默认为鼠标移入，也可以指定type:'click'单击高亮），构造后也可以openHighlight、closeHighlight方法来手动调用
+                    highlight: {
+                        font_size: 40,
+                        type: 'click'
+                    }
+                },
+            })
+            otherLayer.addGraphic(titleGraphic)
         },
         addOtherFactoryLayer() {
             // 添加道路
@@ -1689,7 +1721,6 @@ export default {
             // }
             this.addInfoUI()
             this.addCameraUI()
-            this.cameraWindowVisible=true
         },
         // 漫游风电场
         wanderTurbine() {
@@ -2710,11 +2741,11 @@ export default {
 // 底部导航栏
 .bottom-nav {
     position: fixed;
-    bottom: 25px;
+    bottom: 20px;
     width: 100%;
     display: flex;
     justify-content: space-around;
-    z-index: 99999999999999999999;
+    z-index: 1;
     padding: 0 300px;
 }
 
