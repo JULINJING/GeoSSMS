@@ -110,7 +110,7 @@
         </div>
 
         <!-- 面板 -->
-        <div class="infoview" style="overflow: auto; max-height: 850px; position:aboslute; top:10px" id="cameraInfoWindow"
+        <div class="infoview" style="overflow: auto; max-height: 850px; width:500px; top:10px" id="cameraInfoWindow"
         :style="{ visibility: cameraWindowVisible ? 'visible' : 'hidden' }">
             <table class="mars-table">
                 <tbody>
@@ -547,8 +547,8 @@ export default {
             // this.addOtherFactoryLayer()
             this.addChinaMap()
             setTimeout(function () {
-                // $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
-                // $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
+                $(".sideBar.left").removeClass("opacity0").removeClass("fadeOutLeft").addClass("animated fadeInLeft")
+                $(".sideBar.right").removeClass("opacity0").removeClass("fadeOutRight").addClass("animated fadeInRight")
                 // $(".bottomBar").removeClass("opacity0").removeClass("fadeOutDown").addClass("animated fadeInUp")
             }, 2000)
 
