@@ -40,7 +40,7 @@ export default {
         justify-content: center;
         width: 100vw;
         height: 64px;
-        padding-top: 20px;
+        padding-top: 8px;
         font-size: 24px;
         font-weight: bold;
         color: #fff;
