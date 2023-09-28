@@ -1,0 +1,50 @@
+[
+    {
+        "aircraftYaw": 0,
+        "gimbalPitch": 0,
+        "height": 3072.4,
+        "isStart": true,
+        "lat": 37.9994,
+        "lng": 101.301712
+    },
+    {
+        "aircraftYaw": 121.5,
+        "gimbalPitch": -34,
+        "height": 3086.9,
+        "isStart": false,
+        "lat": 37.998976,
+        "lng": 101.299079
+    },
+    {
+        "aircraftYaw": 121.400002,
+        "gimbalPitch": -12.1,
+        "height": 3105.3,
+        "isStart": false,
+        "lat": 37.996337,
+        "lng": 101.296645
+    },
+    {
+        "aircraftYaw": 121.300002,
+        "gimbalPitch": -12.1,
+        "height": 3067.4,
+        "isStart": false,
+        "lat": 37.995166,
+        "lng": 101.30001
+    },
+    {
+        "aircraftYaw": 121.300002,
+        "gimbalPitch": -12.1,
+        "height": 3060,
+        "isStart": false,
+        "lat": 37.996228,
+        "lng": 101.302629
+    },
+    {
+        "aircraftYaw": 0,
+        "gimbalPitch": 0,
+        "height": 3072.4,
+        "isStart": true,
+        "lat": 37.9994,
+        "lng": 101.301712
+    }
+]
