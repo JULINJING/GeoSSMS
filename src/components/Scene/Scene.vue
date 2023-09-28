@@ -69,7 +69,7 @@
                             <li :key="index" v-for="(item, index) in fieldData">
                                 <span>{{ item.name }}</span>
                                 <span :class="item.typecolor">
-                                    <!-- {'typeA': item.type === '荒原风场', 'typeB': item.type === '海滨风场', 'typeC': item.type === '高山风场'} -->
+                                    <!-- {'typeA': item.type === '荒原风场', 'typeB': item.statetype === '海滨风场', 'typeC': item.type === '高山风场'} -->
                                     {{ item.type }}
                                 </span>
                             </li>
@@ -1976,8 +1976,8 @@ export default {
             }
             this.myChartPower.setOption(this.myOptionPower)
             
-            this.myChartState.resize()
-                this.myChartPower.resize()
+            this.myChartState.resize({width: 258,height: 182})
+            this.myChartPower.resize({width: 258,height: 182})
 
             window.addEventListener("resize", ()=> {
                 this.myChartState.resize()
@@ -2593,6 +2593,9 @@ export default {
                     $(".bar-content-right").css("display","flex")
                 },1000)
             }
+            // this.myChartState.resize({width: 258,height: 182})
+            // this.myChartPower.resize({width: 258,height: 182})
+            console.log("resize")
         },
         hideBottomPanel() {
             this.isBottomOpen = !this.isBottomOpen
@@ -2991,6 +2994,8 @@ geneWarnInfo(){
         this.chartsDataPower[1].value=this.cameraInfo.length
         this.chartsDataPower[2].value=this.UAVInfo.length
         this.chartsDataPower[3].value=this.LightInfo.length
+        
+
     },
     watch: {
         myOptionState: {
