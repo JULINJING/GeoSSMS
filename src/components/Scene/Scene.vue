@@ -145,7 +145,8 @@
                 </tbody>
             </table>
         </div>
-        <dutySimulation :style="{ visibility: simulationInfoWindowVisible ? 'visible' : 'hidden' }"></dutySimulation>
+        <DutySimulation :style="{ visibility: simulationInfoWindowVisible ? 'visible' : 'hidden' }"></DutySimulation>
+      <ScenarioRehearsal></ScenarioRehearsal>
     </div>
 </template>
 
@@ -153,13 +154,16 @@
 import Layout from "./subcomponents/Header/index";
 import { mapMutations } from "vuex";
 import MarsMap from "./mars-work/mars-map.vue"
-import dutySimulation from "./mars-work/dutySimulation.vue"
+import DutySimulation from "./subcomponents/DutySimulation/index.vue"
+
 import * as mars3d from 'mars3d'
 import CesiumRoleController from "../../../public/lib/CesiumRoleController/CesiumRoleController.js"
 import $ from 'jquery'
 import * as turf from '@turf/turf'
 import * as echarts from "echarts"
+// eslint-disable-next-line no-unused-vars
 import { CanvasBillboard } from "../../../public/lib/custom/CanvasBillboard.js"
+import ScenarioRehearsal from "@/components/Scene/subcomponents/ScenarioRehearsal/index.vue";
 
 const Cesium = mars3d.Cesium
 
@@ -170,7 +174,8 @@ export default {
     components: {
         MarsMap,
         Layout,
-        dutySimulation
+        DutySimulation,
+        ScenarioRehearsal
     },
     data() {
         const basePathUrl = window.basePathUrl || ' '
