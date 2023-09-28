@@ -130,7 +130,7 @@
         </div>
 
         <!-- 面板 -->
-        <div class="infoview" style="overflow: auto; max-height: 850px; width:500px; top:10px" id="cameraInfoWindow"
+        <div class="infoview" style="overflow: auto; max-height: 850px; width:410px; top:60px;right:300px;" id="cameraInfoWindow"
         :style="{ visibility: cameraWindowVisible ? 'visible' : 'hidden' }">
             <table class="mars-table">
                 <tbody>
@@ -178,8 +178,10 @@
                             :current-page="currentPage" 
                             :page-sizes="[2,5,10]" 
                             :page-size="pageSize" 
-                            layout="total, sizes, prev, pager, next, jumper" 
-                            :total="tableData.length">
+                            layout="total,  prev, pager, next, jumper" 
+                            :total="tableData.length"
+                            :popper-append-to-body="false"
+                            width="370px">
                         </el-pagination>
                     </div>
                 </tbody>
@@ -3385,4 +3387,11 @@ geneWarnInfo(){
   background-color: rgba(0, 0, 0, 0.3);
   color: #fff;
 }
+// ::v-deep .el-pagination__jump{
+//     visibility: hidden;
+// }
+// .el-pagination__wrapper {
+    
+//   overflow-x: hidden;
+// }
 </style>
