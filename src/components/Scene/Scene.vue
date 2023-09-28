@@ -66,7 +66,7 @@
                     <div class="chartbox">
                         <h5>五大多源数据</h5>
                         <ul class="chartList">
-                            <li :key="index" v-for="(item, index) in fieldData">
+                            <li :key="index" v-for="(item, index) in fieldData" style="text-align: center;">
                                 <span>{{ item.name }}</span>
                                 <span :class="item.typecolor">
                                     <!-- {'typeA': item.type === '荒原风场', 'typeB': item.statetype === '海滨风场', 'typeC': item.type === '高山风场'} -->
