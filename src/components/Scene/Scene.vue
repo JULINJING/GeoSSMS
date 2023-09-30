@@ -204,6 +204,9 @@ export default {
                 fxaa: false,
                 contextOptions: {
                     requestWebgl1: true
+                },
+                globe: {
+                    depthTestAgainstTerrain: true // 不加无法投射到地形上
                 }
             },
             layers: [{

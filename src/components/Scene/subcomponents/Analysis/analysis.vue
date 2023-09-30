@@ -5,6 +5,8 @@
     <button @click="slopeAnalysis">坡度分析</button>
     <button @click="heightLineAnalysis">等高线分析</button>
     <button @click="inundationAnalysis">淹没分析</button>
+    <button @click="visibilityAnalysis">通视分析</button>
+    <button @click="visibleRangeAnalysis">可视域分析</button>
     <button @click="clearAll">清空</button>
   </div>
 </template>
@@ -55,20 +57,28 @@ export default {
       color: "rgba(0, 123, 230, 0.5)" // 淹没颜色
     })
 
+    const sightline = new mars3d.thing.Sightline({
+      visibleColor: new Cesium.Color(0, 1, 0, 0.4),
+      hiddenColor: new Cesium.Color(1, 0, 0, 0.4)
+      // depthFailColor: Cesium.Color.fromCssColorString("#db2c8f"),
+    })
+
     return {
       buildingPostion,
       slope,
       contourLine,
       floodByMaterial,
+      sightline,
       centerDialogVisible: false,
     }
   },
   methods: {
     initAnalysis() {
-      console.log("初始化")
+      console.log("初始化", this.map.graphicLayer)
       this.map.addThing(this.contourLine)
       this.map.addThing(this.slope)
       this.map.addThing(this.floodByMaterial)
+      this.map.addThing(this.sightline)
       this.slope.on(mars3d.EventType.end, function (e) {
         console.log("分析完成", e)
       })
@@ -76,6 +86,7 @@ export default {
         console.log("分析完成", e)
       })
     },
+
     // 坡度坡向分析
     slopeAnalysis() {
       this.clearAll();
@@ -108,7 +119,8 @@ export default {
         count: 4,
       })
     },
-    // 等高线
+
+    // 等高线分析
     heightLineAnalysis() {
       this.clearAll()
       console.log("等高线分析", this.buildingPostion)
@@ -141,7 +153,8 @@ export default {
       console.log("结束", area)
       this.contourShow = true;
     },
-    // 淹没
+
+    // 淹没分析
     inundationAnalysis() {
       this.clearAll()
       const cartesianBuildingPosition = this.buildingPostion.map((bdp) => mars3d.LngLatPoint.toCartesian(bdp))
@@ -164,10 +177,86 @@ export default {
       //   this.floodByMaterial.start()
       // })
     },
+
+    // 通视分析
+    createPoint(position, isFirst) {
+      const graphic = new mars3d.graphic.PointEntity({
+        position: position,
+        style: {
+          color: Cesium.Color.fromCssColorString("#3388ff"),
+          pixelSize: 6,
+          outlineColor: Cesium.Color.fromCssColorString("#ffffff"),
+          outlineWidth: 2,
+          scaleByDistance: new Cesium.NearFarScalar(1.5e2, 1.0, 8.0e6, 0.2),
+          label: {
+            text: isFirst ? "观察位置" : "目标点",
+            font_size: 17,
+            font_family: "楷体",
+            color: Cesium.Color.AZURE,
+            outline: true,
+            outlineColor: Cesium.Color.BLACK,
+            outlineWidth: 2,
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            pixelOffset: new Cesium.Cartesian2(0, -20), // 偏移量
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 2000000)
+          }
+        }
+      })
+      this.map.graphicLayer.addGraphic(graphic)
+
+      return graphic
+    },
+    visibilityAnalysis() {
+      this.clearAll()
+      this.map.graphicLayer.startDraw({
+        type: "polyline",
+        maxPointNum: 2,
+        style: {
+          color: "#55ff33",
+          width: 3
+        },
+        success: (graphic) => {
+          // 绘制成功后回调
+          const positions = graphic.positionsShow
+          this.map.graphicLayer.clear()
+          this.map.scene.globe.depthTestAgainstTerrain = true
+
+          const center = positions[0]
+          const targetPoint = positions[1]
+          this.sightline.add(center, targetPoint, { offsetHeight: 1.8 }) // 1.5是加人的身高等因素，略微抬高一些
+
+          this.createPoint(center, true)
+          this.createPoint(targetPoint, false)
+
+          this.map.scene.globe.depthTestAgainstTerrain = false
+        }
+      })
+    },
+
+    // 可视域分析
+    // visibleRangeAnalysis() {
+    //   this.clearAll()
+    //   // this.graphicLayer.startDraw({
+    //   //   type: "viewShed",
+    //   //   style: {
+    //   //     angle: 60,
+    //   //     angle2: 45,
+    //   //     distance: 80,
+    //   //     heading: 44,
+    //   //     pitch: -12,
+    //   //     addHeight: 0.5 // 在坐标点增加的高度值，规避遮挡，效果更友好
+    //   //   }
+    //   // })
+    // },
+
+    // 清除
     clearAll() {
       this.slope.clear()
       this.contourLine.clear()
       this.floodByMaterial.clear()
+      this.sightline.clear()
+      this.map.graphicLayer.clear()
     }
 
   },
