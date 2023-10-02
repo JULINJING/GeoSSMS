@@ -1,13 +1,21 @@
 <template>
-  <div id="mainboard">
-    <div style="color: yellow;">这是面板位置</div>
-    <button @click="initAnalysis">初始化</button>
-    <button @click="slopeAnalysis">坡度分析</button>
-    <button @click="heightLineAnalysis">等高线分析</button>
-    <button @click="inundationAnalysis">淹没分析</button>
-    <button @click="visibilityAnalysis">通视分析</button>
-    <button @click="visibleRangeAnalysis">可视域分析</button>
-    <button @click="clearAll">清空</button>
+  <div class="infoview" style="overflow: auto; max-height: 850px; width:240px; top:60px;right:320px;"
+    id="cameraInfoWindow">
+    <h3 style="text-align: center; font-size: 24px; color: rgb(94, 159, 250);">分析功能</h3>
+    <table class="mars-table">
+      <tbody>
+        <tr v-for="analysisObj in analysisArray">
+          <div @click="analysisObj.func" class="analysis">
+            <img :src="'/imgs/analysis/' + analysisObj.imgName" style="width: 100%; height: 100px; margin-bottom: 5px;" />
+            <h3 style="text-align: center; font-size: 16px; margin-bottom: 5px;">{{ analysisObj.name }}</h3>
+          </div>
+        </tr>
+      </tbody>
+    </table>
+    <div style="position: relative;">
+      <el-button id="clear" @click="clearAll">清空</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -63,13 +71,41 @@ export default {
       // depthFailColor: Cesium.Color.fromCssColorString("#db2c8f"),
     })
 
+    const analysisArray = [
+      {
+        id: 1,
+        name: "坡度分析",
+        imgName: "slope.png",
+        func: this.slopeAnalysis
+      },
+      {
+        id: 2,
+        name: "等高线分析",
+        imgName: "heightLine.png",
+        func: this.heightLineAnalysis
+      },
+      {
+        id: 3,
+        name: "淹没分析",
+        imgName: "inundation.png",
+        func: this.inundationAnalysis
+      },
+      {
+        id: 4,
+        name: "通视分析",
+        imgName: "visibility.png",
+        func: this.visibilityAnalysis
+      },
+    ]
+
     return {
       buildingPostion,
       slope,
       contourLine,
       floodByMaterial,
       sightline,
-      centerDialogVisible: false,
+      analysisArray,
+      isInit: false,
     }
   },
   methods: {
@@ -85,10 +121,15 @@ export default {
       this.floodByMaterial.on(mars3d.EventType.end, function (e) {
         console.log("分析完成", e)
       })
+      console.log("初始化完成")
+      this.isInit = true
     },
 
     // 坡度坡向分析
     slopeAnalysis() {
+      if (!this.isInit) {
+        this.initAnalysis()
+      }
       this.clearAll();
       console.log("开始分析")
       this.contourLine = new mars3d.thing.ContourLine({
@@ -122,6 +163,9 @@ export default {
 
     // 等高线分析
     heightLineAnalysis() {
+      if (!this.isInit) {
+        this.initAnalysis()
+      }
       this.clearAll()
       console.log("等高线分析", this.buildingPostion)
       this.contourLine = new mars3d.thing.ContourLine({
@@ -156,13 +200,16 @@ export default {
 
     // 淹没分析
     inundationAnalysis() {
+      if (!this.isInit) {
+        this.initAnalysis()
+      }
       this.clearAll()
       const cartesianBuildingPosition = this.buildingPostion.map((bdp) => mars3d.LngLatPoint.toCartesian(bdp))
       this.floodByMaterial.addArea(cartesianBuildingPosition)
       this.floodByMaterial.setOptions({
         minHeight: 2953,
         maxHeight: 3029.7,
-        speed: 4
+        speed: 8
       })
       this.floodByMaterial.start()
       // mars3d.PolyUtil.interPolygonByDepth({ scene: this.map.scene, position: cartesianBuildingPosition }).then((result) => {
@@ -208,6 +255,9 @@ export default {
       return graphic
     },
     visibilityAnalysis() {
+      if (!this.isInit) {
+        this.initAnalysis()
+      }
       this.clearAll()
       this.map.graphicLayer.startDraw({
         type: "polyline",
@@ -275,5 +325,19 @@ export default {
   right: 10px;
   width: 300px;
   height: 450px;
+}
+
+.analysis:hover {
+  cursor: pointer;
+  background-color: #bfc4cca2;
+}
+
+#clear {
+  float: right;
+  background-color: rgb(81, 135, 242)
+}
+
+#clear:hover {
+  background-color: rgb(71, 105, 175)
 }
 </style>

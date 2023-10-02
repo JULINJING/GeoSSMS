@@ -17,7 +17,7 @@
             </div>
             <Layout />
             <mars-map :url="configUrl" @onload="onMapload" :options="mapOptions" />
-            <Analysis />
+            <Analysis v-show="analysisVisible" />
             <div id="leftBar" class="sideBar left opacity0">
                 <i id="leftClickSpan" class="iconfont opration-handler" aria-hidden="true"
                     @click="hideLeftPanel">&#xe653;</i>
@@ -118,13 +118,13 @@
                             <el-table-column width="100px" label="显示操作"
                                 :style="{ visibility: cameraVisible ? 'visible' : 'hidden' }">
                                 <template slot-scope="{row, $index}">
-                                    <el-button type="button" size="mini"
-                                        @click="tableShowChange(row, $index)">{{ row.show ? "取消显示" : "显示" }}</el-button>
+                                    <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{ row.show ?
+                                        "取消显示" : "显示" }}</el-button>
                                 </template></el-table-column>
                             <el-table-column width="100px" label="报警操作">
                                 <template slot-scope="{row, $index}">
-                                    <el-button type="button" size="mini"
-                                        @click="tableWarnChange(row, $index)">{{ row.warn ? "取消报警" : "报警" }}</el-button>
+                                    <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{ row.warn ?
+                                        "取消报警" : "报警" }}</el-button>
                                 </template></el-table-column>
                         </el-table>
                         <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -210,6 +210,7 @@ export default {
 
         return {
             simulationInfoWindowVisible: false,
+            analysisVisible: false,
             activeId: null,  // 用于跟踪当前激活的导航项的ID
             navItems: [
                 { id: 1, title: "智能物联", icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
@@ -335,6 +336,7 @@ export default {
                 case 1:
                     this.cameraWindowVisible = true;
                     this.simulationInfoWindowVisible = false
+                    this.analysisVisible = false
                     this.turnToBuilding()
                     this.addInfoUI()
                     this.addCameraUI()
@@ -349,6 +351,7 @@ export default {
                 case 2:
                     this.cameraWindowVisible = false;
                     this.simulationInfoWindowVisible = true
+                    this.analysisVisible = false
                     this.addInfoUI()
                     this.turnToBuilding()
                     this.hideCameraGraph();
@@ -366,6 +369,8 @@ export default {
                     break;
                 case 3:
                     this.cameraWindowVisible = false;
+                    this.simulationInfoWindowVisible = false
+                    this.analysisVisible = true
                     this.hideCameraGraph();
 
                     console.log(id)
