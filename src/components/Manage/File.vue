@@ -2,16 +2,16 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="name"></el-input>
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
+      <el-button class="ml-5-wbw" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
     <div style="margin: 10px 0">
       <el-upload :action="'http://' + serverIp + ':7071/file/upload2'" :show-file-list="false"
                  :on-success="handleFileUploadSuccess" style="display: inline-block">
-        <el-button type="primary" class="ml-5">上传文件 <i class="el-icon-top"></i></el-button>
+        <el-button type="primary" class="ml-5-wbw">上传文件 <i class="el-icon-top"></i></el-button>
       </el-upload>
       <el-popconfirm
-          class="ml-5"
+          class="ml-5-wbw"
           confirm-button-text='确定'
           cancel-button-text='我再想想'
           icon="el-icon-info"
@@ -29,7 +29,7 @@
       <el-table-column prop="id" label="ID" width="80"></el-table-column>
       <el-table-column prop="name" label="文件名称"></el-table-column>
       <el-table-column prop="type" label="文件类型"></el-table-column>
-      <el-table-column prop="size" label="文件大小(kb)"></el-table-column>
+      <el-table-column prop="size" label="文件大小"></el-table-column>
       <el-table-column label="预览">
         <template slot-scope="scope">
           <el-button type="primary" @click="preview(scope.row.url)">预览</el-button>
@@ -49,7 +49,7 @@
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-popconfirm
-              class="ml-5"
+              class="ml-5-wbw"
               confirm-button-text='确定'
               cancel-button-text='我再想想'
               icon="el-icon-info"

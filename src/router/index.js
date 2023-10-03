@@ -101,7 +101,7 @@ export const setRoutes = () => {
 
 // 重置我就再set一次路由
 setRoutes()
-
+setRoutes()
 
 //用路由守卫来做nav显示
 router.beforeEach((to, from, next) => {
