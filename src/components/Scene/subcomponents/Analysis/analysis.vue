@@ -22,6 +22,7 @@
 <script>
 import 'mars3d/dist/mars3d.css'
 import * as mars3d from 'mars3d'
+import {Cesium} from "mars3d";
 
 export default {
   name: "Analysis",

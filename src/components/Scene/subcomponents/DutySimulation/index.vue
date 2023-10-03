@@ -91,7 +91,7 @@ export default {
       fixedRoute1: null,
       fixedRoute2: null,
       isAirPaused: false,
-      isPersonPaused: false
+      isPersonPaused: false,
     }
   },
   created(){

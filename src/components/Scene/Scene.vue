@@ -1318,10 +1318,12 @@ export default {
 
 </script>
 
-<style lang="less" scoped>
-@import "http://mars3d.cn/css/style.css";
-@import "http://mars3d.cn/lib/bootstrap/css/bootstrap.css";
 
+<style lang="less" scoped>
+//@import "http://mars3d.cn/css/style.css";
+//@import "http://mars3d.cn/lib/bootstrap/css/bootstrap.css";
+@import "@/components/Scene/style/style.css";
+@import "@/components/Scene/style/bootstrap.css";
 // 底部导航栏
 .bottom-nav {
     position: fixed;
@@ -1648,4 +1650,12 @@ export default {
 
 //   overflow-x: hidden;
 // }
+
+
+
+
+
+
+
+
 </style>

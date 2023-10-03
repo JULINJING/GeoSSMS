@@ -2,13 +2,13 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="name"></el-input>
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
+      <el-button class="ml-5-wbw" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
     <div style="margin: 10px 0">
       <el-button type="primary" @click="handleAdd" v-if="user.role === 'ROLE_ADMIN'|| user.role === 'ROLE_CHARGE'||user.role === 'ROLE_NORMAL'">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
       <el-popconfirm
-          class="ml-5"
+          class="ml-5-wbw"
           confirm-button-text='确定'
           cancel-button-text='我再想想'
           icon="el-icon-info"
@@ -36,7 +36,7 @@
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)" v-if="user.role === 'ROLE_ADMIN'|| user.role === 'ROLE_CHARGE'">编辑 <i class="el-icon-edit"></i></el-button>
           <el-popconfirm
-              class="ml-5"
+              class="ml-5-wbw"
               confirm-button-text='确定'
               cancel-button-text='我再想想'
               icon="el-icon-info"

@@ -2,13 +2,13 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="name"></el-input>
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
+      <el-button class="ml-5-wbw" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
     <div style="margin: 10px 0">
       <el-button type="primary" @click="handleAdd" v-if="user.role === 'ROLE_ADMIN'">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
       <el-popconfirm
-          class="ml-5"
+          class="ml-5-wbw"
           confirm-button-text='确定'
           cancel-button-text='我再想想'
           icon="el-icon-info"
@@ -26,7 +26,7 @@
       <el-table-column prop="id" label="ID" width="80"></el-table-column>
       <el-table-column prop="name" label="活动名称"></el-table-column>
       <el-table-column prop="fund" label="活动经费"></el-table-column>
-      <el-table-column prop="times" label="志愿时长"></el-table-column>
+      <el-table-column prop="times" label="演习时长"></el-table-column>
       <el-table-column prop="charge" label="负责人"></el-table-column>
       <el-table-column label="启用" v-if="user.role === 'ROLE_ADMIN'">
         <template slot-scope="scope">
@@ -40,7 +40,7 @@
           <el-button type="danger" @click="cancelActivity(scope.row.id)" v-if="user.role === 'ROLE_NORMAL'">取消</el-button>
           <el-button type="success" @click="handleEdit(scope.row)" v-if="user.role === 'ROLE_ADMIN'">编辑 <i class="el-icon-edit"></i></el-button>
           <el-popconfirm
-              class="ml-5"
+              class="ml-5-wbw"
               confirm-button-text='确定'
               cancel-button-text='我再想想'
               icon="el-icon-info"
@@ -74,7 +74,7 @@
         <el-form-item label="活动经费">
           <el-input v-model="form.fund" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="志愿时长">
+        <el-form-item label="演习时长">
           <el-input v-model="form.times" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="负责人">

@@ -2,21 +2,12 @@
   <div class="dark">
     <div id="viewReset" class="infoview" style="overflow: auto; top: 10px">
       <div class="btn-group">
-        <button id="btn_start" type="button" class="btn btn-primary"><i class="fa fa-play-circle-o"></i>开始</button>
-        <button id="btn_pause" type="button" class="btn btn-primary btn-right5" style="display: none"><i
+        <button id="btn_md" type="button" class="btn btn-primary btn-mb" v-if="!isPlay || isPause" @click="play"><i class="fa fa-play-circle-o"></i>{{ isPause ? "继续" : "开始" }}</button>
+        <button id="btn_pause" type="button" class="btn btn-primary btn-right5 btn-mb" style="display: none" v-if="isPlay && !isPause" @click="pause"><i
             class="fa fa-pause-circle-o"></i>暂停</button>
-        <button id="btn_proceed" type="button" class="btn btn-primary btn-right5" style="display: none"><i
-            class="fa fa-play-circle-o"></i>继续</button>
-        <button id="btn_stop" type="button" class="btn btn-primary" style="display: none"><i
+        <button id="btn_stop" type="button" class="btn btn-primary btn-mb" style="display: none" v-if="isPlay" @click="stop"><i
             class="fa fa-stopFun-circle-o"></i>停止</button>
       </div>
-
-      <ul id="treeOverlays" style="padding: 0"></ul>
-      <br />
-      总时长: <span id="alltimes">0s</span> &nbsp;&nbsp;
-      <br />
-      当前:&nbsp;&nbsp;<span id="thisStep">无</span> &nbsp;&nbsp;
-      <span id="thistimes"></span>
     </div>
   </div>
 </template>
@@ -25,20 +16,166 @@
 
 
 
-<script>
+<script setup>
 
-export default {
-  name: "ScenarioRehearsal",
-  data() {
-    return {
-      data: {
-        isPlay:false,
-        isPause:false,
-        totalTimes:"",
+import * as mars3d from "mars3d";
+const Cesium = mars3d.Cesium
 
-      }
+
+import { ref, onMounted } from "vue"
+import * as mapWork from "./map.js"
+const isPlay = ref(false)
+const isPause = ref(false)
+const totalTimes = ref("")
+const selectedKeys = ref<[]>([])
+const counter = ref(0)
+const currentIndex = ref(0)
+let timer = null
+let interval = null
+const animations = []
+const currentWork = ref("")
+const showPause = ref(true)
+
+onMounted(() => {
+  let i = 0
+  let time = 0
+  treeData.forEach((item) => {
+    const animationItem = item
+    animationItem.index = i
+    time += item.times
+    i++
+    animations.push(animationItem)
+  })
+  mapWork.addGraphics()
+  totalTimes.value = `${Math.floor(time / 60)}分${time % 60}秒`
+})
+
+function play() {
+  isPlay.value = true
+  console.log(isPlay.value)
+  isPause.value = false
+  start()
+}
+function pause() {
+  clearTimeout(timer)
+  currentIndex.value--
+  isPause.value = true
+}
+
+function stop() {
+  isPlay.value = false
+  isPause.value = false
+
+  if (timer) {
+    clearTimeout(timer)
+  }
+  if (interval) {
+    clearInterval(interval)
+  }
+
+  counter.value = 0
+  currentIndex.value = 0
+  timer = null
+  interval = null
+  currentWork.value = ""
+  mapWork.stop()
+}
+
+const startBegin = () => {
+  currentIndex.value = item.index
+  play()
+}
+
+const start = () => {
+  if (timer) {
+    clearTimeout(timer)
+  }
+  if (interval) {
+    clearInterval(interval)
+  }
+
+  if (currentIndex.value < animations.length) {
+    const animate = animations[currentIndex.value]
+    selectedKeys.value = [animate.key]
+    currentWork.value = `${animate.title}(${animate.times}秒)`
+    counter.value = animate.times
+    countOn()
+    animate.widget()
+    currentIndex.value++
+    timer = setTimeout(() => {
+      start()
+    }, animate.times * 1000)
+  } else {
+    stop()
+  }
+}
+
+const treeData = [
+  {
+    title: "发送信号",
+    key: "01",
+    times: 5,
+    widget() {
+      mapWork.firstStep()
     }
   },
+  {
+    title: "传送信号",
+    key: "02",
+    times: 5,
+    widget() {
+      mapWork.secondStep()
+    }
+  },
+  {
+    title: "下达指令",
+    key: "03",
+    times: 5,
+    widget() {
+      mapWork.thirdStep()
+    }
+  },
+  {
+    title: "准备出发",
+    key: "04",
+    times: 5,
+    widget() {
+      mapWork.forthStep()
+    }
+  },
+  {
+    title: "出发",
+    key: "05",
+    times: 7,
+    widget() {
+      mapWork.fifthStep()
+    }
+  },
+  {
+    title: "处理泄露",
+    key: "06",
+    times: 5,
+    widget() {
+      mapWork.sixthStep()
+    }
+  },
+  {
+    title: "完成营救",
+    key: "07",
+    times: 4,
+    widget() {
+      mapWork.seventhStep()
+    }
+  }
+]
+
+function countOn() {
+  interval = setInterval(() => {
+    counter.value--
+    if (counter.value <= 0) {
+      clearInterval(interval)
+    }
+  }, 1000)
 }
 </script>
 
@@ -104,6 +241,10 @@ export default {
 }
 
 
+
+.btn-mb {
+  margin-bottom: 10px;
+}
 
 
 </style>

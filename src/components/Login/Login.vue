@@ -8,17 +8,17 @@
     <div class="login-box">
       <div class="login-text" v-if="typeView != 2">
         <a
-          href="javascript:;"
-          :class="typeView == 0 ? 'active' : ''"
-          @click="handleTab(0)"
-          >登录</a
+            href="javascript:;"
+            :class="typeView == 0 ? 'active' : ''"
+            @click="handleTab(0)"
+        >登录</a
         >
         <b>|</b>
         <a
-          href="javascript:;"
-          :class="typeView == 1 ? 'active' : ''"
-          @click="handleTab(1)"
-          >注册</a
+            href="javascript:;"
+            :class="typeView == 1 ? 'active' : ''"
+            @click="handleTab(1)"
+        >注册</a
         >
       </div>
       <!-- 登录模块 -->
@@ -29,95 +29,95 @@
         <span class="forget-pwd" @click.stop="forgetPwd">忘记密码?</span>
       </div> -->
       <el-form
-        :model="user"
-        :rules="loginRules"
-        ref="userForm1"
-        v-show="typeView == 0"
+          :model="user"
+          :rules="loginRules"
+          ref="userForm1"
+          v-show="typeView == 0"
       >
         <el-form-item class="mobileInput" prop="username">
           <el-input
-            placeholder="请输入账号"
-            size="medium"
-            prefix-icon="el-icon-user"
-            v-model="user.username"
+              placeholder="请输入账号"
+              size="medium"
+              prefix-icon="el-icon-user"
+              v-model="user.username"
           ></el-input>
         </el-form-item>
         <el-form-item class="mobileInput" prop="password">
           <el-input
-            placeholder="请输入密码"
-            size="medium"
-            prefix-icon="el-icon-lock"
-            show-password
-            v-model="user.password"
-            @keyup.native.enter="login"
+              placeholder="请输入密码"
+              size="medium"
+              prefix-icon="el-icon-lock"
+              show-password
+              v-model="user.password"
+              @keyup.native.enter="login"
           ></el-input>
         </el-form-item>
         <el-form-item class="bottomTool" style="text-align: right">
           <el-button
-            type="info"
-            size="small"
-            autocomplete="off"
-            @click="handleTab(1)"
-            >注册</el-button
+              type="info"
+              size="small"
+              autocomplete="off"
+              @click="handleTab(1)"
+          >注册</el-button
           >
           <el-button
-            type="primary"
-            size="small"
-            autocomplete="off"
-            @click="login"
-            >登录</el-button
+              type="primary"
+              size="small"
+              autocomplete="off"
+              @click="login"
+          >登录</el-button
           >
         </el-form-item>
       </el-form>
 
       <!-- 注册模块 -->
       <el-form
-        :model="user"
-        :rules="registerRules"
-        ref="userForm2"
-        v-show="typeView == 1"
+          :model="user"
+          :rules="registerRules"
+          ref="userForm2"
+          v-show="typeView == 1"
       >
         <el-form-item class="mobileInput" prop="username">
           <el-input
-            placeholder="请输入账号"
-            size="medium"
-            prefix-icon="el-icon-user"
-            v-model="user.username"
+              placeholder="请输入账号"
+              size="medium"
+              prefix-icon="el-icon-user"
+              v-model="user.username"
           ></el-input>
         </el-form-item>
         <el-form-item class="mobileInput" prop="password">
           <el-input
-            placeholder="请输入密码"
-            size="medium"
-            prefix-icon="el-icon-lock"
-            show-password
-            v-model="user.password"
+              placeholder="请输入密码"
+              size="medium"
+              prefix-icon="el-icon-lock"
+              show-password
+              v-model="user.password"
           ></el-input>
         </el-form-item>
         <el-form-item class="mobileInput" prop="confirmPassword">
           <el-input
-            placeholder="请确认密码"
-            size="medium"
-            prefix-icon="el-icon-lock"
-            show-password
-            v-model="user.confirmPassword"
-            @keyup.native.enter="register"
+              placeholder="请确认密码"
+              size="medium"
+              prefix-icon="el-icon-lock"
+              show-password
+              v-model="user.confirmPassword"
+              @keyup.native.enter="register"
           ></el-input>
         </el-form-item>
         <el-form-item class="bottomTool" style="text-align: right">
           <el-button
-            type="primary"
-            size="small"
-            autocomplete="off"
-            @click="register"
-            >注册</el-button
+              type="primary"
+              size="small"
+              autocomplete="off"
+              @click="register"
+          >注册</el-button
           >
           <el-button
-            type="info"
-            size="small"
-            autocomplete="off"
-            @click="handleTab(0)"
-            >返回登录</el-button
+              type="info"
+              size="small"
+              autocomplete="off"
+              @click="handleTab(0)"
+          >返回登录</el-button
           >
         </el-form-item>
       </el-form>
@@ -356,8 +356,8 @@ export default {
         color: #fefefe;
         vertical-align: middle;
         text-shadow: 0px 1px 0px #c0c0c0, 0px 2px 0px #b0b0b0,
-          0px 3px 0px #a0a0a0, 0px 4px 0px #909090,
-          0px 5px 10px rgba(0, 0, 0, 0.9);
+        0px 3px 0px #a0a0a0, 0px 4px 0px #909090,
+        0px 5px 10px rgba(0, 0, 0, 0.9);
         user-select: none;
       }
     }
@@ -440,8 +440,8 @@ export default {
         vertical-align: middle;
         color: #fefefe;
         text-shadow: 0px 1px 0px #c0c0c0, 0px 2px 0px #b0b0b0,
-          0px 3px 0px #a0a0a0, 0px 4px 0px #909090,
-          0px 5px 10px rgba(0, 0, 0, 0.9);
+        0px 3px 0px #a0a0a0, 0px 4px 0px #909090,
+        0px 5px 10px rgba(0, 0, 0, 0.9);
         user-select: none;
       }
     }
