@@ -9,34 +9,30 @@
         </div>
         <div id="PC">
             <div id="nav-bar" class="bottom-nav">
-                <div
-                    v-for="item in navItems"
-                    :key="item.id"
-                    class="nav-item"
-                    @click="clickItem(item.id)"
-                    @mouseover="hoverItem(item.id)"
-                    @mouseout="unhoverItem(item.id)"
-                >
+                <div v-for="item in navItems" :key="item.id" class="nav-item" @click="clickItem(item.id)"
+                    @mouseover="hoverItem(item.id)" @mouseout="unhoverItem(item.id)">
                     <img :src="activeId === item.id ? item.activeIcon : item.icon" class="nav-icon" />
                     <h3 style="text-align: center;color: #f1f1f1;font-size: 1.2rem;font-weight: bold;">{{ item.title }}</h3>
                 </div>
             </div>
             <Layout />
             <mars-map :url="configUrl" @onload="onMapload" :options="mapOptions" />
+            <Analysis v-show="analysisVisible" />
             <div id="leftBar" class="sideBar left opacity0">
-                <i id="leftClickSpan" class="iconfont opration-handler" aria-hidden="true" @click="hideLeftPanel">&#xe653;</i>
+                <i id="leftClickSpan" class="iconfont opration-handler" aria-hidden="true"
+                    @click="hideLeftPanel">&#xe653;</i>
                 <div class="bar-content bar-content-left" id="leftContent">
                     <div class="chartbox">
                         <h5>建筑状态</h5>
 
                         <div id="weather1" style="overflow: scroll;" class="table-wrapper">
                             <el-table :data="buildInfo">
-                            <el-table-column width="85px" prop="name" label="名称" />
-                            <el-table-column width="45px" prop="status" label="状态" />
-                            <el-table-column width="45px" prop="pop" label="人数" />
-                            <el-table-column width="95px" prop="prop" label="性质" />
-                           
-                        </el-table>
+                                <el-table-column width="85px" prop="name" label="名称" />
+                                <el-table-column width="45px" prop="status" label="状态" />
+                                <el-table-column width="45px" prop="pop" label="人数" />
+                                <el-table-column width="95px" prop="prop" label="性质" />
+
+                            </el-table>
 
                         </div>
                     </div>
@@ -44,11 +40,12 @@
                         <h5>异常信息</h5>
                         <div id="weather2" style="overflow: scroll;" class="table-wrapper">
                             <el-table :data="warnInfo">
-                            <el-table-column width="70px" prop="name" label="名称" />
-                            <el-table-column width="65px" prop="type" label="类型" />
-                            <el-table-column width="95px" prop="event" label="异常事件" />
-                           
-                        </el-table></div>
+                                <el-table-column width="70px" prop="name" label="名称" />
+                                <el-table-column width="65px" prop="type" label="类型" />
+                                <el-table-column width="95px" prop="event" label="异常事件" />
+
+                            </el-table>
+                        </div>
 
                     </div>
                     <div class="chartbox">
@@ -61,7 +58,8 @@
             </div>
 
             <div id="RightBar" class="sideBar right opacity0">
-                <i id="rightClickSpan" class="iconfont opration-handler" aria-hidden="true" @click="hideRightPanel">&#xe653;</i>
+                <i id="rightClickSpan" class="iconfont opration-handler" aria-hidden="true"
+                    @click="hideRightPanel">&#xe653;</i>
                 <div class="bar-content bar-content-right" id="rightContent">
                     <div class="chartbox">
                         <h5>五大多源数据</h5>
@@ -88,69 +86,63 @@
         </div>
 
         <!-- 面板 -->
-        <div class="infoview" style="overflow: auto; max-height: 850px; width:410px; top:60px;right:320px;" id="cameraInfoWindow"
-        :style="{ visibility: cameraWindowVisible ? 'visible' : 'hidden' }">
+        <div class="infoview" style="overflow: auto; max-height: 850px; width:410px; top:60px;right:320px;"
+            id="cameraInfoWindow" :style="{ visibility: cameraWindowVisible ? 'visible' : 'hidden' }">
             <table class="mars-table">
                 <tbody>
 
                     <tr>
-                        
-                        选择监控数据：                        
-  <el-select v-model="monitorSelecctValue" placeholder="请选择数据源" @change="changeMonitorSelect" transfer="true"    :popper-append-to-body="false" >
-    <el-option
-      v-for="item in monitorData"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
-                    <!-- <td>下拉框：</td> -->
-                    <!-- <td> -->
+
+                        选择监控数据：
+                        <el-select v-model="monitorSelecctValue" placeholder="请选择数据源" @change="changeMonitorSelect"
+                            transfer="true" :popper-append-to-body="false">
+                            <el-option v-for="item in monitorData" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <!-- <td>下拉框：</td> -->
+                        <!-- <td> -->
                         <!-- <select id="txtCrs" class="selectpicker form-control">
                         <option value="" selected="selected">默认</option>
                         <option value="EPSG:3857">火星</option>
                         <option value="EPSG:4326">地球</option>
                         <option value="EPSG:4490">太阳</option>
                         </select> -->
-                    <!-- </td> -->
+                        <!-- </td> -->
                     </tr>
                     <div class="table-wrapper">
-                        <el-table
-                            :cell-style="tableFormatWarnColor"
-                            :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-                            page-size:5>
+                        <el-table :cell-style="tableFormatWarnColor"
+                            :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" page-size:5>
                             <el-table-column width="100px" prop="name" label="监控名称" />
                             <el-table-column width="70px" prop="warn" label="状态" :formatter="tableFormatWarnStr" />
-                            <el-table-column width="100px" label="显示操作"  :style="{ visibility: cameraVisible ? 'visible' : 'hidden' }">
-                            <template slot-scope="{row, $index}">
-              <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{row.show?"取消显示":"显示"}}</el-button>
-            </template></el-table-column>
-                            <el-table-column width="100px" label="报警操作" >
-                            <template slot-scope="{row, $index}">
-              <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{row.warn?"取消报警":"报警"}}</el-button>
-            </template></el-table-column>
+                            <el-table-column width="100px" label="显示操作"
+                                :style="{ visibility: cameraVisible ? 'visible' : 'hidden' }">
+                                <template slot-scope="{row, $index}">
+                                    <el-button type="button" size="mini" @click="tableShowChange(row, $index)">{{ row.show ?
+                                        "取消显示" : "显示" }}</el-button>
+                                </template></el-table-column>
+                            <el-table-column width="100px" label="报警操作">
+                                <template slot-scope="{row, $index}">
+                                    <el-button type="button" size="mini" @click="tableWarnChange(row, $index)">{{ row.warn ?
+                                        "取消报警" : "报警" }}</el-button>
+                                </template></el-table-column>
                         </el-table>
-                        <el-pagination align='center' 
-                            @size-change="handleSizeChange" 
-                            @current-change="handleCurrentChange"
-                            :current-page="currentPage" 
-                            :page-sizes="[2,5,10]" 
-                            :page-size="pageSize" 
-                            layout="total,  prev, pager, next, jumper" 
-                            :total="tableData.length"
-                            :popper-append-to-body="false"
-                            width="370px">
+                        <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                            :current-page="currentPage" :page-sizes="[2, 5, 10]" :page-size="pageSize"
+                            layout="total,  prev, pager, next, jumper" :total="tableData.length"
+                            :popper-append-to-body="false" width="370px">
                         </el-pagination>
                     </div>
                 </tbody>
             </table>
         </div>
         <DutySimulation :style="{ visibility: simulationInfoWindowVisible ? 'visible' : 'hidden' }"></DutySimulation>
-      <ScenarioRehearsal></ScenarioRehearsal>
+        <ScenarioRehearsal></ScenarioRehearsal>
     </div>
 </template>
 
 <script>
+import Analysis from "./subcomponents/Analysis/analysis.vue"
 import Layout from "./subcomponents/Header/index";
 import { mapMutations } from "vuex";
 import MarsMap from "./mars-work/mars-map.vue"
@@ -175,7 +167,9 @@ export default {
         MarsMap,
         Layout,
         DutySimulation,
-        ScenarioRehearsal
+        ScenarioRehearsal,
+
+        Analysis
     },
     data() {
         const basePathUrl = window.basePathUrl || ' '
@@ -187,6 +181,9 @@ export default {
                 fxaa: false,
                 contextOptions: {
                     requestWebgl1: true
+                },
+                globe: {
+                    depthTestAgainstTerrain: true // 不加无法投射到地形上
                 }
             },
             layers: [{
@@ -202,23 +199,24 @@ export default {
                 scale: 0.02,
                 show: true
             },
-            {id: "哨塔1",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.300796, lat: 37.999251, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔11",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.300796, lat: 37.999251, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
-            {id: "哨塔2",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.302279, lat: 37.996059, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔22",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.302279, lat: 37.996059, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
-            {id: "哨塔3",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.297937, lat: 37.994942, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔33",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.297937, lat: 37.994942, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
-            {id: "哨塔4",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.296474, lat: 37.998026, alt: 2967.7 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},{id: "哨塔44",type: "3dtiles",url: "../../../mars3dModels/tower/tileset.json",position: { lng: 101.296474, lat: 37.998026, alt: 2993.8 },maximumScreenSpaceError: 16,tooltip: "哨塔",rotation: {z: 70},scale: 6, show: true},
-            ] 
+            { id: "哨塔1", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.300796, lat: 37.999251, alt: 2967.7 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true }, { id: "哨塔11", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.300796, lat: 37.999251, alt: 2993.8 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true },
+            { id: "哨塔2", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.302279, lat: 37.996059, alt: 2967.7 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true }, { id: "哨塔22", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.302279, lat: 37.996059, alt: 2993.8 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true },
+            { id: "哨塔3", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.297937, lat: 37.994942, alt: 2967.7 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true }, { id: "哨塔33", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.297937, lat: 37.994942, alt: 2993.8 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true },
+            { id: "哨塔4", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.296474, lat: 37.998026, alt: 2967.7 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true }, { id: "哨塔44", type: "3dtiles", url: "../../../mars3dModels/tower/tileset.json", position: { lng: 101.296474, lat: 37.998026, alt: 2993.8 }, maximumScreenSpaceError: 16, tooltip: "哨塔", rotation: { z: 70 }, scale: 6, show: true },
+            ]
         }
         // var windLayer = new mars3d.layer.WindLayer()
         var chinaLayer = new mars3d.layer.GeoJsonLayer()
 
         return {
             simulationInfoWindowVisible: false,
+            analysisVisible: false,
             activeId: null,  // 用于跟踪当前激活的导航项的ID
             navItems: [
-                { id: 1, title:"智能物联", icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
-                { id: 2, title:"执勤模拟", icon: "../../../imgs/navLogo/执勤模拟-normal.svg", normalIcon: "../../../imgs/navLogo/执勤模拟-normal.svg", hoverIcon: "../../../imgs/navLogo/执勤模拟-hover.svg", activeIcon: "../../../imgs/navLogo/执勤模拟-click.svg" },
-                { id: 3, title:"辅助分析", icon: "../../../imgs/navLogo/辅助分析-normal.svg", normalIcon: "../../../imgs/navLogo/辅助分析-normal.svg", hoverIcon: "../../../imgs/navLogo/辅助分析-hover.svg", activeIcon: "../../../imgs/navLogo/辅助分析-click.svg" },
-                { id: 4, title:"方案预演", icon: "../../../imgs/navLogo/方案预演-normal.svg", normalIcon: "../../../imgs/navLogo/方案预演-normal.svg", hoverIcon: "../../../imgs/navLogo/方案预演-hover.svg", activeIcon: "../../../imgs/navLogo/方案预演-click.svg" },
+                { id: 1, title: "智能物联", icon: "../../../imgs/navLogo/智能物联-normal.svg", normalIcon: "../../../imgs/navLogo/智能物联-normal.svg", hoverIcon: "../../../imgs/navLogo/智能物联-hover.svg", activeIcon: "../../../imgs/navLogo/智能物联-click.svg" },
+                { id: 2, title: "执勤模拟", icon: "../../../imgs/navLogo/执勤模拟-normal.svg", normalIcon: "../../../imgs/navLogo/执勤模拟-normal.svg", hoverIcon: "../../../imgs/navLogo/执勤模拟-hover.svg", activeIcon: "../../../imgs/navLogo/执勤模拟-click.svg" },
+                { id: 3, title: "辅助分析", icon: "../../../imgs/navLogo/辅助分析-normal.svg", normalIcon: "../../../imgs/navLogo/辅助分析-normal.svg", hoverIcon: "../../../imgs/navLogo/辅助分析-hover.svg", activeIcon: "../../../imgs/navLogo/辅助分析-click.svg" },
+                { id: 4, title: "方案预演", icon: "../../../imgs/navLogo/方案预演-normal.svg", normalIcon: "../../../imgs/navLogo/方案预演-normal.svg", hoverIcon: "../../../imgs/navLogo/方案预演-hover.svg", activeIcon: "../../../imgs/navLogo/方案预演-click.svg" },
             ],
 
             configUrl: basePathUrl + 'config/config.json',
@@ -235,11 +233,11 @@ export default {
 
             // 属性名
             fieldData: [
-                { name: "房屋监控", type: "物联网监控",typecolor:'typeA' },
-                { name: "无人机", type: "巡航拍摄",typecolor:'typeB' },
-                { name: "高清摄像头", type: "视频设备",typecolor:'typeC' },
-                { name: "激光光栅", type: "物体探测",typecolor:'typeA' },
-                { name: "雷达扫描", type: "物体探测",typecolor:'typeB' }
+                { name: "房屋监控", type: "物联网监控", typecolor: 'typeA' },
+                { name: "无人机", type: "巡航拍摄", typecolor: 'typeB' },
+                { name: "高清摄像头", type: "视频设备", typecolor: 'typeC' },
+                { name: "激光光栅", type: "物体探测", typecolor: 'typeA' },
+                { name: "雷达扫描", type: "物体探测", typecolor: 'typeB' }
             ],
 
             // 统计图表
@@ -262,68 +260,68 @@ export default {
             myOptionPower: {},
 
             //建筑信息
-            buildInfo:[{"name":"特殊建筑1","status":"正常","pop":"2","floor":"2","prop":"管理人员住宅","lnglat":[101.298535,37.995748,2996.7 ]},
-                {"name":"特殊建筑2","status":"正常","pop":"7","floor":"2","prop":"管理人员住宅","lnglat":[101.298206,37.996404,3003 ]},
-                {"name":"特殊建筑3","status":"正常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.297843,37.997071,3002.6 ]},
-                {"name":"特殊建筑4","status":"正常","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.297549,37.99771,3002.2 ]},
-                {"name":"特殊建筑5","status":"正常","pop":"6","floor":"2","prop":"特殊人群住宅","lnglat":[101.299855,37.996242,3003.4 ]},
-                {"name":"特殊建筑6","status":"异常","pop":"3","floor":"2","prop":"特殊人群住宅","lnglat":[101.299003,37.998147,3002.2 ]},
-                {"name":"特殊建筑7","status":"异常","pop":"1","floor":"2","prop":"特殊人群住宅","lnglat":[101.301196,37.996613,3003.4 ]},
-                {"name":"特殊建筑8","status":"异常","pop":"7","floor":"2","prop":"特殊人群住宅","lnglat":[101.300948,37.997332,3003 ]},
-                {"name":"特殊建筑9","status":"警戒","pop":"4","floor":"2","prop":"特殊人群住宅","lnglat":[101.300623,37.997913,3002.6 ]},
-                {"name":"特殊建筑10","status":"警戒","pop":"2","floor":"2","prop":"特殊人群住宅","lnglat":[101.300358,37.998515,3002.2 ]},
-                {"name":"中央公园","status":"正常","pop":"0","floor":"0","prop":"无住宅","lnglat":[101.299339,37.997085,2982.6 ]},
+            buildInfo: [{ "name": "特殊建筑1", "status": "正常", "pop": "2", "floor": "2", "prop": "管理人员住宅", "lnglat": [101.298535, 37.995748, 2996.7] },
+            { "name": "特殊建筑2", "status": "正常", "pop": "7", "floor": "2", "prop": "管理人员住宅", "lnglat": [101.298206, 37.996404, 3003] },
+            { "name": "特殊建筑3", "status": "正常", "pop": "1", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.297843, 37.997071, 3002.6] },
+            { "name": "特殊建筑4", "status": "正常", "pop": "2", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.297549, 37.99771, 3002.2] },
+            { "name": "特殊建筑5", "status": "正常", "pop": "6", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.299855, 37.996242, 3003.4] },
+            { "name": "特殊建筑6", "status": "异常", "pop": "3", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.299003, 37.998147, 3002.2] },
+            { "name": "特殊建筑7", "status": "异常", "pop": "1", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.301196, 37.996613, 3003.4] },
+            { "name": "特殊建筑8", "status": "异常", "pop": "7", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.300948, 37.997332, 3003] },
+            { "name": "特殊建筑9", "status": "警戒", "pop": "4", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.300623, 37.997913, 3002.6] },
+            { "name": "特殊建筑10", "status": "警戒", "pop": "2", "floor": "2", "prop": "特殊人群住宅", "lnglat": [101.300358, 37.998515, 3002.2] },
+            { "name": "中央公园", "status": "正常", "pop": "0", "floor": "0", "prop": "无住宅", "lnglat": [101.299339, 37.997085, 2982.6] },
             ],
             //监控信息
-            cameraInfo:[{"name":"监控1","warn":false,"show":true,"lnglat":[101.302113,37.996224,3000.3  ]},
-            {"name":"监控2","warn":true,"show":true,"lnglat":[101.300802,37.999158,2998.5 ]},
-            {"name":"监控3","warn":true,"show":true,"lnglat":[101.296672,37.997986,2998.6 ]},
-            {"name":"监控4","warn":false,"show":true,"lnglat":[101.340082,37.996392,3026.8 ]},
-            {"name":"监控12","warn":true,"show":true,"lnglat":[101.298009,37.995055,3000.4 ]},
-            {"name":"监控13","warn":true,"show":true,"lnglat":[101.298009,37.993055,3000.4 ]},
-        ],
-            //无人机信息
-            UAVInfo:[{"name":"无人机1","warn":false,"show":true,"lnglat":[101.300783,37.999387,3040 ]},
-            {"name":"无人机2","warn":true,"show":true,"lnglat":[101.296727,37.998116,3010 ]},
-            {"name":"无人机3","warn":true,"show":true,"lnglat":[101.297172,37.994219,3020 ]},
-            {"name":"无人机4","warn":false,"show":true,"lnglat":[101.301989,37.996072,3030 ]},
-            {"name":"无人机5","warn":true,"show":true,"lnglat":[101.301649,37.997679,3040 ]},
-            {"name":"无人机6","warn":true,"show":true,"lnglat":[101.29696,37.996347,3050 ]},
-            {"name":"无人机7","warn":true,"show":true,"lnglat":[101.297977,37.998488,3060]},
-            {"name":"无人机8","warn":false,"show":true,"lnglat":[101.299695,37.998981,3070 ]},
-            {"name":"无人机9","warn":true,"show":true,"lnglat":[101.299164,37.995121,3080  ]},
-            {"name":"无人机10","warn":true,"show":true,"lnglat":[101.300868,37.995662,3090 ]},
+            cameraInfo: [{ "name": "监控1", "warn": false, "show": true, "lnglat": [101.302113, 37.996224, 3000.3] },
+            { "name": "监控2", "warn": true, "show": true, "lnglat": [101.300802, 37.999158, 2998.5] },
+            { "name": "监控3", "warn": true, "show": true, "lnglat": [101.296672, 37.997986, 2998.6] },
+            { "name": "监控4", "warn": false, "show": true, "lnglat": [101.340082, 37.996392, 3026.8] },
+            { "name": "监控12", "warn": true, "show": true, "lnglat": [101.298009, 37.995055, 3000.4] },
+            { "name": "监控13", "warn": true, "show": true, "lnglat": [101.298009, 37.993055, 3000.4] },
             ],
             //无人机信息
-            LightInfo:[{"name":"光栅1","warn":false},
-            {"name":"光栅2","warn":true},
-            {"name":"光栅3","warn":true},
-            {"name":"光栅4","warn":false},
-            {"name":"光栅5","warn":true},],
-            warnInfo:[{"name":"监控1","type":"监控","event":"行人"}],
+            UAVInfo: [{ "name": "无人机1", "warn": false, "show": true, "lnglat": [101.300783, 37.999387, 3040] },
+            { "name": "无人机2", "warn": true, "show": true, "lnglat": [101.296727, 37.998116, 3010] },
+            { "name": "无人机3", "warn": true, "show": true, "lnglat": [101.297172, 37.994219, 3020] },
+            { "name": "无人机4", "warn": false, "show": true, "lnglat": [101.301989, 37.996072, 3030] },
+            { "name": "无人机5", "warn": true, "show": true, "lnglat": [101.301649, 37.997679, 3040] },
+            { "name": "无人机6", "warn": true, "show": true, "lnglat": [101.29696, 37.996347, 3050] },
+            { "name": "无人机7", "warn": true, "show": true, "lnglat": [101.297977, 37.998488, 3060] },
+            { "name": "无人机8", "warn": false, "show": true, "lnglat": [101.299695, 37.998981, 3070] },
+            { "name": "无人机9", "warn": true, "show": true, "lnglat": [101.299164, 37.995121, 3080] },
+            { "name": "无人机10", "warn": true, "show": true, "lnglat": [101.300868, 37.995662, 3090] },
+            ],
+            //无人机信息
+            LightInfo: [{ "name": "光栅1", "warn": false },
+            { "name": "光栅2", "warn": true },
+            { "name": "光栅3", "warn": true },
+            { "name": "光栅4", "warn": false },
+            { "name": "光栅5", "warn": true },],
+            warnInfo: [{ "name": "监控1", "type": "监控", "event": "行人" }],
             //表格分页
             currentPage: 1, // 当前页码
             total: 6, // 总条数
             pageSize: 5, // 每页的数据条数
-            cameraWindowVisible:false,
+            cameraWindowVisible: false,
             monitorData:
                 [{
-            value: 1,
-            label: '视频监控'
-            }, {
-            value: 2,
-            label: '无人机'
-            }, {
-            value: 3,
-            label: '光栅'
-            }],
-            monitorSelecctValue:1,
-            cameraVisible:true,
-            tableData:[],
-            isAddLidar:false,
-            timeoutId:null,
-            intervalShowId:null,
-            intervalHideId2:null,
+                    value: 1,
+                    label: '视频监控'
+                }, {
+                    value: 2,
+                    label: '无人机'
+                }, {
+                    value: 3,
+                    label: '光栅'
+                }],
+            monitorSelecctValue: 1,
+            cameraVisible: true,
+            tableData: [],
+            isAddLidar: false,
+            timeoutId: null,
+            intervalShowId: null,
+            intervalHideId2: null,
         }
     },
     methods: {
@@ -337,38 +335,43 @@ export default {
             switch (id) {
                 case 1:
                     this.cameraWindowVisible = true;
-                    this.simulationInfoWindowVisible = false  
+                    this.simulationInfoWindowVisible = false
+                    this.analysisVisible = false
                     this.turnToBuilding()
                     this.addInfoUI()
                     this.addCameraUI()
-                    if(!this.isAddLidar)this.addLidarGraphic()
-                    this.isAddLidar=true
-                    this.map.getLayerById("lidarLayer").show=true;
-                    if(!this.timeoutId)
-                    {this.intervalShowId= setInterval(this.addRedLight, 3000);
-                    this.timeoutId= setTimeout(() => {this.intervalHideId=setInterval(this.HideRedLight, 3000);}, 1000);}
+                    if (!this.isAddLidar) this.addLidarGraphic()
+                    this.isAddLidar = true
+                    this.map.getLayerById("lidarLayer").show = true;
+                    if (!this.timeoutId) {
+                        this.intervalShowId = setInterval(this.addRedLight, 3000);
+                        this.timeoutId = setTimeout(() => { this.intervalHideId = setInterval(this.HideRedLight, 3000); }, 1000);
+                    }
                     break;
                 case 2:
                     this.cameraWindowVisible = false;
                     this.simulationInfoWindowVisible = true
+                    this.analysisVisible = false
                     this.addInfoUI()
                     this.turnToBuilding()
                     this.hideCameraGraph();
                     this.hideLeftPanel();
                     this.hideRightPanel();
                     const lidarLayer = this.map.getLayerById("lidarLayer");
-                    if (lidarLayer) {lidarLayer.show = false;}
-                    if(this.timeoutId){
-                    clearTimeout(this.timeoutId)
-                    clearInterval(this.intervalShowId)
-                    clearInterval(this.intervalHideId)
-                    this.timeoutId=null
-                }
+                    if (lidarLayer) { lidarLayer.show = false; }
+                    if (this.timeoutId) {
+                        clearTimeout(this.timeoutId)
+                        clearInterval(this.intervalShowId)
+                        clearInterval(this.intervalHideId)
+                        this.timeoutId = null
+                    }
                     this.HideRedLight()
                     break;
                 case 3:
-                this.cameraWindowVisible=false;
-                this.hideCameraGraph();
+                    this.cameraWindowVisible = false;
+                    this.simulationInfoWindowVisible = false
+                    this.analysisVisible = true
+                    this.hideCameraGraph();
 
                     console.log(id)
                     break;
@@ -460,7 +463,7 @@ export default {
                 }
             })
             let defaultSkybox = this.map.scene.skyBox
-            this.map.on(mars3d.EventType.postRender, ()=> {
+            this.map.on(mars3d.EventType.postRender, () => {
                 const position = this.map.camera.position
                 const height = Cesium.Cartographic.fromCartesian(position).height
                 if (height < 230000) {
@@ -539,7 +542,7 @@ export default {
 
             // 添加名称
             var factoryTitle = 'GeoSSMS特殊场景'
-            var factoryPosition={lat:37.997767,lng:101.301809}
+            var factoryPosition = { lat: 37.997767, lng: 101.301809 }
             var titleGraphic = new mars3d.graphic.LabelEntity({
                 position: new mars3d.LngLatPoint(factoryPosition.lng, factoryPosition.lat, factoryPosition.lat),
                 style: {
@@ -610,7 +613,7 @@ export default {
             })
             this.map.addLayer(this.windLayer)
             this.loadNetCDF("/weather/wind.nc").then((data) => {
-                if(this.windLayer !== null){
+                if (this.windLayer !== null) {
                     this.windLayer.setData(data)
                 }
             })
@@ -783,9 +786,9 @@ export default {
                             fontWeight: "bold"
                         },
                         color: [
-                        "#E6224F99",
-  "#2CB5E599",
-  "#E6D91599"
+                            "#E6224F99",
+                            "#2CB5E599",
+                            "#E6D91599"
                         ],
                         center: ["45%", "55%"],
                         data: arrState, // 使用for循环添加
@@ -845,26 +848,26 @@ export default {
                     type: "value"
                 },
                 series: [
-                {
-                    // 柱子的相关设置
-                    itemStyle: {
-                        color: "rgb(0, 174, 255)"
-                    },
-                    barWidth: "20px",
-                    type: "bar",
-                    emphasis: {
-                        focus: "series"
-                    },
-                    data: arrValue
-                }
+                    {
+                        // 柱子的相关设置
+                        itemStyle: {
+                            color: "rgb(0, 174, 255)"
+                        },
+                        barWidth: "20px",
+                        type: "bar",
+                        emphasis: {
+                            focus: "series"
+                        },
+                        data: arrValue
+                    }
                 ]
             }
             this.myChartPower.setOption(this.myOptionPower)
-            
-            this.myChartState.resize({width: 258,height: 182})
-            this.myChartPower.resize({width: 258,height: 182})
 
-            window.addEventListener("resize", ()=> {
+            this.myChartState.resize({ width: 258, height: 182 })
+            this.myChartPower.resize({ width: 258, height: 182 })
+
+            window.addEventListener("resize", () => {
                 this.myChartState.resize()
                 this.myChartPower.resize()
             })
@@ -883,7 +886,7 @@ export default {
                     "box-shadow": "none",
                     "background-color": "rgba(1, 48, 102, 0.8)"
                 })
-                $(".bar-content-left").css("display","none")
+                $(".bar-content-left").css("display", "none")
             }
             else {
                 $(".sideBar.left").addClass("fadeInLeft")
@@ -894,8 +897,8 @@ export default {
                     "background-color": "transparent"
                 })
                 setTimeout(function () {
-                    $(".bar-content-left").css("display","flex")
-                },1000)
+                    $(".bar-content-left").css("display", "flex")
+                }, 1000)
             }
         },
         hideRightPanel() {
@@ -909,7 +912,7 @@ export default {
                     "box-shadow": "none",
                     "background-color": "rgba(1, 48, 102, 0.8)"
                 })
-                $(".bar-content-right").css("display","none")
+                $(".bar-content-right").css("display", "none")
             }
             else {
                 $(".sideBar.right").addClass("fadeInRight")
@@ -920,41 +923,41 @@ export default {
                     "background-color": "transparent"
                 })
                 setTimeout(function () {
-                    $(".bar-content-right").css("display","flex")
-                },1000)
+                    $(".bar-content-right").css("display", "flex")
+                }, 1000)
             }
             // this.myChartState.resize({width: 258,height: 182})
             // this.myChartPower.resize({width: 258,height: 182})
             console.log("resize")
         },
         closeImgPanel() {
-            $("#explanatoryPicture").css("display","none")
+            $("#explanatoryPicture").css("display", "none")
         },
         // 添加监控UI面板
-        addInfoUI(){
-            if(this.map.getLayerById("infoUIGraph"))
-            this.map.removeLayer(this.map.getLayerById("infoUIGraph"),true)
+        addInfoUI() {
+            if (this.map.getLayerById("infoUIGraph"))
+                this.map.removeLayer(this.map.getLayerById("infoUIGraph"), true)
             // 添加监控面板
-            
-            function addPopUI(graphicLayer, position,obj) {
+
+            function addPopUI(graphicLayer, position, obj) {
                 // graphicLayer=new mars3d.layer.GraphicLayer()
-                var popcolorstr='#FFFFFF'
-                var linecolor="#5b8fee"
-                var ico_filename="house.svg"
-                    if(obj.status=="异常"){
-                        popcolorstr='#FF0000'
-                        linecolor=popcolorstr
-                        ico_filename="house_red.svg"
-                    }
-                    else if(obj.status=="警戒"){
-                        popcolorstr='#FFBB00'
-                        linecolor=popcolorstr
-                        ico_filename="house_orange.svg"
-                    }
-                    
+                var popcolorstr = '#FFFFFF'
+                var linecolor = "#5b8fee"
+                var ico_filename = "house.svg"
+                if (obj.status == "异常") {
+                    popcolorstr = '#FF0000'
+                    linecolor = popcolorstr
+                    ico_filename = "house_red.svg"
+                }
+                else if (obj.status == "警戒") {
+                    popcolorstr = '#FFBB00'
+                    linecolor = popcolorstr
+                    ico_filename = "house_orange.svg"
+                }
+
                 const graphicImg = new mars3d.graphic.DivGraphic({
                     position: position,
-                    id: obj.name+"popui",
+                    id: obj.name + "popui",
                     style: {
                         html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
                                     <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
@@ -995,7 +998,7 @@ export default {
                         verticalOrigin: Cesium.VerticalOrigin.CENTER
                     }
                 })
-                 graphicLayer.addGraphic(graphicImg)
+                graphicLayer.addGraphic(graphicImg)
                 // 刷新局部DOM,不影响popup面板的其他控件操作
                 graphicImg.on(mars3d.EventType.postRender, function (event) {
                     const container = event.container // popup对应的DOM
@@ -1015,22 +1018,22 @@ export default {
             });
 
         },
-        addCameraUI(){
+        addCameraUI() {
 
             function addCameraPopUI(graphicLayer, obj) {
                 // graphicLayer=new mars3d.layer.GraphicLayer()
-                var popcolorstr='#FFFFFF'
-                var linecolor="#5b8fee"
-                var ico_filename="camera.svg"
-                    if(obj.warn){
-                        popcolorstr='#FF0000'
-                        linecolor=popcolorstr
-                        ico_filename="camera_red.svg"
-                    }
-                    
+                var popcolorstr = '#FFFFFF'
+                var linecolor = "#5b8fee"
+                var ico_filename = "camera.svg"
+                if (obj.warn) {
+                    popcolorstr = '#FF0000'
+                    linecolor = popcolorstr
+                    ico_filename = "camera_red.svg"
+                }
+
                 const graphicImg = new mars3d.graphic.DivGraphic({
                     position: obj.lnglat,
-                    id: obj.name+"graphic",
+                    id: obj.name + "graphic",
                     style: {
                         html: ` <div class="mars3d-camera-content" style="height: 30px;cursor:pointer">
                                     <svg width="30px" height="50px" xmlns="http://www.w3.org/2000/svg">
@@ -1068,7 +1071,7 @@ export default {
                         verticalOrigin: Cesium.VerticalOrigin.CENTER
                     }
                 })
-                 graphicLayer.addGraphic(graphicImg)
+                graphicLayer.addGraphic(graphicImg)
                 // 刷新局部DOM,不影响popup面板的其他控件操作
                 graphicImg.on(mars3d.EventType.postRender, function (event) {
                     const container = event.container // popup对应的DOM
@@ -1080,64 +1083,66 @@ export default {
                     }
                 })
             }
-            function addUAV(gralayer,obj) {
+            function addUAV(gralayer, obj) {
                 var uavGraphic = new mars3d.graphic.ModelPrimitive({
-                id: obj.name+"graphic",
-                position: obj.lnglat,
-                style: {
-                    // url: '//data.mars3d.cn/gltf/mars/dajiang/dajiang.gltf',
-                    url: '../../../mars3dModels/dajiang.gltf',
-                    heading: 30,
-                    scale: 100,
-                    minimumPixelSize: 1,
+                    id: obj.name + "graphic",
+                    position: obj.lnglat,
+                    style: {
+                        // url: '//data.mars3d.cn/gltf/mars/dajiang/dajiang.gltf',
+                        url: '../../../mars3dModels/dajiang.gltf',
+                        heading: 30,
+                        scale: 100,
+                        minimumPixelSize: 1,
                     },
                 })
                 gralayer.addGraphic(uavGraphic)
                 console.log(uavGraphic)
             }
 
-            var UILayer=this.map.getLayerById("CameraUIGraph")
-            if(!UILayer){
+            var UILayer = this.map.getLayerById("CameraUIGraph")
+            if (!UILayer) {
                 // this.map.removeLayer(UILayer,true)
-                UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
+                UILayer = new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
                 this.map.addLayer(UILayer)
             }
             // if(!this.cameraVisible)return
             // UILayer= new mars3d.layer.GraphicLayer({ id: "CameraUIGraph" })
             // this.map.addLayer(UILayer)
 
-            if (this.monitorSelecctValue==1) {
+            if (this.monitorSelecctValue == 1) {
                 this.cameraInfo.forEach(e => {
-                    var tmp=UILayer.getGraphicById(e.name+"graphic")
-                    if(tmp)tmp.remove(true)
-                if(e.show)addCameraPopUI(UILayer, e)
-            })
-            }  else if(this.monitorSelecctValue==2){
+                    var tmp = UILayer.getGraphicById(e.name + "graphic")
+                    if (tmp) tmp.remove(true)
+                    if (e.show) addCameraPopUI(UILayer, e)
+                })
+            } else if (this.monitorSelecctValue == 2) {
                 this.UAVInfo.forEach(e => {
-                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
-                if(!graph_obj){
-                    addUAV(UILayer,  e)
-                    graph_obj=UILayer.getGraphicById(e.name+"graphic")
-                }
-                graph_obj.show= e.show
-            })
+                    var graph_obj = UILayer.getGraphicById(e.name + "graphic")
+                    if (!graph_obj) {
+                        addUAV(UILayer, e)
+                        graph_obj = UILayer.getGraphicById(e.name + "graphic")
+                    }
+                    graph_obj.show = e.show
+                })
             }
         },
-        hideUAVGraph(){var UILayer=this.map.getLayerById("CameraUIGraph")
+        hideUAVGraph() {
+            var UILayer = this.map.getLayerById("CameraUIGraph")
             this.UAVInfo.forEach(e => {
-                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
-                if(graph_obj){
-                    graph_obj.show= false
+                var graph_obj = UILayer.getGraphicById(e.name + "graphic")
+                if (graph_obj) {
+                    graph_obj.show = false
                 }
-            })  
+            })
         },
-        hideCameraGraph(){var UILayer=this.map.getLayerById("CameraUIGraph")
+        hideCameraGraph() {
+            var UILayer = this.map.getLayerById("CameraUIGraph")
             this.cameraInfo.forEach(e => {
-                var graph_obj=UILayer.getGraphicById(e.name+"graphic")
-                if(graph_obj){
-                    graph_obj.show= false
+                var graph_obj = UILayer.getGraphicById(e.name + "graphic")
+                if (graph_obj) {
+                    graph_obj.show = false
                 }
-            })  
+            })
         },
         tableFormatWarnStr(row, column) {
             if (row.warn === false) {
@@ -1153,42 +1158,42 @@ export default {
             }
         },
         //每页条数改变时触发 选择一页显示多少行
-                handleSizeChange(val) {
-                    console.log(`每页 ${val} 条`);
-                    this.currentPage = 1;
-                    this.pageSize = val;
-                },
-                //当前页改变时触发 跳转其他页
-                handleCurrentChange(val) {
-                    console.log(`当前页: ${val}`);
-                    this.currentPage = val;
-                },
-        tableShowChange(row, $index){
-            row.show=!row.show
+        handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+            this.currentPage = 1;
+            this.pageSize = val;
+        },
+        //当前页改变时触发 跳转其他页
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+            this.currentPage = val;
+        },
+        tableShowChange(row, $index) {
+            row.show = !row.show
             this.addCameraUI()
         },
-        tableWarnChange(row, $index){
-            row.warn=!row.warn
+        tableWarnChange(row, $index) {
+            row.warn = !row.warn
             this.addCameraUI()
             this.geneWarnInfo()
         },
-        changeMonitorSelect(val){
+        changeMonitorSelect(val) {
             switch (val) {
                 case 1:
-                    this.tableData=this.cameraInfo
-                    this.cameraVisible=true
+                    this.tableData = this.cameraInfo
+                    this.cameraVisible = true
                     this.addCameraUI()
                     this.hideUAVGraph()
                     break;
                 case 2:
-                    this.tableData=this.UAVInfo
-                    this.cameraVisible=true
+                    this.tableData = this.UAVInfo
+                    this.cameraVisible = true
                     this.addCameraUI()
                     this.hideCameraGraph()
                     break;
                 case 3:
-                    this.tableData=this.LightInfo
-                    this.cameraVisible=false
+                    this.tableData = this.LightInfo
+                    this.cameraVisible = false
                     this.hideCameraGraph()
                     this.hideUAVGraph()
                     break;
@@ -1196,103 +1201,103 @@ export default {
                     break;
             }
         },
-addLidarGraphic() {
-   var graphicLayer= new mars3d.layer.GraphicLayer({id:"lidarLayer"})
-  const ellipsoid = new mars3d.graphic.EllipsoidEntity({
-    position: [101.299381,37.997154,2987.5 ],
-    style: {
-      radii: 500,
-      minimumClockDegree: -180.0,
-      maximumClockDegree: 180.0,
-      minimumConeDegree: 0.0,
-      maximumConeDegree: 90.0,
-      fill: false,
-      outline: true,
-      outlineColor: "rgba(0, 204, 0, 0.4)", // 绿色
-      stackPartitions: 100, // 竖向
-      slicePartitions: 100 // 横向
-    },
-    // 添加扫描面
-    scanPlane: {
-      step: 10.0, // 步长
-      min: -180.0, // 最小值
-      max: 180.0, // 最大值
-      style: {
-        innerRadii: 200,
-        outline: true,
-        color: "rgba(255, 204, 0)",
-        outlineColor: "rgba(255, 204, 0, 0.1)",
-        // minimumClockDegree: 90.0,
-        // maximumClockDegree: 100.0,
-        // minimumConeDegree: 0.0,
-        // maximumConeDegree: 90.0
-      }
-    }
-  })
-  this.map.addLayer(graphicLayer)
+        addLidarGraphic() {
+            var graphicLayer = new mars3d.layer.GraphicLayer({ id: "lidarLayer" })
+            const ellipsoid = new mars3d.graphic.EllipsoidEntity({
+                position: [101.299381, 37.997154, 2987.5],
+                style: {
+                    radii: 500,
+                    minimumClockDegree: -180.0,
+                    maximumClockDegree: 180.0,
+                    minimumConeDegree: 0.0,
+                    maximumConeDegree: 90.0,
+                    fill: false,
+                    outline: true,
+                    outlineColor: "rgba(0, 204, 0, 0.4)", // 绿色
+                    stackPartitions: 100, // 竖向
+                    slicePartitions: 100 // 横向
+                },
+                // 添加扫描面
+                scanPlane: {
+                    step: 10.0, // 步长
+                    min: -180.0, // 最小值
+                    max: 180.0, // 最大值
+                    style: {
+                        innerRadii: 200,
+                        outline: true,
+                        color: "rgba(255, 204, 0)",
+                        outlineColor: "rgba(255, 204, 0, 0.1)",
+                        // minimumClockDegree: 90.0,
+                        // maximumClockDegree: 100.0,
+                        // minimumConeDegree: 0.0,
+                        // maximumConeDegree: 90.0
+                    }
+                }
+            })
+            this.map.addLayer(graphicLayer)
 
-  graphicLayer.addGraphic(ellipsoid)
-},
-addRedLight(){
-    var LightLayer=this.map.getLayerById("redLightLayer")
-    if(!LightLayer)
-    {LightLayer=new mars3d.layer.GraphicLayer({id:"redLightLayer"})
-    this.map.addLayer(LightLayer)
-    const lightCone = new mars3d.graphic.LightCone({
-    position: [101.300096, 38.000135, 2995.6],
-    style: {
-      color: "rgba(255,0,0,0.9)",
-      radius: 8, // 底部半径
-      height: 50 // 椎体高度
-    },
-    show: true
-  })
-LightLayer.addGraphic(lightCone)
-}
-LightLayer.show=true;
-    console.log("执行光亮显示")
-},
-HideRedLight(){
-    var LightLayer=this.map.getLayerById("redLightLayer")
-    if(!LightLayer)return
-    LightLayer.show=false
-    console.log("执行光亮隐藏")
-},
-geneWarnInfo(){
-    var eventSet=["行人出现","无人机出现","车辆出现","发现犯人","野生动物","可疑物品"]
-    this.warnInfo=[]
-    this.chartsDataState[0].value=0;
-    this.chartsDataState[1].value=0;
-    this.chartsDataState[2].value=0;
-    this.cameraInfo.forEach(e => {
-        if(e.warn){
-            this.warnInfo.push({"name":e.name,"type":"摄像头","event":eventSet[Math.floor(Math.random()*eventSet.length)]})
-            this.chartsDataState[0].value++;
-        }
-    });
-    this.UAVInfo.forEach(e => {
-        if(e.warn){
-            this.warnInfo.push({"name":e.name,"type":"无人机","event":eventSet[Math.floor(Math.random()*eventSet.length)]})
-            this.chartsDataState[1].value++;
-        }
-    });
-    this.LightInfo.forEach(e => {
-        if(e.warn){
-            this.warnInfo.push({"name":e.name,"type":"光栅","event":eventSet[Math.floor(Math.random()*eventSet.length)]})
-            this.chartsDataState[2].value++;
-        }
-    });
-},
+            graphicLayer.addGraphic(ellipsoid)
+        },
+        addRedLight() {
+            var LightLayer = this.map.getLayerById("redLightLayer")
+            if (!LightLayer) {
+                LightLayer = new mars3d.layer.GraphicLayer({ id: "redLightLayer" })
+                this.map.addLayer(LightLayer)
+                const lightCone = new mars3d.graphic.LightCone({
+                    position: [101.300096, 38.000135, 2995.6],
+                    style: {
+                        color: "rgba(255,0,0,0.9)",
+                        radius: 8, // 底部半径
+                        height: 50 // 椎体高度
+                    },
+                    show: true
+                })
+                LightLayer.addGraphic(lightCone)
+            }
+            LightLayer.show = true;
+            console.log("执行光亮显示")
+        },
+        HideRedLight() {
+            var LightLayer = this.map.getLayerById("redLightLayer")
+            if (!LightLayer) return
+            LightLayer.show = false
+            console.log("执行光亮隐藏")
+        },
+        geneWarnInfo() {
+            var eventSet = ["行人出现", "无人机出现", "车辆出现", "发现犯人", "野生动物", "可疑物品"]
+            this.warnInfo = []
+            this.chartsDataState[0].value = 0;
+            this.chartsDataState[1].value = 0;
+            this.chartsDataState[2].value = 0;
+            this.cameraInfo.forEach(e => {
+                if (e.warn) {
+                    this.warnInfo.push({ "name": e.name, "type": "摄像头", "event": eventSet[Math.floor(Math.random() * eventSet.length)] })
+                    this.chartsDataState[0].value++;
+                }
+            });
+            this.UAVInfo.forEach(e => {
+                if (e.warn) {
+                    this.warnInfo.push({ "name": e.name, "type": "无人机", "event": eventSet[Math.floor(Math.random() * eventSet.length)] })
+                    this.chartsDataState[1].value++;
+                }
+            });
+            this.LightInfo.forEach(e => {
+                if (e.warn) {
+                    this.warnInfo.push({ "name": e.name, "type": "光栅", "event": eventSet[Math.floor(Math.random() * eventSet.length)] })
+                    this.chartsDataState[2].value++;
+                }
+            });
+        },
     },
     mounted() {
         this.initAnimate()
-        this.tableData=this.cameraInfo
+        this.tableData = this.cameraInfo
         this.geneWarnInfo()
-        this.chartsDataPower[0].value=this.buildInfo.length
-        this.chartsDataPower[1].value=this.cameraInfo.length
-        this.chartsDataPower[2].value=this.UAVInfo.length
-        this.chartsDataPower[3].value=this.LightInfo.length
-        
+        this.chartsDataPower[0].value = this.buildInfo.length
+        this.chartsDataPower[1].value = this.cameraInfo.length
+        this.chartsDataPower[2].value = this.UAVInfo.length
+        this.chartsDataPower[3].value = this.LightInfo.length
+
 
     },
     watch: {
@@ -1336,6 +1341,7 @@ geneWarnInfo(){
     width: 75px;
     height: 75px;
 }
+
 // 以下为除底部导航栏
 .mapcontainer {
     position: relative;
@@ -1344,9 +1350,11 @@ geneWarnInfo(){
     overflow: hidden;
     user-select: none;
 }
+
 #PC {
     display: none;
 }
+
 /* LOGO */
 .logo-list {
     margin-top: 50px;
@@ -1358,6 +1366,7 @@ geneWarnInfo(){
 .logo-list img {
     height: 120px;
 }
+
 /* Loader */
 .page-overlay {
     position: relative;
@@ -1419,6 +1428,7 @@ geneWarnInfo(){
     color: transparent;
     pointer-events: none;
 }
+
 // 常规样式
 .opacity0 {
     filter: alpha(opacity=0);
@@ -1426,6 +1436,7 @@ geneWarnInfo(){
     -moz-opacity: 0;
     opacity: 0;
 }
+
 #teamName {
     font-size: 3em;
 }
@@ -1473,24 +1484,30 @@ geneWarnInfo(){
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    li{
+
+    li {
         border-bottom: white 0.5px dashed;
         padding-bottom: 5px;
     }
+
     li:hover {
         padding: 10px;
-        background-color: rgba(32, 176 ,203, 0.4);
+        background-color: rgba(32, 176, 203, 0.4);
     }
-    .typeA{
+
+    .typeA {
         color: #CD6F43;
     }
-    .typeB{
+
+    .typeB {
         color: #328D98;
     }
-    .typeC{
+
+    .typeC {
         color: #E0B041;
     }
 }
+
 .chartbox {
     display: flex;
     flex-direction: column;
@@ -1503,6 +1520,7 @@ geneWarnInfo(){
         linear-gradient(to left, #3897cf, #3897cf) right bottom no-repeat, linear-gradient(to left, #3897cf, #3897cf) right bottom no-repeat;
     background-size: 1px 20px, 20px 1px, 1px 20px, 20px 1px;
     background-color: rgba(0, 0, 0, 0.1);
+
     h5 {
         color: #ffffff;
         letter-spacing: 3px;
@@ -1510,6 +1528,7 @@ geneWarnInfo(){
         margin-top: 2px;
     }
 }
+
 #state,
 #powerSum,
 #weather1,
@@ -1556,67 +1575,77 @@ geneWarnInfo(){
 }
 
 //透明化整体
-.table-wrapper /deep/  .el-table,
+.table-wrapper /deep/ .el-table,
 .el-table__expanded-cell {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
+
 //透明化行、单元格,删除表头下横线
-.table-wrapper /deep/ tr, .table-wrapper /deep/ th, .table-wrapper /deep/ td {
-  background: #1439391c !important;
-  color:#fff;
-  border-bottom: 0px; //删除表头下横线
+.table-wrapper /deep/ tr,
+.table-wrapper /deep/ th,
+.table-wrapper /deep/ td {
+    background: #1439391c !important;
+    color: #fff;
+    border-bottom: 0px; //删除表头下横线
 }
+
 //hover时样式
-.table-wrapper /deep/  .el-table tbody tr:hover>td {
-  background-color: #367f7f78 !important
+.table-wrapper /deep/ .el-table tbody tr:hover>td {
+    background-color: #367f7f78 !important
 }
+
 // 表格内容(有用)
 .table-wrapper /deep/ .el-table__row {
-  background: #1439391c !important;
-  color: #46d4ff;
+    background: #1439391c !important;
+    color: #46d4ff;
 }
+
 .el-pagination /deep/ button {
     background: #1439391c !important;
     color: #b3c3c8;
 }
+
 .el-pagination /deep/ li {
     background: #1439391c !important;
     color: #b3c3c8;
 }
+
 .el-button {
     background: rgba(32, 160, 255, 0.2) !important;
     color: #e1e1e1;
 }
+
 ::v-deep .el-input__inner {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 ::v-deep .el-select-dropdown__item {
-  color: #fff;
+    color: #fff;
 }
 
 ::v-deep .el-scrollbar,
 ::v-deep .el-select-dropdown {
-  background-color: transparent !important;
-  color: #fff !important;
+    background-color: transparent !important;
+    color: #fff !important;
 }
 
 ::v-deep .el-scrollbar__wrap,
 ::v-deep .el-select-dropdown__list {
-  background-color: #2054bd2a;
-  color: #fff !important;
+    background-color: #2054bd2a;
+    color: #fff !important;
 }
 
 ::v-deep .el-select-dropdown__item.hover,
 .el-select-dropdown__item:hover {
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #fff;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #fff;
 }
+
 // ::v-deep .el-pagination__jump{
 //     visibility: hidden;
 // }
 // .el-pagination__wrapper {
-    
+
 //   overflow-x: hidden;
 // }
 </style>
