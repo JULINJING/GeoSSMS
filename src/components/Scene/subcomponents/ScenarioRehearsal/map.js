@@ -671,6 +671,7 @@ function getLinePosition(position) {
   return positions
 }
 
+
 function showHeatMap(arrPoints) {
   // 热力图 图层
   const heatLayer = new mars3d.layer.HeatLayer({
